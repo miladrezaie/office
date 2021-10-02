@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>IOT</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{/js/get.js}" src="../static/js/get.js"></script>
+    <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+
+<style>
+    table th, table td {
+        padding: 5px;
+    }
+
+    .message {
+        color: blue;
+    }
+</style>
+<script type="text/javascript">
+
+
+</script>
+<body dir="rtl">
+<div class="container">
+    <!-- Include _menu.html -->
+    <th:block th:include="/_menu"></th:block>
+
+    <h2>فرم آفیش</h2>
+    <th:block th:if="${user.job == 'تهیه کننده' or user.job == 'هماهنگی'}">
+        <button class="btn btn-success fnBtn" id="newoffice">آفیش جدید</button>
+    </th:block>
+    <table class="table table-hover ">
+        <thead>
+        <tr>
+            <th>ردیف</th>
+            <th>نام تهیه کننده</th>
+            <th>نام برنامه</th>
+            <th>محل برنامه</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="form : ${forms}">
+            <td th:utext="${form.id}">...</td>
+            <td th:utext="${form.tahayekonande}">...</td>
+            <td th:utext="${form.nameBarname}">...</td>
+            <td th:utext="${form.location}">...</td>
+
+            <td>
+                <th:block th:if="${user.job == 'تهیه کننده' or user.job == 'هماهنگی'}">
+                    <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
+                </th:block>
+                <a th:href="@{form/(id=${form.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">نمایش</a>
+
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+    <hr/>
+
+
+    <div class="fmyForm">
+        <form th:action="@{/saveForm}" method="post" enctype="multipart/form-data">
+            <div class="modal fade" id="fexampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Create</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+
+                            <div class="form-group">
+                                <label for="nameBarname" class="form-control-label">نام برنامه:</label>
+                                <input type="text" class="form-control" id="nameBarname" name="nameBarname" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="tahayekonande" class="form-control-label">تهیه کننده:</label>
+                                <input type="text" class="form-control" id="tahayekonande" name="tahayekonande"
+                                       value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tarikh" class="form-control-label">تاریخ برنامه :</label>
+                                <input type="text" class="form-control" id="tarikh" name="tarikh" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="saat" class="form-control-label">ساعت برنامه:</label>
+                                <input type="text" class="form-control" id="saat" name="saat" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="location" class="form-control-label">محل برنامه:</label>
+                                <input type="text" class="form-control" id="location" name="location" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="save"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="omyForm">
+        <form th:action="@{/addForm}" method="post">
+            <div class="modal fade" id="oexampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add user</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group">
+
+                                <input type="hidden" class="form-control" id="fid" name="id"/><!--  -->
+                            </div>
+
+                            <table>
+
+
+                                <tr>
+
+
+                                    <td>
+
+                                        <label for="job" class="form-control-label">جستوجو بر اساس شغل:</label>
+                                        <select id="job" class="form-control ch">
+                                            <option value="مدیر تولید سیما">مدیر تولید سیما</option>
+                                            <option value="معاونت سیما">معاونت سیما</option>
+                                            <option value="معاون فضای مجازی">معاون فضای مجازی</option>
+                                            <option value="تصویربردار">تصویربردار</option>
+                                            <option value="صدابردار">صدابردار</option>
+                                            <option value="تهیه کننده">تهیه کننده</option>
+                                            <option value="دبیر خبر">دبیر خبر</option>
+                                            <option value="گزارشگر">گزارشگر و مجری</option>
+                                            <option value="کارگردان">کارگردان</option>
+                                            <option value="دستیار تصویربردار">دستیار تصویربردار</option>
+                                            <option value="دستیار صدابردار">دستیار صدابردار</option>
+                                            <option value="دستیار تهیه">دستیار تهیه</option>
+                                        </select>
+
+                                        <!--     <th:block th:each="mem : ${users}">-->
+                                        <div id="wrapperfortestnames"></div>
+                                        <!--       </th:block> -->
+
+                                    </td>
+                                    <td th:if="${user.job == 'مدیر پشتیبانی فنی' or user.job == 'انباردار'}">
+                                        <th:block th:each="t : ${tajhiz}">
+                                            <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>
+                                            <label th:text="${t.name}"></label><br>
+                                        </th:block>
+
+                                    </td>
+
+
+                            </table>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="save"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="tblForm">
+        <div class="modal fade bd-example-modal-lg" id="tblmodal" tabindex="-1" role="dialog"
+             aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+
+                    <div class="card">
+                        <div class="card-block">
+                            <table class="table table-hover">
+                                <tr>
+                                    <th>
+                                        <div class="form-group">
+                                            <label for="nameBarname" class="form-control-label">نام برنامه:</label>
+                                            <input type="text" class="form-control" id="nameBarname" name="nameBarname"
+                                                   value=""/>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="form-group">
+                                            <label for="tahayekonande" class="form-control-label">تهیه کننده:</label>
+                                            <input type="text" class="form-control" id="tahayekonande"
+                                                   name="tahayekonande" value=""/>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="form-group">
+                                            <label for="tarikh" class="form-control-label">تاریخ برنامه :</label>
+                                            <input type="date" class="form-control" id="tarikh" name="tarikh" value=""/>
+                                        </div>
+                                    </th>
+                                    <th>
+
+                                        <div class="form-group">
+                                            <label for="saat" class="form-control-label">ساعت ضبط:</label>
+                                            <input type="text" class="form-control" id="saat" name="saat" value=""/>
+                                        </div>
+
+                                    </th>
+                                    <th>
+
+                                        <div class="form-group">
+                                            <label for="location" class="form-control-label">محل برنامه:</label>
+                                            <input type="text" class="form-control" id="location" name="location"
+                                                   value=""/>
+                                        </div>
+                                    </th>
+                                </tr>
+
+                                <tr>
+
+                                    <td>ردیف</td>
+                                    <td>عوامل برنامه
+
+
+                                    </td>
+                                    <td width="300px">نام و نام خانوادگی</td>
+                                    <td width="300px">تجهیزات همراه</td>
+                                    <td width="300px">شماره اموال</td>
+
+
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</body>
+</html>

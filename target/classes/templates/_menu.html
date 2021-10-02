@@ -1,0 +1,41 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     style="border: 3px solid #1369CA;  padding:10px; margin-bottom:20px;
+     background-color:#FFFFFF; border-bottom-right-radius: 7px; border-top-color: #FFFFFF; ">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+    <a th:href="@{/}">خانه</a>
+
+    | &nbsp;
+
+    <a th:href="@{/times}">ساعت</a>
+
+    | &nbsp;
+
+    <a th:href="@{/tajhizats}">تجهیزات</a>
+    | &nbsp;
+    <a th:href="@{/members}">کاربرها</a>
+    | &nbsp;
+    <a th:href="@{/office}">فرم آفیش</a>
+
+    | &nbsp;
+    <a th:href="@{/admin/locations}">مکان ها</a>
+
+    | &nbsp;
+    <a th:href="@{/employee}">کارمندان</a>
+    | &nbsp;
+    <a th:href="@{/admin/jobs}">عناوین شغلی</a>
+    | &nbsp;
+    <a th:href="@{/admin/roles}">سطح دسترسی ها</a>
+
+
+    <a>
+        <span style="float: right;" th:utext="${userName}"></span>
+        <div>
+            <form th:action="@{/logout}" method="get">
+                <button style="float: left; width: 10%; border-color: #1369CA; background-color: #1369CA;"
+                        class="btn btn-md btn-danger btn-block" name="registration"
+                        type="Submit">خروج
+                </button>
+            </form>
+        </div>
+    </a>
+</div>

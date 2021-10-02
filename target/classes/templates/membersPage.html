@@ -1,0 +1,158 @@
+
+<!DOCTYPE HTML>
+ 
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+      <title>IOT</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <script th:src="@{../js/jquery.min.js}"></script>
+	  <script th:src="@{../js/bootstrap.min.js}"></script>
+	  <link rel="stylesheet" type="text/css" th:href="@{../css/bootstrap.min.css}" />
+	  <script type="text/javascript" th:src="@{../js/main.js}" src="../static/js/main.js"></script>
+	  <script type="text/javascript" th:src="@{../js/get.js}" src="../static/js/get.js"></script>
+	  <script type="text/javascript" th:src="@{../js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
+	  
+      
+</head>
+
+ <style>
+      table th, table td {
+         padding: 5px;
+      }
+      .message {
+         color: blue;
+      }
+   </style>
+   <script type="text/javascript">
+   
+   
+   </script>
+  <body dir="rtl">
+    <div class="container">
+      <!-- Include _menu.html -->
+      <th:block th:include="/_menu"></th:block>  
+       
+      <h2>کاربرها</h2>
+       <button class="btn btn-succes mnBtn" id="NUser">اضافه کردن کاربر جدید</button>
+       
+ <!--     	 <input type="search" id="txtsearch" name="keyword">-->
+      	 
+      <table   class="table table-hover">
+      <thead>
+            <tr>
+               <th>Id</th>
+               <th>شماره کارمندی</th>
+               <th>نام</th>
+               <th>نام خانوادگی</th>
+           		<th>شغل</th>
+               <th>تصویر امضا</th>
+               
+            </tr>
+            </thead>
+            <tbody>
+            
+            <tr th:each ="member : ${members}">
+            	<td th:utext="${member.id}">...</td>
+               <td th:utext="${member.personalId}">...</td>
+               <td th:utext="${member.FName}">...</td>
+               <td th:utext="${member.Lname}">...</td>
+				<td th:utext="${member.job}">...</td>
+              <td width="40px"><img th:src="*{'data:emza/jpg;base64,'+{member.emza}}" class="img-responsive"></td>
+				
+				<td>
+				<a th:href="@{findOneUser/(id=${member.id})}" class="btn btn-primary meBtn" id="EditUser">ویرایش</a>
+				<a th:href="@{deleteUser/(id=${member.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">حذف</a>
+				
+				</td>
+				
+            </tr>
+            
+            </tbody>
+      </table>
+      <hr/>
+	<!--		<ul class="nav nav-pills">
+			<li class="nav-item" th:each="i : ${#numbers.sequence(0,members.totalPages-1)}">
+			<a th:href="@{/members/(page=${i})}" th:text="${i}" class="nav-link" th:classappend="${currentPage}==${i}?'active':''"></a>
+			</li>
+			
+			</ul> -->
+       
+      
+           <div class="umyForm">
+	<form th:action="@{/saveeUser}" method="post" enctype="multipart/form-data">
+	<div class="modal fade" id="uexampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update or Create</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-sm-6">
+            <label for="id" class="form-control-label">ID:</label>
+            <input type="text" class="form-control" id="id" name="id" value="" />
+          </div>
+          
+          <div class="form-group col-sm-6">
+            <label for="personalId" class="form-control-label">شماره کارمندی:</label>
+            <input type="text" class="form-control" id="personalId" name="personalId" value="" />
+          </div>
+          </div>
+          
+          <div class="row">
+          <div class="form-group col-sm-6">
+            <label for="FName" class="form-control-label">نام:</label>
+            <input type="text" class="form-control" id="FName" name="FName" value="" />
+          </div>
+          
+            <div class="form-group col-sm-6">
+            <label for="Lname" class="form-control-label">نام خانوادگی:</label>
+            <input type="text" class="form-control" id="Lname" name="Lname" value="" />
+          </div>
+          </div>
+          <div class="row">
+          <div class="form-group col-sm-6">
+            <label for="job" class="form-control-label">شغل:</label>
+            <input type="text" class="form-control" id="job" name="job" value="" />
+          </div>
+          
+           <div class="form-group col-sm-6">
+            <label for="finger" class="form-control-label">نقش:</label>
+            
+            <select id="finger" class="form-control" name="finger" >
+    			<option  value="1">ADMIN</option>
+    			<option  value="2" >USER</option>
+    			
+			</select>
+          </div>
+           </div>
+           <div class="form-group">
+            <label for="pass" class="form-control-label">رمز عبور:</label>
+            <input type="password" class="form-control" id="pass" name="pass" value="" />
+          </div>
+           <div class="form-group">
+            <label for="file" class="form-control-label">تصویر امضا:</label>
+            <input type="file" class="custom-file-input" id="file" name="file"  />
+          </div>
+          </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="save" />
+      </div>
+    </div>
+  </div>
+  	</form>
+</div>
+	
+
+	</div>
+           
+       
+   </body>
+</html>

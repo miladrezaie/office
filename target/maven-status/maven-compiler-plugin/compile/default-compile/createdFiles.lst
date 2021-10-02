@@ -1,0 +1,5 @@
+com\javasampleapproach\jqueryboostraptable\SpringBootJQueryBootstrapTableApplication.class
+com\javasampleapproach\jqueryboostraptable\controller\RestAPIs.class
+com\javasampleapproach\jqueryboostraptable\controller\WebController.class
+com\javasampleapproach\jqueryboostraptable\model\Customer.class
+com\javasampleapproach\jqueryboostraptable\model\Address.class

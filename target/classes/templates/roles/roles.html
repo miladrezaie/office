@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>IOT</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/table.css}"/>
+    <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
+
+</head>
+
+<style>
+    table th, table td {
+        padding: 5px;
+        direction: rtl;
+    }
+
+    .message {
+        color: blue;
+    }
+</style>
+<body dir="rtl">
+<div class="container">
+    <!-- Include _menu.html -->
+    <th:block th:include="/_menu"></th:block>
+
+    <h2>سطح دسترسی ها</h2>
+
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
+        افزودن سطح دسترسی
+    </button>
+
+
+    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">ایجاد سطح دسترسی جدید</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form th:action="@{/admin/roles/create}" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name" class="form-control-label">نام سطح دسترسی:</label>
+                            <input type="text" class="form-control" id="name" name="name" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="form-control-label">توضیحات سطح دسترسی:</label>
+                            <input type="text" class="form-control" id="description" name="description" value=""/>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success">ثبت</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr class="text-center">
+            <td dir="rtl">آی دی</td>
+            <td dir="rtl">نام</td>
+            <td dir="rtl">توضیحات</td>
+            <td dir="rtl">تنظیمات</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr class="text-center" th:each="role : ${roles}">
+            <td th:text="${role.getId()}">...</td>
+            <td th:text="${role.getName()}">...</td>
+            <td th:text="${role.getDescription()}">...</td>
+
+            <td>
+                <a th:href="@{/admin/roles/edit/{id}(id=${role.getId()})}" class="btn btn-primary teBtn"
+                   id="EditTajhiz">ویرایش</a>
+
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger" data-toggle="modal"
+                        th:attr="data-target='#modal-warning'+${role.getId() }">
+                    حذف
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" th:id="modal-warning+${role.getId()}" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${role.getName()}"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="alert alert-danger">
+                                    آیا شما مطمین هستید که میخواهید این سطح دسترسی را پاک کنید ؟
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                                <a th:href="@{/admin/roles/delete/{id}(id=${role.getId()})}"
+                                   data-target="#deleteRole" class="btn btn-danger tdelBtn"
+                                   id="deleteRole">حذف</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+
+    <hr/>
+
+    <!--            <ul class="nav nav-pills">-->
+    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,roles.totalPages-1)}">-->
+    <!--                    <a th:href="@{/admin/roles/(page=${i})}" th:text="${i}" class="nav-link"-->
+    <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
+    <!--                </li>-->
+    <!--            </ul>-->
+
+    <div class="modal fade" id="deleteRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">سطح دسترسی ها </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="alert alert-danger">
+                        آیا شما مطمین هستید که میخواهید این تجهیز را پاک کنید ؟
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                    <a href="" class="btn btn-danger" id="tdelRef">پاک شود</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

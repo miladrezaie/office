@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>IOT</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" th:src="@{js/main.js}" src="../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+
+<style>
+    table th, table td {
+        padding: 5px;
+        direction: rtl;
+    }
+
+    .message {
+        color: blue;
+    }
+</style>
+<body dir="rtl">
+<div class="container">
+    <!-- Include _menu.html -->
+    <th:block th:include="/_menu"></th:block>
+
+    <h2>تجهیزات</h2>
+    <button class="btn btn-success tmnBtn" id="NTajhiz">اضافه کردن تجهیزات</button>
+
+    <table class="table table-hover">
+        <thead>
+        <tr class="text-center" style="font: bold;">
+            <td dir="rtl">آی دی</td>
+            <td dir="rtl">شماره اموال</td>
+            <td dir="rtl">شماره سریال</td>
+            <td>نام تجهیز</td>
+            <td>نوع</td>
+            <td>مکان</td>
+            <td>برند</td>
+            <td>تصویر</td>
+            <td>تنظیمات</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr class="text-center" th:each="tajhiz : ${tajhizats}">
+
+<!--            <td th:utext="${tajhiz.id}">...</td>-->
+            <td th:utext="${tajhiz.id}">...</td>
+            <td th:utext="${tajhiz.amvalid}">...</td>
+            <td th:utext="${tajhiz.serial_id}">...</td>
+            <td th:utext="${tajhiz.name}">...</td>
+            <td th:utext="${tajhiz.type}">...</td>
+            <td th:if="${tajhiz.location != null}"  th:text="${tajhiz.location.getName()}">...</td>
+            <td th:unless="${tajhiz.location != null}"  >...</td>
+            <td th:utext="${tajhiz.brand}">...</td>
+
+            <td width="100px"><img th:src="*{'data:img/jpg;base64,'+{tajhiz.img}}" class="img-responsive">
+            </td>
+
+            <td>
+                <a th:href="@{findOneTajhiz/(id=${tajhiz.id})}" class="btn btn-primary teBtn" id="EditTajhiz">ویرایش</a>
+                <a th:href="@{deleteTajhiz/(id=${tajhiz.id})}" class="btn btn-danger tdelBtn" id="DeleteTajhiz">حذف</a>
+            </td>
+
+
+        </tr>
+
+        </tbody>
+    </table>
+
+    <hr/>
+
+    <ul class="nav nav-pills">
+        <li class="nav-item" th:each="i : ${#numbers.sequence(0,tajhizats.totalPages-1)}">
+            <a th:href="@{/tajhizats/(page=${i})}" th:text="${i}" class="nav-link"
+               th:classappend="${currentPage}==${i}?'active':''"></a>
+        </li>
+    </ul>
+
+
+    <div class="tmyForm">
+        <form th:action="@{/saveTajhiz}" method="post" enctype="multipart/form-data">
+            <div class="modal fade" id="texampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">ایجاد تجهیز جدید</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group">
+                                <label for="id" class="form-control-label">آی دی:</label>
+                                <input type="text" class="form-control" id="id" name="id" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="amvalid" class="form-control-label">شماره اموال:</label>
+                                <input type="text" class="form-control" id="amvalid" name="amvalid" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="serial_id" class="form-control-label">شماره سریال:</label>
+                                <input type="text" class="form-control" id="serial_id" name="serial_id" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name" class="form-control-label"> نام:</label>
+                                <input type="text" class="form-control" id="name" name="name" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="type" class="form-control-label">نوع:</label>
+                                <select class="form-control" id="type" name="type">
+                                    <option value="1">دوربین</option>
+                                    <option value="2">صدا</option>
+                                    <option value="3">نور</option>
+                                    <option value="4">سایر</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location" class="form-control-label">مکان:</label>
+                                <select  class="form-control"  id="location" name="location">
+                                    <option  value="" >---</option>
+                                    <option th:each="location :${locations}" th:value="${location.getId()}" th:text="${location.getName()}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="brand" class="form-control-label">انتخاب برند</label>
+
+                                <select id="brand" class="form-control" name="brand">
+                                    <option value="برند اول">برند اول</option>
+                                    <option value="برند دوم">برند دوم</option>
+                                    <option value="برند سوم">برند سوم</option>
+                                    <option value="برند چهارم">برند چهارم</option>
+                                </select>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="file" class="form-control-label">تصویر:</label>
+                                <input type="file" class="custom-file-input" id="file" name="file"/>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="save"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="modal fade" id="tdelModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">تجهیزات </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="alert alert-danger">
+                        آیا شما مطمین هستید که میخواهید این تجهیز را پاک کنید ؟
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                    <a href="" class="btn btn-danger" id="tdelRef">پاک شود</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

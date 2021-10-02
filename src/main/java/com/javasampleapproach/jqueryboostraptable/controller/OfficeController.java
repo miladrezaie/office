@@ -1,0 +1,319 @@
+package com.javasampleapproach.jqueryboostraptable.controller;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Base64;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
+
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
+import com.javasampleapproach.jqueryboostraptable.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormRepository;
+import com.javasampleapproach.jqueryboostraptable.repository.Roozh;
+import com.javasampleapproach.jqueryboostraptable.repository.TajhizatRepository;
+import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityResult;
+
+@Service
+@Controller
+public class OfficeController {
+
+
+    @Autowired
+    private TajhizatRepository tRepo;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private OfficeFormRepository formRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private LocationServiceImp locationServiceImp;
+
+
+    @GetMapping("/tajhizats")
+    public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByUsername(auth.getName());
+
+        model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
+        model.addAttribute("tajhizats", tRepo.findAll(new PageRequest(page, 10)));
+        model.addAttribute("locations", locationServiceImp.getAllLocations());
+        System.out.println("ttttttttttttttttttt"+tRepo.findAll(new PageRequest(page, 10)));
+        System.out.println("lllllllllllllllllllll"+locationServiceImp.getAllLocations());
+
+        model.addAttribute("currentPage", page);
+        return "Tajhizat";
+    }
+
+    @GetMapping("/result")
+    public ResponseEntity<?> viewTajhizat() {
+        return (ResponseEntity<?>) locationServiceImp.getAllLocations();
+    }
+    @GetMapping("/office")
+    public String viewoffice(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("milad >>>>>>>>>" + auth);
+        User user = userService.findByUsername(auth.getName());
+        //	Set<User> us = new HashSet<>(userRepo.findBypersonalId(user.getPersonalId()));
+        model.addAttribute("forms", formRepo.findByUsers(userRepo.findBypersonalId(user.getPersonalId())));
+        model.addAttribute("user", user);
+        model.addAttribute("users", userRepo.findAll());
+        model.addAttribute("tajhiz", tRepo.findAll());
+        model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
+        return "officeForm";
+    }
+
+    @GetMapping("/form")
+    public String viewform(Model model, int id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByUsername(auth.getName());
+        model.addAttribute("form", formRepo.findById((long) id).get());
+        model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
+        model.addAttribute("userss", userRepo.findAll());
+        model.addAttribute("user", user);
+        return "office";
+    }
+
+    @GetMapping("/")
+    public String h() {
+        return "redirect:/office";
+    }
+
+    @GetMapping("/findOneTajhiz")
+    @ResponseBody
+    public Optional<Tajhizat> findOneTajhiz(Integer id) {
+        return tRepo.findById(id);
+    }
+
+    @GetMapping("/deleteTajhiz")
+    public String deleteTajhiz(Integer id) {
+        tRepo.deleteById(id);
+        return "redirect:/tajhizats";
+    }
+
+    @PostMapping("/saveTajhiz")
+    public String Esave(Tajhizat t, MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        if (fileName.contains("..")) {
+            System.out.println("not a valid file");
+        }
+        try {
+            t.setImg(Base64.getEncoder().encodeToString(file.getBytes()));
+        } catch (IOException er) {
+            System.out.println("file ");
+            er.printStackTrace();
+        }
+        tRepo.save(t);
+
+        return "redirect:/tajhizats";
+    }
+
+    //	 @PostMapping("/addToForm")
+//	 public String AddToForm(String pid) {
+//		 User user = userRepo.findBypersonalId(pid).get(0);
+//		 officeForm form = new officeForm();
+//		 form.getUsers().add(user);
+
+    //	 }
+    @GetMapping("/a")
+    public String a() {
+//		 officeForm f = formRepo.findByCreatorid(2).get(0);
+//		 User u = userRepo.findById(1).get();
+//		 f.getUsers().add(u);
+//		 formRepo.save(f);
+//		 Set<User> userss = new HashSet<User>();
+//		 System.out.println();
+        return "redirect:/office";
+    }
+
+    @PostMapping("/saveForm")
+    public String saveForm(officeForm form) {
+        Roozh jCal = new Roozh();
+        int myear = LocalDate.now().getYear();
+        int mmonth = LocalDate.now().getMonthValue();
+        int mday = LocalDate.now().getDayOfMonth();
+        jCal.gregorianToPersian(myear, mmonth, mday);
+
+        form.setTarikhsodur(jCal.toString());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<User> u = userRepo.findBypersonalId(auth.getName());
+        System.out.println("nameeeeeeeeeeeeeeeeeeee" + auth.getName());
+        System.out.println("-------------------->" + form.toString());
+        System.out.println("---------formgetuser----------->" + (form.getUsers() == null));
+        if (form.getUsers() == null) {
+            form.setUsers(u);
+            System.out.println("foorm if is empty");
+            // form.setUsers(new HashSet<>(userRepo.findBypersonalId(u.getPersonalId())));
+        } else {
+            form.getUsers().add(u.get(0));
+            System.out.println("foorm add user else ");
+        }
+        System.out.println("foorrrmmm" + form);
+        System.out.println("ussserrrrr" + u);
+
+        System.out.println("user saved");
+        formRepo.save(form);
+        System.out.println("form saved");
+        return "redirect:/office";
+
+    }
+
+    @PostMapping("/saveEmza")
+    public String saveEmza(FormJob fj) {
+        String redirect = "redirect:/form/?id=" + fj.getFid();
+        officeForm office_form = formRepo.findById(fj.getFid()).get();
+        User u = userRepo.findById(fj.getUid()).get();
+        System.out.println("userrr ---" + u.getJob() + "    " + u.getPersonalId());
+
+        switch (u.getJob()) {
+            case "حراست":
+                LocalTime time = LocalTime.now();
+                String h = time.getHour() + " : " + time.getMinute();
+                if (fj.getTid().equals(1)) {
+                    office_form.setSaatvorod(h);
+                    office_form.setVherasatemza(u.getEmza());
+                } else {
+                    office_form.setSaatkhoroj(h);
+                    office_form.setKhherasatemza(u.getEmza());
+                }
+                break;
+            case "معاونت سیما":
+                System.out.println("moaven------majazi---beforset");
+                User ux = userService.findByUsername("999999");
+                System.out.println("---------->" + ux);
+                if (!office_form.getUsers().contains(ux))
+                    office_form.getUsers().add(ux);
+                office_form.setMdarkhastemza(u.getEmza());
+                System.out.println("moaven------majazi---afterset");
+                // office_form.getUsers().add(userRepo.findByJob("مدیر پشتیبانی فنی").get(0));
+                break;
+            case "مسئول حمل و نقل":
+                User us = userRepo.findById(fj.getTid()).get();
+                office_form.setRanande(us.getFullname());
+                office_form.setRanandeid(us.getPersonalId());
+                office_form.setKhodro(fj.getJob());
+                office_form.setHamlonaghlemza(u.getEmza());
+                break;
+            case "مدیر پشتیبانی فنی":
+                office_form.setPoshemza(u.getEmza());
+
+                office_form.getUsers().add(userRepo.findByJob("هماهنگی سیما").get(0));
+                System.out.println("after add hamahangi");
+                office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
+                System.out.println("after add hamlonaghl");
+                office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
+                System.out.println("after add herasat");
+                office_form.getUsers().add(userRepo.findByJob("انباردار").get(0));
+                break;
+            case "هماهنگی سیما":
+//			 office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
+//			 office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
+                break;
+            case "تهیه کننده":
+                office_form.setTahayeemza(u.getEmza());
+                User user = userService.findByUsername("11000010");
+                if (!office_form.getUsers().contains(user))
+                    office_form.getUsers().add(user);
+                break;
+            case "تصویربردار":
+                if (office_form.getTasviremza() == null)
+                    office_form.setTasviremza(u.getEmza());
+                else if (office_form.getTasviremza2() == null)
+                    office_form.setTasviremza2(u.getEmza());
+                else if (office_form.getTasviremza3() == null)
+                    office_form.setTasviremza3(u.getEmza());
+                else if (office_form.getTasviremza4() == null)
+                    office_form.setTasviremza4(u.getEmza());
+                else if (office_form.getTasviremza5() == null)
+                    office_form.setTasviremza5(u.getEmza());
+                else
+                    office_form.setTasviremza6(u.getEmza());
+                break;
+            case "صدابردار":
+                office_form.setSedaemza(u.getEmza());
+                break;
+
+            default:
+                System.out.println("----------------emzaa nashod -------------------------");
+        }
+        formRepo.save(office_form);
+        return redirect;
+    }
+
+    @PostMapping("/addForm")
+    public String addutoform(officeForm f) {
+        officeForm form = formRepo.findById((long) f.getId()).get();
+
+        boolean found = false;
+        if (f.getUsers() != null) {
+            Iterator<User> itr = f.getUsers().iterator();
+            while (itr.hasNext()) {
+                if (form.getUsers().contains(itr.next())) {
+                    found = true;
+                }
+            }
+            if (found) {
+                return "redirect:/office";
+            }
+            for (User us : f.getUsers()) {
+                form.getUsers().add(us);
+            }
+        }
+
+
+        if (f.getTajhizats() != null) {
+            Iterator<Tajhizat> itr = f.getTajhizats().iterator();
+            while (itr.hasNext()) {
+                if (form.getTajhizats().contains(itr.next())) {
+                    found = true;
+                }
+            }
+            if (found) {
+                return "redirect:/office";
+            }
+            for (Tajhizat tj : f.getTajhizats()) {
+                form.getTajhizats().add(tj);
+            }
+        }
+
+        formRepo.save(form);
+        return "redirect:/office";
+    }
+
+    @GetMapping("/findbyjob/{job}")
+    @ResponseBody
+    public List<User> findU(@PathVariable String job) {
+        return userRepo.findByJob(job);
+    }
+
+
+}
