@@ -14,5 +14,4 @@ class WebConfiguration implements WebMvcConfigurer {
 	    return bCryptPasswordEncoder;
 	}
 
-	
 }

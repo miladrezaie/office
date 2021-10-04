@@ -18,11 +18,12 @@ import com.javasampleapproach.jqueryboostraptable.model.User;
 @Transactional
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	
-	List<User> findBypersonalId(String personalId);
+//	List<User> findBypersonalId(String personalId);
 	List<User> findByJob(String job);
-	
-	
+
 	@Query(value = "SELECT * FROM user u where u.fullname like %:keyword% or u.job like %:keyword%",nativeQuery = true)
 	public List<User> search(@Param("keyword") String keyword);
+
+	User findByPersonalId(String personalId);
+
 }

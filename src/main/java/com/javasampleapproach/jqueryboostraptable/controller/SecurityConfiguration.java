@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +20,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -32,9 +34,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+////        auth.userDetailsService(userDetailsService);
+//    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -45,16 +53,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/saat/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/registration").permitAll()
-                .antMatchers("/times", "/user/**").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/Esave", "/members", "/employee").hasAuthority("ADMIN").anyRequest()
-                .authenticated().and().csrf().disable().formLogin()
-                .loginPage("/login").failureUrl("/login?error=true")
+//                .antMatchers("/admin/roles").hasAnyAuthority("ADMIN")
+//                .antMatchers("/times", "/user/**").hasAnyAuthority("ADMIN", "USER")
+//                .antMatchers("/Esave", "/members", "/employee").hasAuthority("ADMIN")
+                .anyRequest()
+                .authenticated().and().csrf().disable()
+                .formLogin().loginPage("/login").failureUrl("/login?error=true")
                 .defaultSuccessUrl("/office")
                 .usernameParameter("personalId")
                 .passwordParameter("pass")
                 .and().logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login").and().exceptionHandling()
+                .logoutSuccessUrl("/login")
+                .and().exceptionHandling()
                 .accessDeniedPage("/access-denied");
     }
 

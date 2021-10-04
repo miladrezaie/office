@@ -26,6 +26,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void save(User user, Integer e) {
+
         user.setPass(bCryptPasswordEncoder.encode(user.getPass()));
         user.setFullname(user.getFName() + " " + user.getLname());
         if (e == 0) {
@@ -60,7 +61,6 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User findByUsername(String username) {
-
-        return userRepository.findBypersonalId(username).get(0);
+        return userRepository.findByPersonalId(username);
     }
 }

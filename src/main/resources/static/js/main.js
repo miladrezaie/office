@@ -3,7 +3,7 @@
  */
 
 $(document).ready(function(){
-	
+	$('select').selectpicker();
 	$('.mnBtn, .tmnBtn, .table .meBtn, .empBtn, .table .empeBtn, .table .teBtn, .table .feBtn, .fnBtn').on('click',function(event){
 		event.preventDefault();
 		var href = $(this).attr('href');
@@ -96,3 +96,4 @@ $(document).ready(function(){
 	});
 	
 });
+

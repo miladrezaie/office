@@ -25,7 +25,7 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
-    @ElementCollection(targetClass = Authority.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Authority.class)
     private List<Authority> authorities;
 
 //    @ManyToMany(cascade = {CascadeType.DETACH,

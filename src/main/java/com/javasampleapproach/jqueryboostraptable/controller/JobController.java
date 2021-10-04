@@ -4,13 +4,16 @@ import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.model.Job;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 @Controller
 public class JobController {
+
     private final JobServiceImp jobService;
 
     private final UserService userService;
@@ -22,6 +25,7 @@ public class JobController {
     }
 
     @GetMapping(value = "/admin/jobs")
+    @PreAuthorize("hasAuthority('OP_ACCESS_ADMIN_PANEL')")
     public String index(Model model) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

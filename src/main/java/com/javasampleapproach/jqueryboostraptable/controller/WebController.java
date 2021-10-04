@@ -5,15 +5,13 @@ package com.javasampleapproach.jqueryboostraptable.controller;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -152,8 +150,11 @@ public class WebController {
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
     public ModelAndView login() {
+        System.out.println("************************* login method start");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
+        System.out.println("************************* login method end");
+
         return modelAndView;
     }
 
@@ -176,13 +177,18 @@ public class WebController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-        List<User> us = userRepo.findBypersonalId(user.getPersonalId());
-        System.out.println("sdsdsdffdfdf");
+//        List<User> us = new ArrayList<>();
+//        us.add();
+//
+        System.out.println("personal id : " + userRepo.findByPersonalId(user.getPersonalId()));
+//        System.out.println("sdsdsdffdfdf");
         System.out.println(user);
 
         System.out.println("---------------------");
-        System.out.println(us);
-        if (!us.isEmpty()) {
+
+        System.out.println("----***********************************");
+//        System.out.println(us);
+        if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
             bindingResult
                     .rejectValue("personalId", "error.user",
                             "هم اکنون کاربری با این شماره کارمندی موجود است");
@@ -195,6 +201,7 @@ public class WebController {
         return modelAndView;
     }
 
+    @PreAuthorize("#userRepo.personalId !=authentication.name")
     @GetMapping("/deleteUser")
     public String deleteUser(Integer id, Model model) {
         try {

@@ -5,13 +5,18 @@
     <title>IOT</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <script th:src="@{/js/jquery.min.js}"></script>
-    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/js-select/jquery.min.js}"></script>
+    <script th:src="@{/js/js-select/bootstrap.min.js}"></script>
 
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
     <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
     <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
+    <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
 
 </head>
 
@@ -47,7 +52,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form th:action="@{/admin/roles/create}" method="post">
+                <form th:action="@{/admin/roles/create}" method="post" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name" class="form-control-label">نام سطح دسترسی:</label>
@@ -56,6 +61,16 @@
                         <div class="form-group">
                             <label for="description" class="form-control-label">توضیحات سطح دسترسی:</label>
                             <input type="text" class="form-control" id="description" name="description" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="form-control-label">سطح دسترسی:</label>
+
+                            <select class="selectpicker" name="authority[]" multiple data-live-search="true" title="انتخاب کنید">
+
+                                <option th:each="authority : ${T(com.javasampleapproach.jqueryboostraptable.enums.Authority).values()}"
+                                        th:value="${authority}" th:text="${authority.displayName}"></option>
+
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 d-flex justify-content-center">
@@ -86,8 +101,6 @@
                 <a th:href="@{/admin/roles/edit/{id}(id=${role.getId()})}" class="btn btn-primary teBtn"
                    id="EditTajhiz">ویرایش</a>
 
-
-                <!-- Button trigger modal -->
                 <button type="button" class="btn btn-danger" data-toggle="modal"
                         th:attr="data-target='#modal-warning'+${role.getId() }">
                     حذف
@@ -134,28 +147,7 @@
     <!--                </li>-->
     <!--            </ul>-->
 
-    <div class="modal fade" id="deleteRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">سطح دسترسی ها </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p class="alert alert-danger">
-                        آیا شما مطمین هستید که میخواهید این تجهیز را پاک کنید ؟
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                    <a href="" class="btn btn-danger" id="tdelRef">پاک شود</a>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
 
 </div>

@@ -1,7 +1,7 @@
 
 <!DOCTYPE HTML>
- 
-<html xmlns:th="http://www.thymeleaf.org">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
       <title>IOT</title>
       <meta charset="utf-8" />
@@ -61,7 +61,7 @@
               <td width="40px"><img th:src="*{'data:emza/jpg;base64,'+{member.emza}}" class="img-responsive"></td>
 				
 				<td>
-				<a th:href="@{findOneUser/(id=${member.id})}" class="btn btn-primary meBtn" id="EditUser">ویرایش</a>
+				<a sec:authorize="hasAuthority('ADMIN')" th:href="@{findOneUser/(id=${member.id})}" class="btn btn-primary meBtn" id="EditUser">ویرایش</a>
 				<a th:href="@{deleteUser/(id=${member.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">حذف</a>
 				
 				</td>

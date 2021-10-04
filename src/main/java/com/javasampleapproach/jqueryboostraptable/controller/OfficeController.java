@@ -3,11 +3,7 @@ package com.javasampleapproach.jqueryboostraptable.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Base64;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
@@ -41,8 +37,6 @@ import javax.persistence.EntityResult;
 @Service
 @Controller
 public class OfficeController {
-
-
     @Autowired
     private TajhizatRepository tRepo;
 
@@ -54,6 +48,7 @@ public class OfficeController {
 
     @Autowired
     private UserRepository userRepo;
+
     @Autowired
     private LocationServiceImp locationServiceImp;
 
@@ -67,8 +62,8 @@ public class OfficeController {
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("tajhizats", tRepo.findAll(new PageRequest(page, 10)));
         model.addAttribute("locations", locationServiceImp.getAllLocations());
-        System.out.println("ttttttttttttttttttt"+tRepo.findAll(new PageRequest(page, 10)));
-        System.out.println("lllllllllllllllllllll"+locationServiceImp.getAllLocations());
+        System.out.println("ttttttttttttttttttt" + tRepo.findAll(new PageRequest(page, 10)));
+        System.out.println("lllllllllllllllllllll" + locationServiceImp.getAllLocations());
 
         model.addAttribute("currentPage", page);
         return "Tajhizat";
@@ -78,13 +73,15 @@ public class OfficeController {
     public ResponseEntity<?> viewTajhizat() {
         return (ResponseEntity<?>) locationServiceImp.getAllLocations();
     }
+
     @GetMapping("/office")
     public String viewoffice(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("milad >>>>>>>>>" + auth);
         User user = userService.findByUsername(auth.getName());
-        //	Set<User> us = new HashSet<>(userRepo.findBypersonalId(user.getPersonalId()));
-        model.addAttribute("forms", formRepo.findByUsers(userRepo.findBypersonalId(user.getPersonalId())));
+        List<User> us = new ArrayList<>();
+        us.add(userRepo.findByPersonalId(user.getPersonalId()));
+        model.addAttribute("forms", formRepo.findByUsers(us));
         model.addAttribute("user", user);
         model.addAttribute("users", userRepo.findAll());
         model.addAttribute("tajhiz", tRepo.findAll());
@@ -165,7 +162,8 @@ public class OfficeController {
 
         form.setTarikhsodur(jCal.toString());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        List<User> u = userRepo.findBypersonalId(auth.getName());
+        List<User> u = new ArrayList<>();
+        u.add(userRepo.findByPersonalId(auth.getName()));
         System.out.println("nameeeeeeeeeeeeeeeeeeee" + auth.getName());
         System.out.println("-------------------->" + form.toString());
         System.out.println("---------formgetuser----------->" + (form.getUsers() == null));
