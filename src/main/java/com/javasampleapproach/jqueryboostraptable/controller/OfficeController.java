@@ -192,7 +192,7 @@ public class OfficeController {
         User u = userRepo.findById(fj.getUid()).get();
         System.out.println("userrr ---" + u.getJob() + "    " + u.getPersonalId());
 
-        switch (u.getJob()) {
+        switch (u.getEmza()) {
             case "حراست":
                 LocalTime time = LocalTime.now();
                 String h = time.getHour() + " : " + time.getMinute();

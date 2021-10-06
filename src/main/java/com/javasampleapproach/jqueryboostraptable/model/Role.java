@@ -38,4 +38,9 @@ public class Role {
 //            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 //            uniqueConstraints = {@UniqueConstraint(columnNames = {"role_id", "user_id"})})
 //    private List<User> users;
+
+    @Override
+    public String toString(){
+        return this.name;
+    }
 }

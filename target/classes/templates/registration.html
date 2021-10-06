@@ -10,7 +10,7 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 </head>
-<body>
+<body dir="rtl">
 <form th:action="@{/login}" method="get">
     <button class="btn btn-md btn-warning btn-block" type="Submit">ورود</button>
 </form>
@@ -21,12 +21,12 @@
             <form autocomplete="off" action="#" th:action="@{/registration}"
                   th:object="${user}" method="post" class="form-horizontal"
                   role="form">
-                <h2>Registration Form</h2>
+                <h3>ثبت نام</h3>
                 <div class="form-group">
                     <div class="col-sm-9">
                         <label th:if="${#fields.hasErrors('FName')}" th:errors="*{FName}"
                                class="validation-message" ></label>
-                                 <label for="FName" class="form-control-label">First Name:</label>
+                                 <label for="FName" class="form-control-label">نام :</label>
                         <input type="text" th:field="*{FName}" id="FName" name="FName"
                                class="form-control"/>
                     </div>
@@ -36,53 +36,66 @@
                     <div class="col-sm-9">
                         <label th:if="${#fields.hasErrors('Lname')}" th:errors="*{Lname}"
                                class="validation-message"></label>
-                                 <label for="Lname" class="form-control-label">Last Name:</label>
+                                 <label for="Lname" class="form-control-label">نام خانوادگی :</label>
                         <input type="text" th:field="*{Lname}" id="Lname" name="Lname"
                                 class="form-control"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-9">
-                      <label for="personalId" class="form-control-label">Personal Id:</label>
+                      <label for="personalId" class="form-control-label">شماره پرسنلی :</label>
                         <input type="text" th:field="*{personalId}"  id="personalId" name="personalId" 
                                class="form-control"/> <label
                             th:if="${#fields.hasErrors('personalId')}" th:errors="*{personalId}"
                             class="validation-message"></label>
                     </div>
                 </div>
-                
+
+<!--                <div class="form-group">-->
+<!--                    <div class="col-sm-9">-->
+<!--                      <label for="job" class="form-control-label">job:</label>-->
+<!-- 						<select id="job" class="form-control" name="job" >-->
+<!-- 							<option value="مدیر تولید سیما">مدیر تولید سیما</option>-->
+<!--    						<option value="معاونت سیما">معاونت سیما</option>-->
+<!--    						<option value="معاون فضای مجازی">معاون فضای مجازی</option>-->
+<!--    						<option value="مدیر پشتیبانی فنی">مدیر پشتیبانی فنی</option>-->
+<!--    						<option value="تصویربردار">تصویربردار</option>-->
+<!--    						<option value="صدابردار" >صدابردار</option>-->
+<!--    						<option value="تهیه کننده" >تهیه کننده</option>-->
+<!--    						<option value="دبیر خبر">دبیر خبر</option>-->
+<!--    						<option value="هماهنگی">هماهنگی</option>-->
+<!--    						<option value="گزارشگر">گزارشگر و مجری</option>-->
+<!--    						<option value="کارگردان">کارگردان</option>-->
+<!--    						<option value="دستیار تصویربردار">دستیار تصویربردار</option>-->
+<!--    						<option value="دستیار صدابردار">دستیار صدابردار</option>-->
+<!--    						<option value="دستیار تهیه">دستیار تهیه</option>-->
+<!--    						<option value="مسئول حمل و نقل">مسئول حمل و نقل</option>-->
+<!--    						<option value="حراست">حراست</option>-->
+<!--    						<option value="انباردار">انباردار</option>-->
+<!--    						<option value="تاسیسات">تاسیسات</option>-->
+<!--    					</select>-->
+<!-- 						-->
+<!--                    </div>-->
+<!--                </div>-->
+
                 <div class="form-group">
                     <div class="col-sm-9">
-                      <label for="job" class="form-control-label">job:</label>
- 						<select id="job" class="form-control" name="job" >
- 							<option value="مدیر تولید سیما">مدیر تولید سیما</option>
-    						<option value="معاونت سیما">معاونت سیما</option>
-    						<option value="معاون فضای مجازی">معاون فضای مجازی</option>
-    						<option value="مدیر پشتیبانی فنی">مدیر پشتیبانی فنی</option>
-    						<option value="تصویربردار">تصویربردار</option>
-    						<option value="صدابردار" >صدابردار</option>
-    						<option value="تهیه کننده" >تهیه کننده</option>
-    						<option value="دبیر خبر">دبیر خبر</option>
-    						<option value="هماهنگی">هماهنگی</option>
-    						<option value="گزارشگر">گزارشگر و مجری</option>
-    						<option value="کارگردان">کارگردان</option>
-    						<option value="دستیار تصویربردار">دستیار تصویربردار</option>
-    						<option value="دستیار صدابردار">دستیار صدابردار</option>
-    						<option value="دستیار تهیه">دستیار تهیه</option>
-    						<option value="مسئول حمل و نقل">مسئول حمل و نقل</option>
-    						<option value="حراست">حراست</option>
-    						<option value="انباردار">انباردار</option>
-    						<option value="تاسیسات">تاسیسات</option>
-    					</select>
- 						
+                        <label for="job" class="form-control-label">عنوان شغلی:</label>
+
+                        <select id="job" class="form-control" name="job">
+                            <option value="">انتخاب کنید</option>
+
+                            <option th:each="job : ${jobs}" th:value="${job.getId()}"
+                                    th:text="${job.getName()}"></option>
+                        </select>
+
                     </div>
                 </div>
                 
                 
-                
                 <div class="form-group">
                     <div class="col-sm-9">
-                      <label for="pass" class="form-control-label">Password:</label>
+                      <label for="password" class="form-control-label">Password:</label>
                         <input type="password" th:field="*{pass}" id="password" name="password"
                                class="form-control"/> <label
                             th:if="${#fields.hasErrors('pass')}" th:errors="*{pass}"

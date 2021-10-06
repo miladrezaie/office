@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public class RoleController {
 
 
     @GetMapping(value = "/admin/roles")
-    @PreAuthorize("hasAuthority('OP_ACCESS_ROLES')")
+//    @PreAuthorize("hasAuthority('OP_ACCESS_ROLES')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -41,7 +42,8 @@ public class RoleController {
 
         model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("roles", roleService.getAllRoles());
-        System.out.println("***********************************");
+        model.addAttribute("authorities", Authority.values());
+//        System.out.println("***********************************"+Authority.values());
 
 //        System.out.println("---------------"+authority.values());
 //        model.addAttribute("authorities",authority.getAuthority() );
@@ -49,9 +51,13 @@ public class RoleController {
     }
 
     @PostMapping(value = "/admin/roles/create")
-    public String create(@ModelAttribute Role role) {
+    public String create(@ModelAttribute Role role, BindingResult result ) {
+//        List<Authority> authorities =authority
+        System.out.println("sssssssssssssssssssssssssss   ");
+//
+//        System.out.println("sssssssssssssssssssssssssss   "+result.getModel());
+//        System.out.println("sssssssssssssssssssssssssss   "+role.getAuthorities());
 
-//        System.out.println("sssssssssssssssssssssssssss   "+authority);
         roleService.saveRole(role);
         return "redirect:/admin/roles";
     }

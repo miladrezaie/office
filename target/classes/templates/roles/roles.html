@@ -52,7 +52,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form th:action="@{/admin/roles/create}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/admin/roles/create}" method="post" >
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name" class="form-control-label">نام سطح دسترسی:</label>
@@ -65,10 +65,12 @@
                         <div class="form-group">
                             <label for="description" class="form-control-label">سطح دسترسی:</label>
 
-                            <select class="selectpicker" name="authority[]" multiple data-live-search="true" title="انتخاب کنید">
+                            <select class="selectpicker" name="authorities" multiple data-live-search="true"
+                                    title="انتخاب کنید">
 
-                                <option th:each="authority : ${T(com.javasampleapproach.jqueryboostraptable.enums.Authority).values()}"
-                                        th:value="${authority}" th:text="${authority.displayName}"></option>
+                                <option th:each="authority  : ${authorities}"
+                                        th:value="${authority.name()}"
+                                        th:text="${authority.displayName}" ></option>
 
                             </select>
                         </div>
@@ -146,8 +148,6 @@
     <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
     <!--                </li>-->
     <!--            </ul>-->
-
-
 
 
 </div>

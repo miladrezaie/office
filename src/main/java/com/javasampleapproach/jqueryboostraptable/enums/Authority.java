@@ -7,7 +7,10 @@ public enum Authority implements GrantedAuthority {
     OP_NEW_USER("اضافه کردن کاربر جدید"),
     OP_EDIT_USER("ویرایش کاربر چدید"),
     OP_ACCESS_TAJHIZATS("دسترسی به تجهیزات"),
-    OP_ACCESS_ROLES("دسترسی به نقش ها");
+    OP_ACCESS_ROLES("دسترسی به نقش ها"),
+    OP_ACCESS_JOBS("دسترسی به شغل ها");
+
+
 
 
     private final String displayName;
@@ -18,6 +21,14 @@ public enum Authority implements GrantedAuthority {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    @Override
+    public String toString() {
+//        return "Authority{" +
+//                "displayName='" + displayName + '\'' +
+//                '}';
+        return this.name();
     }
 
     @Override

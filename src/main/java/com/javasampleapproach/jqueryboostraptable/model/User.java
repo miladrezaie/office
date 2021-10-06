@@ -3,6 +3,7 @@ package com.javasampleapproach.jqueryboostraptable.model;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -41,7 +42,6 @@ public class User implements Serializable, UserDetails {
     @NotEmpty(message = "*Please provide your last name")
     private String Lname;
 
-
     @Column(name = "PASSWORD")
     @Length(min = 5, message = "*Your password must have at least 5 characters")
     @NotEmpty(message = "*Please provide your password")
@@ -51,8 +51,8 @@ public class User implements Serializable, UserDetails {
     @Column(columnDefinition = "nvarchar(2)")
     private String finger;
 
-    @Column(columnDefinition = "nvarchar(20)")
-    private String job;
+//    @Column(columnDefinition = "nvarchar(20)")
+//    private String job;
 
     @Column(name = "ACTIVE")
     private int active;
@@ -67,6 +67,11 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<officeForm> officeforms;
+
+    @ManyToOne
+    @Nullable
+    @JoinColumn(name="job_id")
+    private Job job ;
 
     @JoinTable(
             name = "role_user",
@@ -88,7 +93,7 @@ public class User implements Serializable, UserDetails {
                 @NotEmpty(message = "*Please provide your first name") String fName,
                 @NotEmpty(message = "*Please provide your last name") String lname,
                 @Length(min = 5, message = "*Your password must have at least 5 characters") @NotEmpty(message = "*Please provide your password") String pass,
-                String finger, String job, int active, String emza) {
+                String finger,  int active, String emza) {
         super();
         this.id = id;
         this.personalId = personalId;
@@ -96,11 +101,9 @@ public class User implements Serializable, UserDetails {
         this.Lname = lname;
         this.pass = pass;
         this.finger = finger;
-        this.job = job;
         this.active = active;
         this.emza = emza;
     }
-
 
     public List<officeForm> getOfficeforms() {
         return officeforms;
@@ -114,21 +117,20 @@ public class User implements Serializable, UserDetails {
         return id;
     }
 
-
     public String getFullname() {
         return fullname;
     }
-
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
     }
 
-    public String getJob() {
+
+    public Job getJob() {
         return job;
     }
 
-    public void setJob(String job) {
+    public void setJob( Job job) {
         this.job = job;
     }
 
@@ -144,11 +146,17 @@ public class User implements Serializable, UserDetails {
         this.id = id;
     }
 
-
     public String getPersonalId() {
         return personalId;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     public void setPersonalId(String personalId) {
         this.personalId = personalId;
@@ -203,15 +211,6 @@ public class User implements Serializable, UserDetails {
         this.active = active;
     }
 
-    @JsonIgnore
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    @JsonIgnore
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 
     @Override
     public String toString() {

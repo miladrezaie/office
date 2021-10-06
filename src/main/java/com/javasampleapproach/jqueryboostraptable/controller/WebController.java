@@ -9,6 +9,10 @@ import java.util.*;
 
 import javax.validation.Valid;
 
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.RoleServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.JobService;
+import com.javasampleapproach.jqueryboostraptable.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,21 +22,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.javasampleapproach.jqueryboostraptable.model.time;
-import com.javasampleapproach.jqueryboostraptable.model.User;
-import com.javasampleapproach.jqueryboostraptable.model.employee;
 import com.javasampleapproach.jqueryboostraptable.repository.EmployeeRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.Roozh;
@@ -56,6 +50,11 @@ public class WebController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JobServiceImp jobServiceImp;
+
+    @Autowired
+    private RoleServiceImp roleServiceImp;
 
     @GetMapping("/employee")
     public String viewEmployee(Model model, @RequestParam(defaultValue = "0") int page) {
@@ -73,6 +72,7 @@ public class WebController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         //	model.addAttribute("form",formRepo.findByCreatorid(user.getId()));
+
         model.addAttribute("user", user);
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         return "timepage2";
@@ -83,11 +83,15 @@ public class WebController {
         //data have devices information
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
+        List<Job> jobs = jobServiceImp.getAllJobs();
+        List<Role> roles = roleServiceImp.getAllRoles();
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         if (keyword != null) {
             model.addAttribute("members", userRepo.search(keyword));
         } else {
             model.addAttribute("members", userRepo.findAll());
+            model.addAttribute("jobs", jobs);
+            model.addAttribute("roles", roles);
         }
         return "membersPage";
     }
@@ -124,24 +128,24 @@ public class WebController {
     }
 
     @PostMapping("/saveeUser")
-    public String saveue(User u, @RequestParam("file") MultipartFile file) {
-        System.out.println(u.getFinger() == "1");
-        if (u.getFinger().contentEquals("1")) {
+    public String saveue(@ModelAttribute User user, @RequestParam("file") MultipartFile file) {
+        System.out.println(user.getFinger() == "1");
+        if (user.getRoles().equals("admin")) {
             if (!file.isEmpty()) {
-                userService.saveuemza(u, 0, file);
+                userService.saveuemza(user, 0, file);
             } else {
-                User us = userRepo.findById(u.getId()).get();
-                u.setEmza(us.getEmza());
-                userService.save(u, 0);
+                User us = userRepo.findById(user.getId()).get();
+                user.setEmza(us.getEmza());
+                userService.save(user, 0);
             }
         } else {
             if (!file.isEmpty()) {
-                userService.saveuemza(u, 1, file);
+                userService.saveuemza(user, 1, file);
             } else {
 
-                User us = userRepo.findById(u.getId()).get();
-                u.setEmza(us.getEmza());
-                userService.save(u, 1);
+                User us = userRepo.findById(user.getId()).get();
+                user.setEmza(us.getEmza());
+                userService.save(user, 1);
             }
         }
         return "redirect:/members";
@@ -165,12 +169,13 @@ public class WebController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public ModelAndView registration() {
-        ModelAndView modelAndView = new ModelAndView();
-        User user = new User();
-        modelAndView.addObject("user", user);
-        modelAndView.setViewName("registration");
-        return modelAndView;
+    public String registration(Model model, User user) {
+        System.out.println("register Form ********************");
+
+        List<Job> jobs = jobServiceImp.getAllJobs();
+        model.addAttribute("jobs", jobs);
+        model.addAttribute("user", user);
+        return "/registration";
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "jobs")
@@ -30,4 +31,13 @@ public class Job {
 //    @JsonIgnore
 //    @ManyToMany(mappedBy = "jobs",fetch = FetchType.LAZY)
 //    private List<Employee> employees;
+
+
+    @OneToMany(mappedBy = "job", orphanRemoval = true)
+    private Set<User> users;
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
