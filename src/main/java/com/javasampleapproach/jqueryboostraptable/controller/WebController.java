@@ -126,7 +126,6 @@ public class WebController {
     @PostMapping("/saveeUser")
     public String saveue(User u, @RequestParam("file") MultipartFile file) {
         System.out.println(u.getFinger() == "1");
-
         if (u.getFinger().contentEquals("1")) {
             if (!file.isEmpty()) {
                 userService.saveuemza(u, 0, file);
@@ -177,21 +176,13 @@ public class WebController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-//        List<User> us = new ArrayList<>();
-//        us.add();
-//
         System.out.println("personal id : " + userRepo.findByPersonalId(user.getPersonalId()));
-//        System.out.println("sdsdsdffdfdf");
         System.out.println(user);
 
-        System.out.println("---------------------");
-
-        System.out.println("----***********************************");
-//        System.out.println(us);
+        System.out.println("***********************************");
         if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
-            bindingResult
-                    .rejectValue("personalId", "error.user",
-                            "هم اکنون کاربری با این شماره کارمندی موجود است");
+            bindingResult.rejectValue("personalId", "error.user",
+                    "هم اکنون کاربری با این شماره کارمندی موجود است");
         }
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("registration");

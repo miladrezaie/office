@@ -7,7 +7,8 @@ public enum Authority implements GrantedAuthority {
     OP_NEW_USER("اضافه کردن کاربر جدید"),
     OP_EDIT_USER("ویرایش کاربر چدید"),
     OP_ACCESS_TAJHIZATS("دسترسی به تجهیزات"),
-    OP_ACCESS_ROLES("دسترسی به تجهیزات");
+    OP_ACCESS_ROLES("دسترسی به نقش ها");
+
 
     private final String displayName;
 

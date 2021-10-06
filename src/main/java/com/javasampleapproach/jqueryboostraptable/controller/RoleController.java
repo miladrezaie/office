@@ -33,7 +33,7 @@ public class RoleController {
 
 
     @GetMapping(value = "/admin/roles")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_ROLES')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

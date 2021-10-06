@@ -71,7 +71,8 @@ public class User implements Serializable, UserDetails {
     @JoinTable(
             name = "role_user",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"role_id", "user_id"})}
     )
     @ManyToMany
     private Set<Role> roles;
