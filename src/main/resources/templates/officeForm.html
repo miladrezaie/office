@@ -33,7 +33,8 @@
     <th:block th:include="/_menu"></th:block>
 
     <h2>فرم آفیش</h2>
-    <th:block th:if="${user.job == 'تهیه کننده' or user.job == 'هماهنگی'}">
+    <th:block
+            th:if="${user.getJob().getName().contentEquals('تهیه کننده') or user.getJob().getName().contentEquals('هماهنگی')}">
         <button class="btn btn-success fnBtn" id="newoffice">آفیش جدید</button>
     </th:block>
     <table class="table table-hover ">
@@ -45,28 +46,26 @@
             <th>محل برنامه</th>
         </tr>
         </thead>
-        <tbody>
 
+        <tbody>
         <tr th:each="form : ${forms}">
             <td th:utext="${form.id}">...</td>
             <td th:utext="${form.tahayekonande}">...</td>
             <td th:utext="${form.nameBarname}">...</td>
             <td th:utext="${form.location}">...</td>
-
             <td>
-                <th:block th:if="${user.job == 'تهیه کننده' or user.job == 'هماهنگی'}">
+                <th:block
+                        th:if="${user.getJob().getName().contentEquals('تهیه کننده') or user.getJob().getName().contentEquals('هماهنگی')}">
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
                 </th:block>
                 <a th:href="@{form/(id=${form.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">نمایش</a>
-
             </td>
-
         </tr>
 
         </tbody>
     </table>
-    <hr/>
 
+    <hr/>
 
     <div class="fmyForm">
         <form th:action="@{/saveForm}" method="post" enctype="multipart/form-data">
@@ -116,7 +115,6 @@
         </form>
     </div>
 
-
     <div class="omyForm">
         <form th:action="@{/addForm}" method="post">
             <div class="modal fade" id="oexampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -144,21 +142,34 @@
 
                                     <td>
 
-                                        <label for="job" class="form-control-label">جستوجو بر اساس شغل:</label>
-                                        <select id="job" class="form-control ch">
-                                            <option value="مدیر تولید سیما">مدیر تولید سیما</option>
-                                            <option value="معاونت سیما">معاونت سیما</option>
-                                            <option value="معاون فضای مجازی">معاون فضای مجازی</option>
-                                            <option value="تصویربردار">تصویربردار</option>
-                                            <option value="صدابردار">صدابردار</option>
-                                            <option value="تهیه کننده">تهیه کننده</option>
-                                            <option value="دبیر خبر">دبیر خبر</option>
-                                            <option value="گزارشگر">گزارشگر و مجری</option>
-                                            <option value="کارگردان">کارگردان</option>
-                                            <option value="دستیار تصویربردار">دستیار تصویربردار</option>
-                                            <option value="دستیار صدابردار">دستیار صدابردار</option>
-                                            <option value="دستیار تهیه">دستیار تهیه</option>
-                                        </select>
+<!--                                        <label for="job" class="form-control-label">جستوجو بر اساس شغل:</label>-->
+<!--                                        <select id="job" class="form-control ch">-->
+<!--                                            <option value="مدیر تولید سیما">مدیر تولید سیما</option>-->
+<!--                                            <option value="معاونت سیما">معاونت سیما</option>-->
+<!--                                            <option value="معاون فضای مجازی">معاون فضای مجازی</option>-->
+<!--                                            <option value="تصویربردار">تصویربردار</option>-->
+<!--                                            <option value="صدابردار">صدابردار</option>-->
+<!--                                            <option value="3">تهیه کننده</option>-->
+<!--                                            <option value="دبیر خبر">دبیر خبر</option>-->
+<!--                                            <option value="گزارشگر">گزارشگر و مجری</option>-->
+<!--                                            <option value="کارگردان">کارگردان</option>-->
+<!--                                            <option value="دستیار تصویربردار">دستیار تصویربردار</option>-->
+<!--                                            <option value="دستیار صدابردار">دستیار صدابردار</option>-->
+<!--                                            <option value="دستیار تهیه">دستیار تهیه</option>-->
+<!--                                        </select>-->
+
+                                            <label for="job" class="form-control-label">عنوان شغلی:</label>
+
+                                            <select id="job" class="form-control ch" name="job">
+
+                                                <option value="">انتخاب کنید</option>
+
+                                                <option th:each="job : ${jobs}" th:value="${job.getId()}"
+                                                        th:text="${job.getName()}"></option>
+
+                                            </select>
+
+
 
                                         <!--     <th:block th:each="mem : ${users}">-->
                                         <div id="wrapperfortestnames"></div>
@@ -187,7 +198,6 @@
             </div>
         </form>
     </div>
-
 
     <div class="tblForm">
         <div class="modal fade bd-example-modal-lg" id="tblmodal" tabindex="-1" role="dialog"
@@ -259,7 +269,6 @@
         </div>
 
     </div>
-
 
 </div>
 

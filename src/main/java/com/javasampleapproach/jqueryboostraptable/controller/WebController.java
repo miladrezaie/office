@@ -129,23 +129,28 @@ public class WebController {
 
     @PostMapping("/saveeUser")
     public String saveue(@ModelAttribute User user, @RequestParam("file") MultipartFile file) {
-        System.out.println(user.getFinger() == "1");
-        if (user.getRoles().equals("admin")) {
-            if (!file.isEmpty()) {
-                userService.saveuemza(user, 0, file);
-            } else {
-                User us = userRepo.findById(user.getId()).get();
-                user.setEmza(us.getEmza());
-                userService.save(user, 0);
-            }
-        } else {
-            if (!file.isEmpty()) {
-                userService.saveuemza(user, 1, file);
-            } else {
+        System.out.println("******************* user : "+user);
+        System.out.println("******************* user : "+user.getRoles());
+        for (Role role : user.getRoles()) {
+            if (role.getName().contentEquals("admin")) {
+                if (!file.isEmpty()) {
+                    userService.saveuemza(user, 0, file);
+                } else {
+                    User us = userRepo.findById(user.getId()).get();
+                    user.setEmza(us.getEmza());
+                    userService.save(user, 0);
+//                    return "redirect:/members";
 
-                User us = userRepo.findById(user.getId()).get();
-                user.setEmza(us.getEmza());
-                userService.save(user, 1);
+                }
+            } else {
+                if (!file.isEmpty()) {
+                    userService.saveuemza(user, 1, file);
+                } else {
+                    User us = userRepo.findById(user.getId()).get();
+                    user.setEmza(us.getEmza());
+                    userService.save(user, 1);
+//                    return "redirect:/members";
+                }
             }
         }
         return "redirect:/members";
@@ -197,7 +202,7 @@ public class WebController {
         return modelAndView;
     }
 
-    @PreAuthorize("#userRepo.personalId !=authentication.name")
+    //    @PreAuthorize("#userRepo.personalId !=authentication.name")
     @GetMapping("/deleteUser")
     public String deleteUser(Integer id, Model model) {
         try {

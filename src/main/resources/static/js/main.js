@@ -3,7 +3,7 @@
  */
 
 $(document).ready(function(){
-	$('select').selectpicker();
+	// $('select').selectpicker();
 	$('.mnBtn, .tmnBtn, .table .meBtn, .empBtn, .table .empeBtn, .table .teBtn, .table .feBtn, .fnBtn').on('click',function(event){
 		event.preventDefault();
 		var href = $(this).attr('href');
@@ -21,8 +21,10 @@ $(document).ready(function(){
 			
 		$('.umyForm #uexampleModal').modal();
 		 }else if(text == 'OpenForm'){
-			
+			console.log("milad");
 			 $('.omyForm #fid').val(href);
+			 console.log("milad" +href);
+			 console.log("milad" +text);
 			 $('.omyForm #oexampleModal').modal();
 		 }
 		 else if(text=='EditEmployee'){

@@ -22,7 +22,7 @@ public class Role {
 
     private String description;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles" ,fetch = FetchType.LAZY)
     private Set<User> users;
 
     @ElementCollection(targetClass = Authority.class)

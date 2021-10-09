@@ -1,5 +1,7 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,16 +14,15 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.enabled;
 
 
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements Serializable, UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -79,31 +80,33 @@ public class User implements Serializable, UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"role_id", "user_id"})}
     )
-    @ManyToMany
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
 //	@JsonIgnore
 //	@ManyToMany(mappedBy = "users",fetch = FetchType.LAZY)
 //	private Set<Role> roles;
 
-    public User() {
-    }
-
-    public User(Integer id, @NotEmpty(message = "*Please provide your personal id") String personalId,
-                @NotEmpty(message = "*Please provide your first name") String fName,
-                @NotEmpty(message = "*Please provide your last name") String lname,
-                @Length(min = 5, message = "*Your password must have at least 5 characters") @NotEmpty(message = "*Please provide your password") String pass,
-                String finger,  int active, String emza) {
-        super();
-        this.id = id;
-        this.personalId = personalId;
-        this.FName = fName;
-        this.Lname = lname;
-        this.pass = pass;
-        this.finger = finger;
-        this.active = active;
-        this.emza = emza;
-    }
+//    public User() {
+//    }
+//
+//    public User(Integer id, @NotEmpty(message = "*Please provide your personal id") String personalId,
+//                @NotEmpty(message = "*Please provide your first name") String fName,
+//                @NotEmpty(message = "*Please provide your last name") String lname,
+//                @Length(min = 5, message = "*Your password must have at least 5 characters") @NotEmpty(message = "*Please provide your password") String pass,
+//                String finger,  int active, String emza) {
+//        super();
+//        this.id = id;
+//        this.personalId = personalId;
+//        this.FName = fName;
+//        this.Lname = lname;
+//        this.pass = pass;
+//        this.finger = finger;
+//        this.active = active;
+//        this.emza = emza;
+//    }
 
     public List<officeForm> getOfficeforms() {
         return officeforms;

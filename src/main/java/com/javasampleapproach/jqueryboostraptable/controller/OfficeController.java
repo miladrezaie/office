@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
 import com.javasampleapproach.jqueryboostraptable.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,8 @@ public class OfficeController {
 
     @Autowired
     private LocationServiceImp locationServiceImp;
+    @Autowired
+    private JobServiceImp jobServiceImp;
 
 
     @GetMapping("/tajhizats")
@@ -84,6 +87,7 @@ public class OfficeController {
         model.addAttribute("forms", formRepo.findByUsers(us));
         model.addAttribute("user", user);
         model.addAttribute("users", userRepo.findAll());
+        model.addAttribute("jobs", jobServiceImp.getAllJobs());
         model.addAttribute("tajhiz", tRepo.findAll());
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         return "officeForm";
@@ -96,6 +100,7 @@ public class OfficeController {
         model.addAttribute("form", formRepo.findById((long) id).get());
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("userss", userRepo.findAll());
+        model.addAttribute("jobs", jobServiceImp.getAllJobs());
         model.addAttribute("user", user);
         return "office";
     }
@@ -224,13 +229,13 @@ public class OfficeController {
             case "مدیر پشتیبانی فنی":
                 office_form.setPoshemza(u.getEmza());
 
-                office_form.getUsers().add(userRepo.findByJob("هماهنگی سیما").get(0));
-                System.out.println("after add hamahangi");
-                office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
-                System.out.println("after add hamlonaghl");
-                office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
-                System.out.println("after add herasat");
-                office_form.getUsers().add(userRepo.findByJob("انباردار").get(0));
+//                office_form.getUsers().add(userRepo.("هماهنگی سیما").get(0));
+//                System.out.println("after add hamahangi");
+//                office_form.getUsers().add(userRepo.findUsersByJob("مسئول حمل و نقل").get(0));
+//                System.out.println("after add hamlonaghl");
+//                office_form.getUsers().add(userRepo.findUsersByJob("حراست").get(0));
+//                System.out.println("after add herasat");
+//                office_form.getUsers().add(userRepo.findUsersByJob("انباردار").get(0));
                 break;
             case "هماهنگی سیما":
 //			 office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
@@ -287,7 +292,6 @@ public class OfficeController {
             }
         }
 
-
         if (f.getTajhizats() != null) {
             Iterator<Tajhizat> itr = f.getTajhizats().iterator();
             while (itr.hasNext()) {
@@ -309,8 +313,12 @@ public class OfficeController {
 
     @GetMapping("/findbyjob/{job}")
     @ResponseBody
-    public List<User> findU(@PathVariable String job) {
-        return userRepo.findByJob(job);
+    public Set<User> findU(@PathVariable long job) {
+
+        Job job1 = jobServiceImp.findById(job);
+        return job1.getUsers();
+
+
     }
 
 

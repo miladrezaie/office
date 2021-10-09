@@ -21,6 +21,11 @@ public class JobServiceImp implements JobService {
         return jobRepository.findAll();
     }
 
+    public Job findById(long job) {
+        return jobRepository.findById(job);
+    }
+
+
     public void saveJob(Job job) {
         jobRepository.save(job);
     }
