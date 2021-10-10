@@ -318,8 +318,6 @@ public class OfficeController {
         Job job1 = jobServiceImp.findById(job);
         return job1.getUsers();
 
-
     }
-
 
 }

@@ -25,27 +25,20 @@ public class UserServiceImp implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public void save(User user, Integer e) {
-
+    public void save(User user) {
         user.setPass(bCryptPasswordEncoder.encode(user.getPass()));
         user.setFullname(user.getFName() + " " + user.getLname());
-        if (e == 0) {
-            user.setRoles(new HashSet<>(roleRepository.findByname("ADMIN")));
-        } else {
-            user.setRoles(new HashSet<>(roleRepository.findByname("USER")));
-        }
+//        user.setRoles();
         userRepository.save(user);
     }
 
     @Override
-    public void saveuemza(User user, Integer e, MultipartFile file) {
+    public void saveuemza(User user, MultipartFile file) {
         user.setPass(bCryptPasswordEncoder.encode(user.getPass()));
         user.setFullname(user.getFName() + " " + user.getLname());
-        if (e == 0) {
-            user.setRoles(new HashSet<>(roleRepository.findByname("ADMIN")));
-        } else {
-            user.setRoles(new HashSet<>(roleRepository.findByname("USER")));
-        }
+//        System.out.println("get role user : "+user.getRoles());
+//        System.out.println("new hash role user : "+new HashSet<>(user.getRoles()));
+        user.setRoles(new HashSet<>(user.getRoles()));
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         if (fileName.contains("..")) {
             System.out.println("not a valid file");

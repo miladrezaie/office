@@ -118,41 +118,23 @@ public class WebController {
 
     @PostMapping("/saveUser")
     public String save(User u) {
-        System.out.println(u.getFinger() == "1");
-        if (u.getFinger().contentEquals("1")) {
-            userService.save(u, 0);
-        } else {
-            userService.save(u, 1);
-        }
+        userService.save(u);
         return "redirect:/members";
     }
 
     @PostMapping("/saveeUser")
     public String saveue(@ModelAttribute User user, @RequestParam("file") MultipartFile file) {
-        System.out.println("******************* user : "+user);
-        System.out.println("******************* user : "+user.getRoles());
-        for (Role role : user.getRoles()) {
-            if (role.getName().contentEquals("admin")) {
-                if (!file.isEmpty()) {
-                    userService.saveuemza(user, 0, file);
-                } else {
-                    User us = userRepo.findById(user.getId()).get();
-                    user.setEmza(us.getEmza());
-                    userService.save(user, 0);
-//                    return "redirect:/members";
+        System.out.println("******************* user : " + user);
+        System.out.println("******************* user : " + user.getRoles());
 
-                }
-            } else {
-                if (!file.isEmpty()) {
-                    userService.saveuemza(user, 1, file);
-                } else {
-                    User us = userRepo.findById(user.getId()).get();
-                    user.setEmza(us.getEmza());
-                    userService.save(user, 1);
-//                    return "redirect:/members";
-                }
-            }
+        if (!file.isEmpty()) {
+            userService.saveuemza(user, file);
+        } else {
+            User us = userRepo.findById(user.getId()).get();
+            user.setEmza(us.getEmza());
+            userService.save(user);
         }
+
         return "redirect:/members";
     }
 
@@ -197,13 +179,13 @@ public class WebController {
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("registration");
         } else {
-            userService.save(user, 1);
+            userService.save(user);
         }
         return modelAndView;
     }
 
-    //    @PreAuthorize("#userRepo.personalId !=authentication.name")
     @GetMapping("/deleteUser")
+//    @PreAuthorize("#userRepo.name != authentication.name")
     public String deleteUser(Integer id, Model model) {
         try {
             userRepo.deleteById(id);

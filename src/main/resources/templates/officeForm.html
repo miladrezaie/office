@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>IOT</title>
     <meta charset="utf-8"/>
@@ -32,9 +34,15 @@
     <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
 
-    <h2>فرم آفیش</h2>
+
+
+    <sec:authorize access="hasAuthority('OP_HAML_NAGHL') ">
+        <p>Must have ROLE_ADMIN and ROLE_USER</p>
+    </sec:authorize>
+
+    <h2 sec:authorize="hasRole('ROLE_ADMIN')">فرم آفیش</h2>
     <th:block
-            th:if="${user.getJob().getName().contentEquals('تهیه کننده') or user.getJob().getName().contentEquals('هماهنگی')}">
+            sec:authorize="hasRole('ROLE_ADMIN')">
         <button class="btn btn-success fnBtn" id="newoffice">آفیش جدید</button>
     </th:block>
     <table class="table table-hover ">
@@ -54,8 +62,7 @@
             <td th:utext="${form.nameBarname}">...</td>
             <td th:utext="${form.location}">...</td>
             <td>
-                <th:block
-                        th:if="${user.getJob().getName().contentEquals('تهیه کننده') or user.getJob().getName().contentEquals('هماهنگی')}">
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
                 </th:block>
                 <a th:href="@{form/(id=${form.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">نمایش</a>
@@ -176,7 +183,7 @@
                                         <!--       </th:block> -->
 
                                     </td>
-                                    <td th:if="${user.job == 'مدیر پشتیبانی فنی' or user.job == 'انباردار'}">
+                                    <td >
                                         <th:block th:each="t : ${tajhiz}">
                                             <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>
                                             <label th:text="${t.name}"></label><br>
