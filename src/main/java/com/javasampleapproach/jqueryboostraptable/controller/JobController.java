@@ -25,7 +25,7 @@ public class JobController {
     }
 
     @GetMapping(value = "/admin/jobs")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String index(Model model) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -38,21 +38,21 @@ public class JobController {
     }
 
     @PostMapping(value = "/admin/jobs/create")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String create(@ModelAttribute Job job) {
         jobService.saveJob(job);
         return "redirect:/admin/jobs";
     }
 
     @GetMapping(value = "/admin/jobs/edit/{id}")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String update(@PathVariable(name = "id") Long id, Model model) {
         model.addAttribute("job", jobService.getJob(id));
         return "redirect:/admin/jobs";
     }
 
     @GetMapping(value = "/admin/jobs/delete/{id}")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String delete(@PathVariable Long id) {
         jobService.deleteJob(id);
         return "redirect:/admin/jobs";

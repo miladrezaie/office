@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-      
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 
 <head>
     <title>ورود به سامانه آفیش</title>
@@ -21,12 +22,15 @@
 <div class="container">
     <img th:src="@{/images/login.jpg}" class="img-responsive center-block" width="300" height="300" alt="Logo"/>
     <form th:action="@{/login}" method="POST" class="form-signin">
-        <h3 class="form-signin-heading" >به سامانه آفیش صدا و سیما خوش آمدید</h3>
+        <h3 class="form-signin-heading">به سامانه آفیش صدا و سیما خوش آمدید</h3>
+        <div >
+            <h3 class="form-signin-heading">به سامانه آفیش صدا و سیما خوش آمدید</h3>
+        </div>
         <br/>
 
-        <input dir="rtl" type="text" id="personalId" name="personalId"  placeholder="کد پرسنلی"
+        <input dir="rtl" type="text" id="personalId" name="personalId" placeholder="کد پرسنلی"
                class="form-control"/> <br/>
-        <input dir="rtl" type="password"  placeholder="پسورد"
+        <input dir="rtl" type="password" placeholder="پسورد"
                id="pass" name="pass" class="form-control"/> <br/>
 
         <div align="center" th:if="${param.error}">
