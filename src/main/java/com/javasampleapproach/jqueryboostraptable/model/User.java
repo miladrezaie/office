@@ -85,6 +85,11 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
+//    @ManyToOne
+//    @Nullable
+//    @JoinColumn(name="role_id")
+//    private Job job ;
+
 //	@JsonIgnore
 //	@ManyToMany(mappedBy = "users",fetch = FetchType.LAZY)
 //	private Set<Role> roles;
