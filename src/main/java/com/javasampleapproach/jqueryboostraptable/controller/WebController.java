@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
@@ -79,7 +80,7 @@ public class WebController {
     }
 
     @GetMapping("/members")
-    public String viewMembers(Model model, String keyword) {
+    public String viewMembers(Model model, String keyword, HttpServletRequest request) {
         //data have devices information
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());

@@ -44,9 +44,7 @@
         direction: rtl;
         background-color: #BECAD6;
         border-color: #92a3f7;
-
         border: solid 2px;
-
     }
 
     table td {
@@ -73,7 +71,6 @@
         <h3 align="right">آفیش برنامه های تولیدی و خبری &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-
             تاریخ درخواست [[${form.tarikhsodur}]]</h3>
 
 
@@ -135,9 +132,8 @@
                 <td>گزارشگر</td>
                 <td>
                     <th:block th:each="u : ${form.users}" id="blk">
-                        <th:block th:if="${u.job} == 'گزارشگر'">
-
-                            [[${u.fullname}]] &nbsp;-
+                        <th:block >
+                            <div th:text="${u.getFullname()}"></div>
 
                         </th:block>
                     </th:block>
@@ -146,15 +142,16 @@
                 </td>
 
                 <td>
-                    <th:block th:each="t : ${form.Tajhizats}" id="blk">
+                                <th:block th:each="t : ${form.getTajhizats()}" id="blk">
+                                    <div th:text="${t.getAmvalid()}"></div>
 
-                        [[${u.fullname}]] &nbsp;-
-                    </th:block>
+                                </th:block>
                 </td>
                 <td>
-                    <th:block th:each="t : ${form.Tajhizats}" id="blk">
-                        [[${u.fullname}]] &nbsp;-
-                    </th:block>
+                                <th:block th:each="t : ${form.getTajhizats()}" id="blk">
+                                    <div th:text="${t.getName()}"></div>
+
+                                </th:block>
                 </td>
             </tr>
             <tr>
@@ -162,10 +159,8 @@
                 <td>تصویربردار</td>
                 <td>
                     <th:block th:each="u : ${form.users}" id="blk">
-                        <th:block th:if="${u.job} == 'تصویربردار'">
-
-                            [[${u.fullname}]] &nbsp;-
-
+                        <th:block sec:authorize="hasAuthority('OP_SEDABARDAR')">
+                            <div th:text="${u.getFullname()}"></div>
                         </th:block>
                     </th:block>
 
@@ -178,10 +173,10 @@
                 <td>3</td>
                 <td>دستیار تصویربردار</td>
                 <td>
-                    <th:block th:each="u : ${form.users}" id="blk">
-                        <th:block th:if="${u.job} == 'دستیار تصویربردار'">
-
-                            [[${u.fullname}]] &nbsp;-
+                    <th:block th:each="u : ${form.getUsers()}" id="blk">
+                        <th:block sec:authorize="hasAuthority('OP_SEDABARDAR')">
+<div th:text="${u.getFullname()}"></div>
+<!--                                                        [[${u.fullname}]] &nbsp;- -->
 
                         </th:block>
                     </th:block>
@@ -196,14 +191,10 @@
                 <td>صدابردار</td>
                 <td>
                     <th:block th:each="u : ${form.users}" id="blk">
-                        <th:block th:if="${u.job} == 'صدابردار'">
-
-                            [[${u.fullname}]] &nbsp;-
-
+                        <th:block sec:authorize="hasAuthority('OP_SEDABARDAR')">
+                            <div th:text="${u.getFullname()}"></div>
                         </th:block>
                     </th:block>
-
-
                 </td>
                 <td><input type="text" class="form-control" name="tajhizatnames" value=""></td>
                 <td><input type="text" class="form-control" name="shomareamval" value=""></td>
@@ -213,10 +204,8 @@
                 <td>کارگردان</td>
                 <td>
                     <th:block th:each="u : ${form.users}" id="blk">
-                        <th:block th:if="${u.job} == 'کارگردان'">
-
-                            [[${u.fullname}]] &nbsp;-
-
+                        <th:block sec:authorize="hasAuthority('OP_KARGARDAN')">
+                            <div th:text="${u.getFullname()}"></div>
                         </th:block>
                     </th:block>
                 </td>
@@ -229,16 +218,13 @@
                 <td>
                     <th:block th:each="u : ${form.users}" id="blk">
                         <th:block th:if="${u.job} == 'دستیار تهیه'">
-
-                            [[${u.fullname}]] &nbsp;-
-
+                            <div th:text="${u.getFullname()}"></div>
                         </th:block>
                     </th:block>
                 </td>
                 <td><input type="text" class="form-control" name="tajhizatnames" value=""></td>
                 <td><input type="text" class="form-control" name="shomareamval" value=""></td>
             </tr>
-
 
             </tbody>
         </table>
@@ -263,7 +249,6 @@
                             <input type="hidden" name="uid" th:value="${user.id}">
                             <input type="submit" class="btnn" value="تایید">
                         </form>
-
                     </th:block>
                 </th>
                 <th th:if="${form.hamlonaghlemza} != null">

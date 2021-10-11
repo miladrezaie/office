@@ -30,10 +30,10 @@
     <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
 
-    <h2>عنوان شغلی ها</h2>
+    <h2>برند ها</h2>
 
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
-        افزودن عنوان شغلی
+        افزودن برند
     </button>
 
 
@@ -42,15 +42,15 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="exampleModalLabel">ایجاد عنوان شغلی جدید</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">ایجاد برند جدید</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form th:action="@{/admin/jobs/create}" method="post">
+                <form th:action="@{/admin/brands/create}" method="post">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="name" class="form-control-label">نام عنوان شغلی:</label>
+                            <label for="name" class="form-control-label">نام برند:</label>
                             <input type="text" class="form-control" id="name" name="name" value=""/>
                         </div>
                     </div>
@@ -72,39 +72,40 @@
         </thead>
         <tbody>
 
-        <tr class="text-center" th:each="job : ${jobs}">
-            <td th:text="${job.getId()}">...</td>
-            <td th:text="${job.getName()}">...</td>
+        <tr class="text-center" th:each="brand : ${brands}">
+            <td th:text="${brand.getId()}">...</td>
+            <td th:text="${brand.getName()}">...</td>
 
             <td>
-                <a th:href="@{/admin/jobs/edit/{id}(id=${job.getId()})}" class="btn-sm teBtn btn btn-primary teBtn"
+                <a th:href="@{/admin/brands/edit/{id}(id=${brand.getId()})}" class="btn btn-primary teBtn"
                    id="EditTajhiz">ویرایش</a>
 
+
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-danger btn-sm tdelBtn" data-toggle="modal"
-                        th:attr="data-target='#modal-warning'+${job.getId() }">
+                <button type="button" class="btn btn-danger" data-toggle="modal"
+                        th:attr="data-target='#modal-warning'+${brand.getId() }">
                     حذف
                 </button>
 
                 <!-- Modal -->
-                <div class="modal fade" th:id="modal-warning+${job.getId()}" tabindex="-1" role="dialog"
+                <div class="modal fade" th:id="modal-warning+${brand.getId()}" tabindex="-1" role="dialog"
                      aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${job.getName()}"></h5>
+                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${brand.getName()}"></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
                                 <p class="alert alert-danger">
-                                    آیا شما مطمین هستید که میخواهید این عنوان شغلی را پاک کنید ؟
+                                    آیا شما مطمین هستید که میخواهید این برند را پاک کنید ؟
                                 </p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                                <a th:href="@{/admin/jobs/delete/{id}(id=${job.getId()})}"
+                                <a th:href="@{/admin/brands/delete/{id}(id=${brand.getId()})}"
                                    data-target="#deleteLocation" class="btn btn-danger tdelBtn"
                                    id="deleteLocation">حذف</a>
                             </div>
@@ -121,8 +122,8 @@
     <hr/>
 
     <!--            <ul class="nav nav-pills">-->
-    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,jobs.totalPages-1)}">-->
-    <!--                    <a th:href="@{/admin/jobs/(page=${i})}" th:text="${i}" class="nav-link"-->
+    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,brands.totalPages-1)}">-->
+    <!--                    <a th:href="@{/admin/brands/(page=${i})}" th:text="${i}" class="nav-link"-->
     <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
     <!--                </li>-->
     <!--            </ul>-->
@@ -132,7 +133,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">عنوان شغلی ها </h5>
+                    <h5 class="modal-title" id="exampleModalLabel">برند ها </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

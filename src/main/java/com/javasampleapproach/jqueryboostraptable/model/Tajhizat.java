@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Table(name = "Tajhizat")
 public class Tajhizat implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -32,15 +31,19 @@ public class Tajhizat implements Serializable {
 	@Column(columnDefinition="nvarchar(20)")
 	private String type;
 
-
 	@ManyToOne
 	@Nullable
 	@JoinColumn(name="location_id")
 	private Location location;
 
+	@ManyToOne
+	@Nullable
+	@JoinColumn(name="brand_id")
+	private Brand brand;
+
 
 	@Column(columnDefinition="nvarchar(20)")
-	private String brand;
+	private String model;
 	
 	@ManyToMany(fetch=FetchType.LAZY,mappedBy = "Tajhizats")
 	private List<officeForm> tofficeforme;
@@ -49,21 +52,35 @@ public class Tajhizat implements Serializable {
 	private String img;
 	
 	public Tajhizat() {
-	
+
 	}
 
-	public Tajhizat(Integer id, String name, String amvalid,String serial_id, String type, String brand,String img) {
+	public Tajhizat(Integer id, String name, String amvalid,String serial_id, String type, String img) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.amvalid = amvalid;
 		this.serial_id = serial_id;
 		this.type = type;
-		this.brand = brand;
-
 		this.img = img;
 	}
 
+	@Nullable
+	public Brand getBrand() {
+		return brand;
+	}
+
+	public void setBrand(@Nullable Brand brand) {
+		this.brand = brand;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
 
 	public List<officeForm> getTofficeforme() {
 		return tofficeforme;
@@ -127,13 +144,6 @@ public class Tajhizat implements Serializable {
 		this.serial_id = serial_id;
 	}
 
-	public String getBrand() {
-		return brand;
-	}
-
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
 
 	@Override
 	public String toString() {

@@ -77,12 +77,11 @@
             <td th:text="${job.getName()}">...</td>
 
             <td>
-                <a th:href="@{/admin/jobs/edit/{id}(id=${job.getId()})}" class="btn btn-primary teBtn"
+                <a th:href="@{/admin/jobs/edit/{id}(id=${job.getId()})}" class="btn-sm teBtn btn btn-primary teBtn"
                    id="EditTajhiz">ویرایش</a>
 
-
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-danger" data-toggle="modal"
+                <button type="button" class="btn btn-danger btn-sm tdelBtn" data-toggle="modal"
                         th:attr="data-target='#modal-warning'+${job.getId() }">
                     حذف
                 </button>

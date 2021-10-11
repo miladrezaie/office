@@ -9,6 +9,7 @@ public enum Authority implements GrantedAuthority {
     OP_ACCESS_TAJHIZATS("دسترسی به تجهیزات"),
     OP_ACCESS_ROLES("دسترسی به نقش ها"),
     OP_ACCESS_JOBS("دسترسی به شغل ها"),
+    OP_ACCESS_BRANDS("دسترسی به برند ها"),
     OP_HERASAT("حراست"),
     OP_TASVIRBARDAR("تصویربردار"),
     OP_HAMAHANGIE("هماهنگی"),

@@ -34,7 +34,7 @@
     <table class="table table-hover">
         <thead>
         <tr class="text-center" style="font: bold;">
-            <td dir="rtl">آی دی</td>
+            <td dir="rtl">#</td>
             <td dir="rtl">شماره اموال</td>
             <td dir="rtl">شماره سریال</td>
             <td>نام تجهیز</td>
@@ -48,28 +48,21 @@
         <tbody>
 
         <tr class="text-center" th:each="tajhiz : ${tajhizats}">
-
-<!--            <td th:utext="${tajhiz.id}">...</td>-->
             <td th:utext="${tajhiz.id}">...</td>
             <td th:utext="${tajhiz.amvalid}">...</td>
             <td th:utext="${tajhiz.serial_id}">...</td>
             <td th:utext="${tajhiz.name}">...</td>
             <td th:utext="${tajhiz.type}">...</td>
-            <td th:if="${tajhiz.location != null}"  th:text="${tajhiz.location.getName()}">...</td>
-            <td th:unless="${tajhiz.location != null}"  >...</td>
-            <td th:utext="${tajhiz.brand}">...</td>
-
-            <td width="100px"><img th:src="*{'data:img/jpg;base64,'+{tajhiz.img}}" class="img-responsive">
-            </td>
-
+            <td th:if="${tajhiz.location != null}" th:text="${tajhiz.location.getName()}">...</td>
+            <td th:unless="${tajhiz.location != null}">...</td>
+            <td th:if="${tajhiz.brand != null}" th:text="${tajhiz.brand.getName()}">...</td>
+            <td width="100px"><img th:src="*{'data:img/jpg;base64,'+{tajhiz.img}}" class="img-responsive"></td>
             <td>
-                <a th:href="@{findOneTajhiz/(id=${tajhiz.id})}" class="btn btn-primary teBtn" id="EditTajhiz">ویرایش</a>
-                <a th:href="@{deleteTajhiz/(id=${tajhiz.id})}" class="btn btn-danger tdelBtn" id="DeleteTajhiz">حذف</a>
+                <a th:href="@{findOneTajhiz/(id=${tajhiz.id})}" class="btn btn-primary btn-sm teBtn" id="EditTajhiz">ویرایش</a>
+                <a th:href="@{deleteTajhiz/(id=${tajhiz.id})}" class="btn btn-danger btn-sm tdelBtn" id="DeleteTajhiz">حذف</a>
             </td>
-
 
         </tr>
-
         </tbody>
     </table>
 
@@ -89,7 +82,7 @@
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header" >
+                        <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">ایجاد تجهیز جدید</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -98,8 +91,13 @@
                         <div class="modal-body">
 
                             <div class="form-group">
-                                <label for="id" class="form-control-label">آی دی:</label>
-                                <input type="text" class="form-control" id="id" name="id" value=""/>
+                                <label for="name" class="form-control-label"> نام:</label>
+                                <input type="text" class="form-control" id="name" name="name" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="model" class="form-control-label"> مدل:</label>
+                                <input type="text" class="form-control" id="model" name="model" value=""/>
                             </div>
 
                             <div class="form-group">
@@ -112,38 +110,37 @@
                                 <input type="text" class="form-control" id="serial_id" name="serial_id" value=""/>
                             </div>
 
-                            <div class="form-group">
-                                <label for="name" class="form-control-label"> نام:</label>
-                                <input type="text" class="form-control" id="name" name="name" value=""/>
-                            </div>
 
                             <div class="form-group">
                                 <label for="type" class="form-control-label">نوع:</label>
                                 <select class="form-control" id="type" name="type">
-                                    <option value="1">دوربین</option>
-                                    <option value="2">صدا</option>
-                                    <option value="3">نور</option>
-                                    <option value="4">سایر</option>
+                                    <option value="">نوع را انتخاب کنید</option>
+
+                                    <option value="دوربین">دوربین</option>
+                                    <option value="صدا">صدا</option>
+                                    <option value="نور">نور</option>
+                                    <option value="سایر">سایر</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="location" class="form-control-label">مکان:</label>
-                                <select  class="form-control"  id="location" name="location">
-                                    <option  value="" >---</option>
-                                    <option th:each="location :${locations}" th:value="${location.getId()}" th:text="${location.getName()}"></option>
+                                <select class="form-control" id="location" name="location">
+                                    <option value="">مکان را انتخاب کنید</option>
+
+                                    <option th:each="location :${locations}" th:value="${location.getId()}"
+                                            th:text="${location.getName()}"></option>
                                 </select>
                             </div>
 
                             <div class="form-group">
 
                                 <label for="brand" class="form-control-label">انتخاب برند</label>
+                                <select class="form-control" id="brand" name="brand">
+                                    <option value="">برند را انتخاب کنید</option>
 
-                                <select id="brand" class="form-control" name="brand">
-                                    <option value="برند اول">برند اول</option>
-                                    <option value="برند دوم">برند دوم</option>
-                                    <option value="برند سوم">برند سوم</option>
-                                    <option value="برند چهارم">برند چهارم</option>
+                                    <option th:each="brand :${brands}" th:value="${brand.getId()}"
+                                            th:text="${brand.getName()}"></option>
                                 </select>
 
                             </div>

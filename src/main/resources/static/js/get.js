@@ -6,6 +6,7 @@ $(document).ready(function () {
         var value = $('.ch').val();
         console.log("salam"+value);
         $.getJSON('http://localhost:8080/findbyjob/' + value, function (data) {
+            console.log("****************** data :"+data);
             console.log("milad shorooooooooooooooooooooooooooooooo");
             var gencheckboxes = "";
             for (var i = 0; i < data.length; i++) {

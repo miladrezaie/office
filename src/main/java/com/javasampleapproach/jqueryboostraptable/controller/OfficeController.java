@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.BrandServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
 import com.javasampleapproach.jqueryboostraptable.model.*;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,8 @@ public class OfficeController {
     private LocationServiceImp locationServiceImp;
     @Autowired
     private JobServiceImp jobServiceImp;
+    @Autowired
+    private BrandServiceImp brandServiceImp;
 
 
     @GetMapping("/tajhizats")
@@ -65,6 +70,7 @@ public class OfficeController {
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("tajhizats", tRepo.findAll(new PageRequest(page, 10)));
         model.addAttribute("locations", locationServiceImp.getAllLocations());
+        model.addAttribute("brands", brandServiceImp.getAllBrands());
         System.out.println("ttttttttttttttttttt" + tRepo.findAll(new PageRequest(page, 10)));
         System.out.println("lllllllllllllllllllll" + locationServiceImp.getAllLocations());
 
@@ -190,12 +196,73 @@ public class OfficeController {
 
     }
 
+    public static boolean hasRole(String roleName) {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
+    }
+
+    public static boolean userHasAuthority(String authority) {
+        List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        System.out.println("authority : " + authorities);
+        for (GrantedAuthority grantedAuthority : authorities) {
+            if (authority.equals(grantedAuthority.getAuthority())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @PostMapping("/saveEmza")
     public String saveEmza(FormJob fj) {
         String redirect = "redirect:/form/?id=" + fj.getFid();
         officeForm office_form = formRepo.findById(fj.getFid()).get();
         User u = userRepo.findById(fj.getUid()).get();
         System.out.println("userrr ---" + u.getJob() + "    " + u.getPersonalId());
+
+        if (userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+            office_form.setPoshemza(u.getEmza());
+        }
+        if (userHasAuthority("OP_SEDABARDAR")) {
+            office_form.setSedaemza(u.getEmza());
+        }
+        if (userHasAuthority("OP_KARGARDAN")) {
+            office_form.setMdarkhastemza(u.getEmza());
+        }
+        if (userHasAuthority("OP_TAHIEKONANDEH")) {
+            office_form.setTahayeemza(u.getEmza());
+        }
+        if (userHasAuthority("OP_TASVIRBARDAR")) {
+            if (office_form.getTasviremza() == null)
+                office_form.setTasviremza(u.getEmza());
+            else if (office_form.getTasviremza2() == null)
+                office_form.setTasviremza2(u.getEmza());
+            else if (office_form.getTasviremza3() == null)
+                office_form.setTasviremza3(u.getEmza());
+            else if (office_form.getTasviremza4() == null)
+                office_form.setTasviremza4(u.getEmza());
+        }
+        if (userHasAuthority("OP_ANBARDAR")) {
+            office_form.setPoshemza(u.getEmza());
+        }
+        if (userHasAuthority("OP_HAML_NAGHL")) {
+            User us = userRepo.findById(fj.getTid()).get();
+            office_form.setRanande(us.getFullname());
+            office_form.setRanandeid(us.getPersonalId());
+            office_form.setKhodro(fj.getJob());
+            office_form.setHamlonaghlemza(u.getEmza());
+        }
+        if (userHasAuthority("OP_HERASAT")) {
+            LocalTime time = LocalTime.now();
+            String h = time.getHour() + " : " + time.getMinute();
+            if (fj.getTid().equals(1)) {
+                office_form.setSaatvorod(h);
+                office_form.setVherasatemza(u.getEmza());
+            } else {
+                office_form.setSaatkhoroj(h);
+                office_form.setKhherasatemza(u.getEmza());
+            }
+        }
 
         switch (u.getEmza()) {
             case "حراست":
@@ -229,13 +296,13 @@ public class OfficeController {
             case "مدیر پشتیبانی فنی":
                 office_form.setPoshemza(u.getEmza());
 
-//                office_form.getUsers().add(userRepo.("هماهنگی سیما").get(0));
+//                office_form.getUsers().add(userRepo.findByJob("هماهنگی سیما").get(0));
 //                System.out.println("after add hamahangi");
-//                office_form.getUsers().add(userRepo.findUsersByJob("مسئول حمل و نقل").get(0));
+//                office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
 //                System.out.println("after add hamlonaghl");
-//                office_form.getUsers().add(userRepo.findUsersByJob("حراست").get(0));
+//                office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
 //                System.out.println("after add herasat");
-//                office_form.getUsers().add(userRepo.findUsersByJob("انباردار").get(0));
+//                office_form.getUsers().add(userRepo.findByJob("انباردار").get(0));
                 break;
             case "هماهنگی سیما":
 //			 office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
@@ -274,6 +341,9 @@ public class OfficeController {
 
     @PostMapping("/addForm")
     public String addutoform(officeForm f) {
+        System.out.println("ffffffffffffffffffffff : " + f.getUsers());
+        System.out.println("ffffffffffffffffffffff : " + f.getNameBarname());
+        System.out.println("ffffffffffffffffffffff : " + f.getId());
         officeForm form = formRepo.findById((long) f.getId()).get();
 
         boolean found = false;
@@ -306,7 +376,6 @@ public class OfficeController {
                 form.getTajhizats().add(tj);
             }
         }
-
         formRepo.save(form);
         return "redirect:/office";
     }
@@ -314,10 +383,14 @@ public class OfficeController {
     @GetMapping("/findbyjob/{job}")
     @ResponseBody
     public Set<User> findU(@PathVariable long job) {
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("user : " + auth.getName());
+        System.out.println("user : " + job);
+        System.out.println("*****************user : " + auth.getDetails());
         Job job1 = jobServiceImp.findById(job);
-        return job1.getUsers();
+        System.out.println("***************** users &&&&&&&&&&&&& : " + job1.getUsers());
 
+        return job1.getUsers();
     }
 
 }

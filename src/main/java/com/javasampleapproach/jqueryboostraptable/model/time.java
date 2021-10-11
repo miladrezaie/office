@@ -12,8 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "bar")
-@JsonIgnoreProperties(value = {"date", "time"}, 
-allowGetters = true)
+@JsonIgnoreProperties(value = {"date", "time"}, allowGetters = true)
 public class time implements Serializable {
 
 	@Id
