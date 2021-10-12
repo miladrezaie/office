@@ -237,7 +237,7 @@
                     ..شماره کارمندی..
                     <button>[[${form.ranandeid}]]</button>
                     ..میتواند جهت برنامه فوق از محوطه خارج شود
-                    <th:block th:if="${user.job} == 'مسئول حمل و نقل'">
+                    <th:block sec:authorize="hasAuthority('OP_HAML_NAGHL')">
                         <form th:action="@{/saveEmza}" method="post">
                             <select name="tid" dir="ltr">
                                 <option></option>
@@ -247,7 +247,7 @@
                             <input type="text" name="job" id="job" value="">
                             <input type="hidden" name="fid" th:value="${form.id}">
                             <input type="hidden" name="uid" th:value="${user.id}">
-                            <input type="submit" class="btnn" value="تایید">
+                            <input type="submit" class="btn" value="تایید">
                         </form>
                     </th:block>
                 </th>

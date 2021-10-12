@@ -9,6 +9,7 @@ import java.util.*;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.BrandServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
+import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import com.javasampleapproach.jqueryboostraptable.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -90,7 +91,11 @@ public class OfficeController {
         User user = userService.findByUsername(auth.getName());
         List<User> us = new ArrayList<>();
         us.add(userRepo.findByPersonalId(user.getPersonalId()));
-        model.addAttribute("forms", formRepo.findByUsers(us));
+        if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")) {
+            model.addAttribute("forms", formRepo.findAll());
+        } else {
+            model.addAttribute("forms", formRepo.findByUsers(us));
+        }
         model.addAttribute("user", user);
         model.addAttribute("users", userRepo.findAll());
         model.addAttribute("jobs", jobServiceImp.getAllJobs());
@@ -220,121 +225,116 @@ public class OfficeController {
         User u = userRepo.findById(fj.getUid()).get();
         System.out.println("userrr ---" + u.getJob() + "    " + u.getPersonalId());
 
-        if (userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+        if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
             office_form.setPoshemza(u.getEmza());
-        }
-        if (userHasAuthority("OP_SEDABARDAR")) {
+        } else if (userHasAuthority("OP_SEDABARDAR") && office_form.getSedaemza() == null) {
             office_form.setSedaemza(u.getEmza());
-        }
-        if (userHasAuthority("OP_KARGARDAN")) {
+        } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
             office_form.setMdarkhastemza(u.getEmza());
-        }
-        if (userHasAuthority("OP_TAHIEKONANDEH")) {
+        } else if (userHasAuthority("OP_TAHIEKONANDEH") && office_form.getTahayeemza() == null) {
             office_form.setTahayeemza(u.getEmza());
+        } else if (userHasAuthority("OP_TASVIRBARDAR_1") && office_form.getTasviremza() == null) {
+            office_form.setTasviremza(u.getEmza());
+        } else if (userHasAuthority("OP_TASVIRBARDAR_2") && office_form.getTasviremza2() == null) {
+            office_form.setTasviremza2(u.getEmza());
+        } else if (userHasAuthority("OP_TASVIRBARDAR_3") && office_form.getTasviremza3() == null) {
+            office_form.setTasviremza3(u.getEmza());
+        } else if (userHasAuthority("OP_TASVIRBARDAR_4") && office_form.getTasviremza4() == null) {
+            office_form.setTasviremza4(u.getEmza());
         }
-        if (userHasAuthority("OP_TASVIRBARDAR")) {
-            if (office_form.getTasviremza() == null)
-                office_form.setTasviremza(u.getEmza());
-            else if (office_form.getTasviremza2() == null)
-                office_form.setTasviremza2(u.getEmza());
-            else if (office_form.getTasviremza3() == null)
-                office_form.setTasviremza3(u.getEmza());
-            else if (office_form.getTasviremza4() == null)
-                office_form.setTasviremza4(u.getEmza());
-        }
-        if (userHasAuthority("OP_ANBARDAR")) {
-            office_form.setPoshemza(u.getEmza());
-        }
-        if (userHasAuthority("OP_HAML_NAGHL")) {
-            User us = userRepo.findById(fj.getTid()).get();
-            office_form.setRanande(us.getFullname());
-            office_form.setRanandeid(us.getPersonalId());
-            office_form.setKhodro(fj.getJob());
+//        else if (userHasAuthority("OP_ANBARDAR")&& office_form.get() == null) {
+//            office_form.set(u.getEmza());
+//        }
+        else if (userHasAuthority("OP_HAML_NAGHL") && office_form.getHamlonaghlemza() == null) {
+//            User us = userRepo.findById(fj.getTid()).get();
+//            office_form.setRanande(us.getFullname());
+//            office_form.setRanandeid(us.getPersonalId());
+//            office_form.setKhodro();
             office_form.setHamlonaghlemza(u.getEmza());
+        } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
+//            LocalTime time = LocalTime.now();
+//            String h = time.getHour() + " : " + time.getMinute();
+//            if (fj.getTid().equals(1)) {
+//                office_form.setSaatvorod(h);
+            office_form.setVherasatemza(u.getEmza());
+////            } else {
+//                office_form.setSaatkhoroj(h);
+//                office_form.setKhherasatemza(u.getEmza());
+////            }
+        } else {
+            System.out.println("----------------emzaa nashod 1-------------------------");
         }
-        if (userHasAuthority("OP_HERASAT")) {
-            LocalTime time = LocalTime.now();
-            String h = time.getHour() + " : " + time.getMinute();
-            if (fj.getTid().equals(1)) {
-                office_form.setSaatvorod(h);
-                office_form.setVherasatemza(u.getEmza());
-            } else {
-                office_form.setSaatkhoroj(h);
-                office_form.setKhherasatemza(u.getEmza());
-            }
-        }
-
-        switch (u.getEmza()) {
-            case "حراست":
-                LocalTime time = LocalTime.now();
-                String h = time.getHour() + " : " + time.getMinute();
-                if (fj.getTid().equals(1)) {
-                    office_form.setSaatvorod(h);
-                    office_form.setVherasatemza(u.getEmza());
-                } else {
-                    office_form.setSaatkhoroj(h);
-                    office_form.setKhherasatemza(u.getEmza());
-                }
-                break;
-            case "معاونت سیما":
-                System.out.println("moaven------majazi---beforset");
-                User ux = userService.findByUsername("999999");
-                System.out.println("---------->" + ux);
-                if (!office_form.getUsers().contains(ux))
-                    office_form.getUsers().add(ux);
-                office_form.setMdarkhastemza(u.getEmza());
-                System.out.println("moaven------majazi---afterset");
-                // office_form.getUsers().add(userRepo.findByJob("مدیر پشتیبانی فنی").get(0));
-                break;
-            case "مسئول حمل و نقل":
-                User us = userRepo.findById(fj.getTid()).get();
-                office_form.setRanande(us.getFullname());
-                office_form.setRanandeid(us.getPersonalId());
-                office_form.setKhodro(fj.getJob());
-                office_form.setHamlonaghlemza(u.getEmza());
-                break;
-            case "مدیر پشتیبانی فنی":
-                office_form.setPoshemza(u.getEmza());
-
-//                office_form.getUsers().add(userRepo.findByJob("هماهنگی سیما").get(0));
-//                System.out.println("after add hamahangi");
-//                office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
-//                System.out.println("after add hamlonaghl");
-//                office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
-//                System.out.println("after add herasat");
-//                office_form.getUsers().add(userRepo.findByJob("انباردار").get(0));
-                break;
-            case "هماهنگی سیما":
-//			 office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
-//			 office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
-                break;
-            case "تهیه کننده":
-                office_form.setTahayeemza(u.getEmza());
-                User user = userService.findByUsername("11000010");
-                if (!office_form.getUsers().contains(user))
-                    office_form.getUsers().add(user);
-                break;
-            case "تصویربردار":
-                if (office_form.getTasviremza() == null)
-                    office_form.setTasviremza(u.getEmza());
-                else if (office_form.getTasviremza2() == null)
-                    office_form.setTasviremza2(u.getEmza());
-                else if (office_form.getTasviremza3() == null)
-                    office_form.setTasviremza3(u.getEmza());
-                else if (office_form.getTasviremza4() == null)
-                    office_form.setTasviremza4(u.getEmza());
-                else if (office_form.getTasviremza5() == null)
-                    office_form.setTasviremza5(u.getEmza());
-                else
-                    office_form.setTasviremza6(u.getEmza());
-                break;
-            case "صدابردار":
-                office_form.setSedaemza(u.getEmza());
-                break;
-
-            default:
-                System.out.println("----------------emzaa nashod -------------------------");
-        }
+//        switch (u.getEmza()) {
+//            case "حراست":
+//                LocalTime time = LocalTime.now();
+//                String h = time.getHour() + " : " + time.getMinute();
+//                if (fj.getTid().equals(1)) {
+//                    office_form.setSaatvorod(h);
+//                    office_form.setVherasatemza(u.getEmza());
+//                } else {
+//                    office_form.setSaatkhoroj(h);
+//                    office_form.setKhherasatemza(u.getEmza());
+//                }
+//                break;
+//            case "معاونت سیما":
+//                System.out.println("moaven------majazi---beforset");
+//                User ux = userService.findByUsername("999999");
+//                System.out.println("---------->" + ux);
+//                if (!office_form.getUsers().contains(ux))
+//                    office_form.getUsers().add(ux);
+//                office_form.setMdarkhastemza(u.getEmza());
+//                System.out.println("moaven------majazi---afterset");
+//                // office_form.getUsers().add(userRepo.findByJob("مدیر پشتیبانی فنی").get(0));
+//                break;
+//            case "مسئول حمل و نقل":
+//                User us = userRepo.findById(fj.getTid()).get();
+//                office_form.setRanande(us.getFullname());
+//                office_form.setRanandeid(us.getPersonalId());
+//                office_form.setKhodro(fj.getJob());
+//                office_form.setHamlonaghlemza(u.getEmza());
+//                break;
+//            case "مدیر پشتیبانی فنی":
+//                office_form.setPoshemza(u.getEmza());
+//
+////                office_form.getUsers().add(userRepo.findByJob("هماهنگی سیما").get(0));
+////                System.out.println("after add hamahangi");
+////                office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
+////                System.out.println("after add hamlonaghl");
+////                office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
+////                System.out.println("after add herasat");
+////                office_form.getUsers().add(userRepo.findByJob("انباردار").get(0));
+//                break;
+//            case "هماهنگی سیما":
+////			 office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
+////			 office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
+//                break;
+//            case "تهیه کننده":
+//                office_form.setTahayeemza(u.getEmza());
+//                User user = userService.findByUsername("11000010");
+//                if (!office_form.getUsers().contains(user))
+//                    office_form.getUsers().add(user);
+//                break;
+//            case "تصویربردار":
+//                if (office_form.getTasviremza() == null)
+//                    office_form.setTasviremza(u.getEmza());
+//                else if (office_form.getTasviremza2() == null)
+//                    office_form.setTasviremza2(u.getEmza());
+//                else if (office_form.getTasviremza3() == null)
+//                    office_form.setTasviremza3(u.getEmza());
+//                else if (office_form.getTasviremza4() == null)
+//                    office_form.setTasviremza4(u.getEmza());
+//                else if (office_form.getTasviremza5() == null)
+//                    office_form.setTasviremza5(u.getEmza());
+//                else
+//                    office_form.setTasviremza6(u.getEmza());
+//                break;
+//            case "صدابردار":
+//                office_form.setSedaemza(u.getEmza());
+//                break;
+//
+//            default:
+//                System.out.println("----------------emzaa nashod -------------------------");
+//        }
         formRepo.save(office_form);
         return redirect;
     }

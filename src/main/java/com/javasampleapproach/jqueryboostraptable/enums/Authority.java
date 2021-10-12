@@ -11,7 +11,10 @@ public enum Authority implements GrantedAuthority {
     OP_ACCESS_JOBS("دسترسی به شغل ها"),
     OP_ACCESS_BRANDS("دسترسی به برند ها"),
     OP_HERASAT("حراست"),
-    OP_TASVIRBARDAR("تصویربردار"),
+    OP_TASVIRBARDAR_1("تصویربردار1"),
+    OP_TASVIRBARDAR_2("تصویربردار2"),
+    OP_TASVIRBARDAR_3("تصویربردار3"),
+    OP_TASVIRBARDAR_4("تصویربردار4"),
     OP_HAMAHANGIE("هماهنگی"),
     OP_SEDABARDAR("صدابردار"),
     OP_KARGARDAN("کارگردان"),
@@ -19,7 +22,8 @@ public enum Authority implements GrantedAuthority {
     OP_MODIR_POSHTIBANIT("مدیر پشتیبانی"),
     OP_ANBARDAR("انباردار"),
     OP_TASISAT("تاسیسات"),
-    OP_HAML_NAGHL("حمل و نقل");
+    OP_HAML_NAGHL("حمل و نقل"),
+    OP_MODEIR_VAHED_DARKHST_KONANDEH("مدیر واحد درخواست کننده تولید");
 
 
 
