@@ -67,7 +67,7 @@
 
     <hr/>
 
-    <div class="fmyForm">
+    <div class="fmyForm " id="contents">
         <form th:action="@{/saveForm}" method="post" enctype="multipart/form-data">
             <div class="modal fade" id="fexampleModal" tabindex="-1" role="dialog"
                  aria-labelledby="exampleModalLabel"
@@ -247,6 +247,24 @@
 
 </div>
 
-
+<script
+        src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js">
+</script>
+<script type="text/babel">
+    var app = new Vue({
+        el: '#contents',
+        data: {
+            players: [
+                { id: "1",
+                    name: "Lionel Messi",
+                    description: "Argentina's superstar" },
+                { id: "2",
+                    name: "Christiano Ronaldo",
+                    description: "World #1-ranked player from Portugal" }
+            ]
+        },
+        
+    });
+</script>
 </body>
 </html>
