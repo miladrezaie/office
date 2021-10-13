@@ -84,6 +84,19 @@ public class OfficeController {
         return (ResponseEntity<?>) locationServiceImp.getAllLocations();
     }
 
+    @GetMapping(value = "/admin/officeform/delete/{id}")
+    public String delete(@PathVariable Long id) {
+        System.out.println("saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        formRepo.deleteById(id);
+        return "redirect:/office";
+    }
+    @GetMapping(value = "/aaaa")
+    public String w() {
+        System.out.println("saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        return "redirect:/office";
+    }
+
     @GetMapping("/office")
     public String viewoffice(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -5,7 +5,7 @@ $(document).ready(function () {
         event.preventDefault();
         var value = $('.ch').val();
         console.log("salam"+value);
-        $.getJSON('http://localhost:8080/findbyjob/' + value, function (data) {
+        $.getJSON('https://localhost:8085/findbyjob/' + value, function (data) {
             console.log("****************** data :"+data);
             console.log("milad shorooooooooooooooooooooooooooooooo");
             var gencheckboxes = "";
@@ -23,7 +23,7 @@ $(document).ready(function () {
     $('#txtsearch').keyup(function (e) {
         e.preventDefault();
         var v = $('#txtsearch').val();
-        window.location.replace('http://localhost:8080/members/?keyword=' + v);
+        window.location.replace('https://localhost:8085/members/?keyword=' + v);
 
 
     });

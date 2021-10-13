@@ -12,8 +12,19 @@
     <script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
     <script type="text/javascript" th:src="@{/js/get.js}" src="../static/js/get.js"></script>
     <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
-
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/persian-datepicker.min.css">
+    <script th:src="@{/js/persian-date.min.js}"></script>
+    <script th:src="@{/js/persian-datepicker.min.js}"></script>
+    <script>
+        $(function () {
+            $(".normal-example").persianDatepicker({
+                formatDate: "YYYY-0M-0D",
+                showGregorianDate: true,
+                autoClose: true
+            });
+        })
+    </script>
 </head>
 
 <style>
@@ -25,16 +36,14 @@
         color: blue;
     }
 </style>
-<script type="text/javascript">
 
-
-</script>
 <body dir="rtl">
 <div class="container">
     <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
-
     <h2>ثبت برنامه</h2>
+    <!--    <input type="text" id="normal-example">-->
+
     <div sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
         <button class="btn btn-success fnBtn" id="newoffice">ثبت برنامه جدید</button>
     </div>
@@ -58,16 +67,45 @@
                 <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
                 </th:block>
-                <a th:href="@{form/(id=${form.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">نمایش</a>
+                <a th:href="@{form/(id=${form.id})}" class="btn btn-warning mdelBtn" id="DeleteUser">نمایش</a>
+<!--                <a th:href="@{delete/form/(id=${form.id})}" class="btn btn-danger btn-danger" >حذف</a>-->
+                <button type="button" class="btn btn-danger" data-toggle="modal"
+                        th:attr="data-target='#modal-warning'+${form.getId() }">
+                    حذف
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" th:id="modal-warning+${form.getId()}" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${form.getTahayekonande()}"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="alert alert-danger">
+                                    آیا شما مطمین هستید که میخواهید این سطح دسترسی را پاک کنید ؟
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                                <a th:href="@{/admin/officeform/delete/{id}(id=${form.id})}" class="btn btn-danger">حذف</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
 
         </tbody>
     </table>
-
     <hr/>
 
-    <div class="fmyForm " id="contents">
+    <div class="fmyForm ">
         <form th:action="@{/saveForm}" method="post" enctype="multipart/form-data">
             <div class="modal fade" id="fexampleModal" tabindex="-1" role="dialog"
                  aria-labelledby="exampleModalLabel"
@@ -81,8 +119,6 @@
                             </button>
                         </div>
                         <div class="modal-body">
-
-
                             <div class="form-group">
                                 <label for="nameBarname" class="form-control-label">نام برنامه:</label>
                                 <input type="text" class="form-control" id="nameBarname" name="nameBarname"
@@ -94,9 +130,18 @@
                                        value=""/>
                             </div>
 
-                            <div class="form-group">
-                                <label for="tarikh" class="form-control-label">تاریخ برنامه :</label>
-                                <input type="text" class="form-control" id="tarikh" name="tarikh" value=""/>
+
+                            <div class="form-inline form-group">
+<!--                                <label>انتخاب تاریخ:</label>-->
+
+                                <div class="input-group input-group-sm">
+                                    <label for="tarikh1" class="form-control-label">از تاریخ :</label>
+                                    <input type="text" id="tarikh1" name="tarikh_begin" class=" pwt-datepicker-input-element normal-example">
+                                    <label for="tarikh2" class="form-control-label">تا تاریخ : </label>
+                                    <input type="text" id="tarikh2" name="tarikh_end" class="pwt-datepicker-input-element normal-example">
+                                </div>
+
+                                <!-- /.input group -->
                             </div>
                             <div class="form-group">
                                 <label for="saat" class="form-control-label">ساعت برنامه:</label>
@@ -106,8 +151,10 @@
                                 <label for="location" class="form-control-label">محل برنامه:</label>
                                 <input type="text" class="form-control" id="location" name="location" value=""/>
                             </div>
+
                         </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <input type="submit" class="btn btn-primary" value="save"/>
@@ -247,24 +294,6 @@
 
 </div>
 
-<script
-        src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js">
-</script>
-<script type="text/babel">
-    var app = new Vue({
-        el: '#contents',
-        data: {
-            players: [
-                { id: "1",
-                    name: "Lionel Messi",
-                    description: "Argentina's superstar" },
-                { id: "2",
-                    name: "Christiano Ronaldo",
-                    description: "World #1-ranked player from Portugal" }
-            ]
-        },
-        
-    });
-</script>
+
 </body>
 </html>

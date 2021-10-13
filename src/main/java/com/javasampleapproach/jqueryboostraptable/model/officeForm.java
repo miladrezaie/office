@@ -15,10 +15,14 @@ import javax.persistence.Table;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Table(name = "office_form")
+@NoArgsConstructor
+@AllArgsConstructor
 public class officeForm implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,7 +38,10 @@ public class officeForm implements Serializable {
     private String tahayekonande;
 
     @Column(columnDefinition = "nvarchar(50)")
-    private String tarikh;
+    private String tarikh_begin;
+
+    @Column(columnDefinition = "nvarchar(50)")
+    private String tarikh_end;
 
     @Column(columnDefinition = "nvarchar(50)")
     private String tarikhsodur;
@@ -44,6 +51,22 @@ public class officeForm implements Serializable {
 
     @Column(columnDefinition = "nvarchar(25)")
     private String location;
+
+    public String getTarikh_begin() {
+        return tarikh_begin;
+    }
+
+    public void setTarikh_begin(String tarikh_begin) {
+        this.tarikh_begin = tarikh_begin;
+    }
+
+    public String getTarikh_end() {
+        return tarikh_end;
+    }
+
+    public void setTarikh_end(String tarikh_end) {
+        this.tarikh_end = tarikh_end;
+    }
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
@@ -110,32 +133,7 @@ public class officeForm implements Serializable {
     @Column(columnDefinition = "nvarchar(25)")
     private String saatkhoroj;
 
-    public officeForm() {
-    }
 
-    public officeForm(String nameBarname, String tahayekonande, String tarikh, String tarikhsodur, String saat,
-                      String location, Integer laghv, String khodro, String ranande,
-                      String ranandeid, String tasviremza, String sedaemza, String mdarkhastemza, String poshemza,
-                      String hamlonaghlemza, String saatvorod, String saatkhoroj) {
-        super();
-        this.nameBarname = nameBarname;
-        this.tahayekonande = tahayekonande;
-        this.tarikh = tarikh;
-        this.tarikhsodur = tarikhsodur;
-        this.saat = saat;
-        this.location = location;
-        this.laghv = laghv;
-        this.khodro = khodro;
-        this.ranande = ranande;
-        this.ranandeid = ranandeid;
-        this.tasviremza = tasviremza;
-        this.sedaemza = sedaemza;
-        this.mdarkhastemza = mdarkhastemza;
-        this.poshemza = poshemza;
-        this.hamlonaghlemza = hamlonaghlemza;
-        this.saatvorod = saatvorod;
-        this.saatkhoroj = saatkhoroj;
-    }
 
     public String getTasviremza2() {
         return tasviremza2;
@@ -289,13 +287,6 @@ public class officeForm implements Serializable {
         this.tahayekonande = tahayekonande;
     }
 
-    public String getTarikh() {
-        return tarikh;
-    }
-
-    public void setTarikh(String tarikh) {
-        this.tarikh = tarikh;
-    }
 
     public String getSaat() {
         return saat;
