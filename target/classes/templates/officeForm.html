@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 
 <html xmlns:th="http://www.thymeleaf.org"
-
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>IOT</title>
@@ -9,11 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap.min.css}"/>
+
     <script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
     <script type="text/javascript" th:src="@{/js/get.js}" src="../static/js/get.js"></script>
     <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/persian-datepicker.min.css">
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
+    <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
     <script th:src="@{/js/persian-date.min.js}"></script>
     <script th:src="@{/js/persian-datepicker.min.js}"></script>
     <script>
@@ -47,24 +50,25 @@
     <div sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
         <button class="btn btn-success fnBtn" id="newoffice">ثبت برنامه جدید</button>
     </div>
-    <table class="table table-hover ">
+    <table class="table table-hover">
         <thead>
-        <tr>
-            <th>ردیف</th>
-            <th>نام تهیه کننده</th>
-            <th>نام برنامه</th>
-            <th>محل برنامه</th>
+        <tr class="text-center">
+            <th dir="rtl">ردیف</th>
+            <th dir="rtl">نام تهیه کننده</th>
+            <th dir="rtl">نام برنامه</th>
+            <th dir="rtl">محل برنامه</th>
+            <th dir="rtl">تنظیمات</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr th:each="form : ${forms}">
+        <tr class="text-center" th:each="form : ${forms}">
             <td th:utext="${form.id}">...</td>
-            <td th:utext="${form.tahayekonande}">...</td>
+            <td th:utext="${form.getUsers().get(0).getFullname()}">...</td>
             <td th:utext="${form.nameBarname}">...</td>
-            <td th:utext="${form.location}">...</td>
+            <td th:utext="${form.location.getName()}">...</td>
             <td>
-                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
+                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_TAHIEKONANDEH')">
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
                 </th:block>
                 <a th:href="@{form/(id=${form.id})}" class="btn btn-warning mdelBtn" id="DeleteUser">نمایش</a>
@@ -120,36 +124,58 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="nameBarname" class="form-control-label">نام برنامه:</label>
-                                <input type="text" class="form-control" id="nameBarname" name="nameBarname"
-                                       value=""/>
-                            </div>
-                            <div class="form-group">
-                                <label for="tahayekonande" class="form-control-label">تهیه کننده:</label>
+                                <label for="tahayekonande" class="form-control-label">نام تهیه کننده:</label>
                                 <input type="text" class="form-control" id="tahayekonande" name="tahayekonande"
-                                       value=""/>
+                                       th:value="${tahie}" readonly="readonly" />
                             </div>
 
+                            <div class="form-group">
+                                <label for="nameBarname" class="form-control-label">نام برنامه:</label>
+                                <input type="text" class="form-control" id="nameBarname" name="nameBarname"
+                                       value="" />
+                            </div>
 
                             <div class="form-inline form-group">
 <!--                                <label>انتخاب تاریخ:</label>-->
 
                                 <div class="input-group input-group-sm">
-                                    <label for="tarikh1" class="form-control-label">از تاریخ :</label>
-                                    <input type="text" id="tarikh1" name="tarikh_begin" class=" pwt-datepicker-input-element normal-example">
-                                    <label for="tarikh2" class="form-control-label">تا تاریخ : </label>
-                                    <input type="text" id="tarikh2" name="tarikh_end" class="pwt-datepicker-input-element normal-example">
+                                    <label for="date_begin" class="form-control-label">از تاریخ :</label>
+                                    <input type="text" id="date_begin" name="date_begin" class=" pwt-datepicker-input-element normal-example">
+                                    <label for="date_end" class="form-control-label">تا تاریخ : </label>
+                                    <input type="text" id="date_end" name="date_end" class="pwt-datepicker-input-element normal-example">
                                 </div>
 
                                 <!-- /.input group -->
                             </div>
                             <div class="form-group">
-                                <label for="saat" class="form-control-label">ساعت برنامه:</label>
-                                <input type="text" class="form-control" id="saat" name="saat" value=""/>
+                                <label for="saat_zabt" class="form-control-label">ساعت برنامه:</label>
+                                <input type="text"  id="saat_zabt" name="saat_zabt" value=""/>
+
+                                <label for="rozhafteh" class="form-control-label"> روز های پخش:</label>
+                                <select class="selectpicker" id="rozhafteh" name="rozhafteh" multiple data-live-search="true" title="روز های پخش">
+
+                                    <option th:each="roz :${rozhaehafte}" th:value="${roz.name()}"
+                                            th:text="${roz.getDisplayName()}"></option>
+                                </select>
                             </div>
+
                             <div class="form-group">
                                 <label for="location" class="form-control-label">محل برنامه:</label>
-                                <input type="text" class="form-control" id="location" name="location" value=""/>
+                                <select class="form-control" id="location" name="location">
+                                    <option value="">مکان را انتخاب کنید</option>
+
+                                    <option th:each="location :${locations}" th:value="${location.getId()}"
+                                            th:text="${location.getName()}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="type" class="form-control-label">نوع برنامه:</label>
+                                <select class="form-control" id="type" name="type">
+                                    <option value="">نوع برنامه را انتخاب کنید</option>
+
+                                    <option th:each="type :${officeTypes}" th:value="${type.name()}"
+                                            th:text="${type.getDisplayName()}"></option>
+                                </select>
                             </div>
 
                         </div>

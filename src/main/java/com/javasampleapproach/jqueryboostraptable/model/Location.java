@@ -30,4 +30,8 @@ public class Location {
 
     @OneToMany(mappedBy="location",orphanRemoval = true)
     private Set<Tajhizat> tajhiz;
+
+
+    @OneToMany(mappedBy="location",orphanRemoval = true)
+    private Set<officeForm> officeForms;
 }

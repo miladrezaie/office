@@ -68,10 +68,11 @@
         <!-- Include _menu.html -->
         <th:block th:include="/_menu"></th:block>
 
-        <h3 align="right">آفیش برنامه های تولیدی و خبری &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        <h3 align="right" th:text="${form.getType().getDisplayName()}"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-            تاریخ درخواست [[${form.tarikhsodur}]]</h3>
+            </h3>
+        <h3 align="left" th:text="${form.getTarikhsodur()}"></h3>
 
 
         <table border="3">
@@ -90,8 +91,11 @@
                 </th>
                 <th>
                     <div class="form-group">
-                        <label for="tarikh" class="form-control-label">تاریخ برنامه :</label><br>
-                        [[${form.tarikh_begin}]]
+                        <label for="tarikh" class="form-control-label ">تاریخ برنامه :</label><br>
+                        از
+                        <span th:text="${form.getDate_begin()}"></span>
+                        تا<br>
+                        <span th:text="${form.getDate_end()}"></span>
 
                     </div>
                 </th>
@@ -99,7 +103,7 @@
 
                     <div class="form-group">
                         <label for="saat" class="form-control-label">ساعت ضبط:</label><br>
-                        [[${form.saat}]]
+                        [[${form.saat_zabt}]]
 
                     </div>
 
@@ -108,7 +112,7 @@
 
                     <div class="form-group">
                         <label for="location" class="form-control-label">محل برنامه:</label><br>
-                        [[${form.location}]]
+                        [[${form.location.getName()}]]
                     </div>
                 </th>
             </tr>
@@ -131,7 +135,7 @@
                 <td>1</td>
                 <td>گزارشگر</td>
                 <td>
-                    <th:block th:each="u : ${form.users}" id="blk">
+                    <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH')" th:each="u : ${form.users}" id="blk">
                         <th:block >
                             <div th:text="${u.getFullname()}"></div>
 
@@ -142,13 +146,13 @@
                 </td>
 
                 <td>
-                                <th:block th:each="t : ${form.getTajhizats()}" id="blk">
+                                <th:block sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH')" th:each="t : ${form.getTajhizats()}" id="blk">
                                     <div th:text="${t.getAmvalid()}"></div>
-
+                                    <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
                                 </th:block>
                 </td>
                 <td>
-                                <th:block th:each="t : ${form.getTajhizats()}" id="blk">
+                                <th:block sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH')" th:each="t : ${form.getTajhizats()}" id="blk">
                                     <div th:text="${t.getName()}"></div>
 
                                 </th:block>
@@ -158,9 +162,9 @@
                 <td>2</td>
                 <td>تصویربردار</td>
                 <td>
-                    <th:block th:each="u : ${form.users}" id="blk">
+                    <th:block  id="blk">
                         <th:block sec:authorize="hasAuthority('OP_SEDABARDAR')">
-                            <div th:text="${u.getFullname()}"></div>
+                            <div th:text="${form.getUsers().get(user.getId())}"></div>
                         </th:block>
                     </th:block>
 

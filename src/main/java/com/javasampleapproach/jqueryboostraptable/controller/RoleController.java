@@ -43,20 +43,12 @@ public class RoleController {
         model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("authorities", Authority.values());
-//        System.out.println("***********************************"+Authority.values());
 
-//        System.out.println("---------------"+authority.values());
-//        model.addAttribute("authorities",authority.getAuthority() );
         return "roles/roles";
     }
 
     @PostMapping(value = "/admin/roles/create")
     public String create(@ModelAttribute Role role, BindingResult result ) {
-//        List<Authority> authorities =authority
-        System.out.println("sssssssssssssssssssssssssss   ");
-//
-//        System.out.println("sssssssssssssssssssssssssss   "+result.getModel());
-//        System.out.println("sssssssssssssssssssssssssss   "+role.getAuthorities());
 
         roleService.saveRole(role);
         return "redirect:/admin/roles";

@@ -10,6 +10,8 @@ import com.javasampleapproach.jqueryboostraptable.Service.Impl.BrandServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
 import com.javasampleapproach.jqueryboostraptable.enums.Authority;
+import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
+import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -47,6 +49,7 @@ public class OfficeController {
 
     @Autowired
     private UserService userService;
+
 
     @Autowired
     private OfficeFormRepository formRepo;
@@ -90,17 +93,12 @@ public class OfficeController {
         formRepo.deleteById(id);
         return "redirect:/office";
     }
-    @GetMapping(value = "/aaaa")
-    public String w() {
-        System.out.println("saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-        return "redirect:/office";
-    }
 
     @GetMapping("/office")
     public String viewoffice(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("milad >>>>>>>>>" + auth);
+        System.out.println("milad >>>>>>>>>" + auth.getName());
         User user = userService.findByUsername(auth.getName());
         List<User> us = new ArrayList<>();
         us.add(userRepo.findByPersonalId(user.getPersonalId()));
@@ -109,7 +107,14 @@ public class OfficeController {
         } else {
             model.addAttribute("forms", formRepo.findByUsers(us));
         }
+
         model.addAttribute("user", user);
+        if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")){
+            model.addAttribute("tahie",user.getFullname());
+        }
+        model.addAttribute("officeTypes", OfficeForm.values());
+        model.addAttribute("rozhaehafte", RozHafteh.values());
+        model.addAttribute("locations", locationServiceImp.getAllLocations());
         model.addAttribute("users", userRepo.findAll());
         model.addAttribute("jobs", jobServiceImp.getAllJobs());
         model.addAttribute("tajhiz", tRepo.findAll());
@@ -159,7 +164,6 @@ public class OfficeController {
             er.printStackTrace();
         }
         tRepo.save(t);
-
         return "redirect:/tajhizats";
     }
 
@@ -170,19 +174,12 @@ public class OfficeController {
 //		 form.getUsers().add(user);
 
     //	 }
-    @GetMapping("/a")
-    public String a() {
-//		 officeForm f = formRepo.findByCreatorid(2).get(0);
-//		 User u = userRepo.findById(1).get();
-//		 f.getUsers().add(u);
-//		 formRepo.save(f);
-//		 Set<User> userss = new HashSet<User>();
-//		 System.out.println();
-        return "redirect:/office";
-    }
 
     @PostMapping("/saveForm")
     public String saveForm(officeForm form) {
+        System.out.println("*********************************** form : "+form);
+        System.out.println("*********************************** form : "+form);
+
         Roozh jCal = new Roozh();
         int myear = LocalDate.now().getYear();
         int mmonth = LocalDate.now().getMonthValue();
@@ -212,11 +209,6 @@ public class OfficeController {
         System.out.println("form saved");
         return "redirect:/office";
 
-    }
-
-    public static boolean hasRole(String roleName) {
-        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(roleName));
     }
 
     public static boolean userHasAuthority(String authority) {
