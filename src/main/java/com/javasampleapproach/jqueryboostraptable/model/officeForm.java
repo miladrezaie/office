@@ -2,6 +2,7 @@ package com.javasampleapproach.jqueryboostraptable.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -43,6 +44,8 @@ public class officeForm implements Serializable {
     @NotNull
     private String tahayekonande;
 
+    @OneToMany(mappedBy="officeForm",orphanRemoval = true)
+    private Set<Car> cars;
 
     @ElementCollection(targetClass = RozHafteh.class)
     private List<RozHafteh> rozhafteh;

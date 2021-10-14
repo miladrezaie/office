@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>IOT</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script th:src="@{/js/js-select/jquery.min.js}"></script>
+    <script th:src="@{/js/js-select/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/table.css}"/>
+    <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
+    <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+
+</head>
+
+<style>
+    table th, table td {
+        padding: 5px;
+        direction: rtl;
+    }
+
+    .message {
+        color: blue;
+    }
+</style>
+<body dir="rtl">
+<div class="container">
+    <!-- Include _menu.html -->
+    <th:block th:include="/_menu"></th:block>
+
+    <h2>وسیله نقلیه ها</h2>
+
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
+        افزودن وسیله نقلیه
+    </button>
+
+
+    <div class="modal fade" id="form" tabindex="-1" car="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" car="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">ایجاد وسیله نقلیه جدید</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form th:action="@{/admin/cars/create}" method="post" >
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name" class="form-control-label">نام وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="name" name="name" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="type" class="form-control-label">نوع وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="type" name="type" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="color" class="form-control-label">رنگ وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="color" name="color" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="plak_number" class="form-control-label">پلاک وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="plak_number" name="plak_number" value=""/>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer border-top-0 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success">ثبت</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr class="text-center">
+            <td dir="rtl">آی دی</td>
+            <td dir="rtl">نام</td>
+            <td dir="rtl">نوع</td>
+            <td dir="rtl">شماره پلاک</td>
+            <td dir="rtl">رنگ</td>
+            <td dir="rtl">تنظیمات</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr class="text-center" th:each="car : ${cars}">
+            <td th:text="${car.getId()}">...</td>
+            <td th:text="${car.getName()}">...</td>
+            <td th:text="${car.getType()}">...</td>
+            <td th:text="${car.getPlak_number()}">...</td>
+            <td th:text="${car.getColor()}">...</td>
+
+            <td>
+                <a th:href="@{/admin/cars/edit/{id}(id=${car.getId()})}" class="btn btn-primary teBtn"
+                   id="EditTajhiz">ویرایش</a>
+
+                <button type="button" class="btn btn-danger" data-toggle="modal"
+                        th:attr="data-target='#modal-warning'+${car.getId() }">
+                    حذف
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" th:id="modal-warning+${car.getId()}" tabindex="-1" car="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" car="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${car.getName()}"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="alert alert-danger">
+                                    آیا شما مطمین هستید که میخواهید این وسیله نقلیه را پاک کنید ؟
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                                <a th:href="@{/admin/cars/delete/{id}(id=${car.getId()})}"
+                                   data-target="#deleteRole" class="btn btn-danger tdelBtn"
+                                   id="deleteRole">حذف</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+
+    <hr/>
+
+    <!--            <ul class="nav nav-pills">-->
+    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,cars.totalPages-1)}">-->
+    <!--                    <a th:href="@{/admin/cars/(page=${i})}" th:text="${i}" class="nav-link"-->
+    <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
+    <!--                </li>-->
+    <!--            </ul>-->
+
+
+</div>
+</body>
+</html>

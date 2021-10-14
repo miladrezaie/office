@@ -2,6 +2,11 @@ package com.javasampleapproach.jqueryboostraptable.model;
 
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 import javax.persistence.*;
@@ -9,6 +14,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "form_job")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class FormJob implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +30,9 @@ public class FormJob implements Serializable{
     private String job;
 
     private Integer uid;
-    
+
+    private Long car;
+
     private Long fid;
     
     private Integer tid;
@@ -31,73 +42,6 @@ public class FormJob implements Serializable{
     
     private Integer taeid;
     
-    public FormJob() {}
-	
-	public FormJob(Long id, String job, Integer uid, Long fid, Integer tid, Integer taeid) {
-		super();
-		this.id = id;
-		this.job = job;
-		this.uid = uid;
-		this.fid = fid;
-		this.tid = tid;
-		this.taeid = taeid;
-	}
-
-	public String getKhodro() {
-		return khodro;
-	}
-
-	public void setKhodro(String khodro) {
-		this.khodro = khodro;
-	}
-
-	public Integer getTaeid() {
-		return taeid;
-	}
-
-	public void setTaeid(Integer taeid) {
-		this.taeid = taeid;
-	}
-
-	public Integer getTid() {
-		return tid;
-	}
-
-	public void setTid(Integer tid) {
-		this.tid = tid;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getJob() {
-		return job;
-	}
-
-	public void setJob(String job) {
-		this.job = job;
-	}
-
-	public Integer getUid() {
-		return uid;
-	}
-
-	public void setUid(Integer uid) {
-		this.uid = uid;
-	}
-
-	public Long getFid() {
-		return fid;
-	}
-
-	public void setFid(Long fid) {
-		this.fid = fid;
-	}
 
 	@Override
 	public String toString() {

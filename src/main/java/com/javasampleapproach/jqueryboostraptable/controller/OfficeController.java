@@ -7,9 +7,9 @@ import java.util.*;
 
 
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.BrandServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.CarServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
-import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -37,9 +36,6 @@ import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormRepositor
 import com.javasampleapproach.jqueryboostraptable.repository.Roozh;
 import com.javasampleapproach.jqueryboostraptable.repository.TajhizatRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
-
-import javax.persistence.Entity;
-import javax.persistence.EntityResult;
 
 @Service
 @Controller
@@ -63,6 +59,11 @@ public class OfficeController {
     private JobServiceImp jobServiceImp;
     @Autowired
     private BrandServiceImp brandServiceImp;
+
+    @Autowired
+    private CarServiceImp carServiceImp;
+
+
 
 
     @GetMapping("/tajhizats")
@@ -131,6 +132,7 @@ public class OfficeController {
         model.addAttribute("userss", userRepo.findAll());
         model.addAttribute("jobs", jobServiceImp.getAllJobs());
         model.addAttribute("user", user);
+        model.addAttribute("cars", carServiceImp.getAllCars());
         return "office";
     }
 
@@ -177,8 +179,6 @@ public class OfficeController {
 
     @PostMapping("/saveForm")
     public String saveForm(officeForm form) {
-        System.out.println("*********************************** form : "+form);
-        System.out.println("*********************************** form : "+form);
 
         Roozh jCal = new Roozh();
         int myear = LocalDate.now().getYear();
@@ -190,6 +190,7 @@ public class OfficeController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<User> u = new ArrayList<>();
         u.add(userRepo.findByPersonalId(auth.getName()));
+
         System.out.println("nameeeeeeeeeeeeeeeeeeee" + auth.getName());
         System.out.println("-------------------->" + form.toString());
         System.out.println("---------formgetuser----------->" + (form.getUsers() == null));
@@ -205,6 +206,7 @@ public class OfficeController {
         System.out.println("ussserrrrr" + u);
 
         System.out.println("user saved");
+
         formRepo.save(form);
         System.out.println("form saved");
         return "redirect:/office";
@@ -246,26 +248,31 @@ public class OfficeController {
             office_form.setTasviremza3(u.getEmza());
         } else if (userHasAuthority("OP_TASVIRBARDAR_4") && office_form.getTasviremza4() == null) {
             office_form.setTasviremza4(u.getEmza());
+        }else if (userHasAuthority("OP_ANBARDAR") && office_form.getTasviremza4() == null){
+//            office_form.seta(u.getEmza());
+            office_form.setHamlonaghlemza(u.getEmza());
+
         }
 //        else if (userHasAuthority("OP_ANBARDAR")&& office_form.get() == null) {
 //            office_form.set(u.getEmza());
 //        }
         else if (userHasAuthority("OP_HAML_NAGHL") && office_form.getHamlonaghlemza() == null) {
-//            User us = userRepo.findById(fj.getTid()).get();
-//            office_form.setRanande(us.getFullname());
-//            office_form.setRanandeid(us.getPersonalId());
-//            office_form.setKhodro();
+            User us = userRepo.findById(fj.getTid()).get();
+            office_form.setRanande(us.getFullname());
+            office_form.setRanandeid(us.getPersonalId());
+            Car car= carServiceImp.findById(fj.getCar()).get();
+            office_form.getCars().add(car);
             office_form.setHamlonaghlemza(u.getEmza());
         } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
-//            LocalTime time = LocalTime.now();
-//            String h = time.getHour() + " : " + time.getMinute();
-//            if (fj.getTid().equals(1)) {
-//                office_form.setSaatvorod(h);
+            LocalTime time = LocalTime.now();
+            String h = time.getHour() + " : " + time.getMinute();
+            if (fj.getTid().equals(1)) {
+                office_form.setSaatvorod(h);
             office_form.setVherasatemza(u.getEmza());
-////            } else {
-//                office_form.setSaatkhoroj(h);
-//                office_form.setKhherasatemza(u.getEmza());
-////            }
+            } else {
+                office_form.setSaatkhoroj(h);
+                office_form.setKhherasatemza(u.getEmza());
+            }
         } else {
             System.out.println("----------------emzaa nashod 1-------------------------");
         }
