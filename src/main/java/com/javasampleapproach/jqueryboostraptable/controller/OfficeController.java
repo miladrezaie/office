@@ -42,7 +42,7 @@ import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
 @Service
 @Controller
 public class OfficeController {
-    private static final Logger log = LoggerFactory.getLogger(ScheduledTasksLogin.class);
+
 
     @Autowired
     private TajhizatRepository tRepo;
@@ -100,7 +100,7 @@ public class OfficeController {
 
     @GetMapping("/office")
     public String viewoffice(Model model) {
-        log.trace("view from office");
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("milad >>>>>>>>>" + auth);
         System.out.println("milad >>>>>>>>>" + auth.getName());
@@ -137,7 +137,7 @@ public class OfficeController {
                 } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
                     office_form.add(oo);
 //                    model.addAttribute("forms", oo);
-                }else if (userHasAuthority("OP_HAMAHANGIE")){
+                } else if (userHasAuthority("OP_HAMAHANGIE")) {
                     office_form.add(oo);
 //                    model.addAttribute("forms", oo);
                 }
@@ -299,7 +299,7 @@ public class OfficeController {
         } else if (userHasAuthority("OP_ANBARDAR") && office_form.getAnbaremza() == null) {
 //            office_form.seta(u.getEmza());
             office_form.setAnbaremza(u.getEmza());
-        }else if (userHasAuthority("OP_HAMAHANGIE") && office_form.getTahayeemza() == null) {
+        } else if (userHasAuthority("OP_HAMAHANGIE") && office_form.getTahayeemza() == null) {
             office_form.setTahayeemza(u.getEmza());
         }
 //        else if (userHasAuthority("OP_ANBARDAR")&& office_form.get() == null) {

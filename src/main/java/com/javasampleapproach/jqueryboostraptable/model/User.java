@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.*;
@@ -31,29 +33,28 @@ public class User implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @NotEmpty(message = "*Please provide your personal id")
+    @NotEmpty(message = "لطفا شماره پرسنلی خود را وارد کنید")
+    @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد",min = 8,max = 10)
     @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)")
     private String personalId;
 
     @Column(name = "NAME", columnDefinition = "nvarchar(20)")
-    @NotEmpty(message = "*Please provide your first name")
+    @NotEmpty(message = "لطفا نام خود را وارد کنید")
     private String FName;
 
     @Column(name = "LAST_NAME", columnDefinition = "nvarchar(20)")
-    @NotEmpty(message = "*Please provide your last name")
+    @NotEmpty(message = "لطفا نام خانوادگی خود را وارد کنید")
     private String Lname;
 
     @Column(name = "PASSWORD")
-    @Length(min = 5, message = "*Your password must have at least 5 characters")
-    @NotEmpty(message = "*Please provide your password")
+    @Length(min = 5, message = "رمز عبور کمتر از 5 حرف نمی تواند باشد")
+    @NotEmpty(message = "رمز عبور نمی تواند خالی باشد")
+//    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$",message = "پسورد ولید نمی باشد")
     @JsonIgnore
     private String pass;
 
 //    @Column(columnDefinition = "nvarchar(2)")
 //    private String finger;
-
-//    @Column(columnDefinition = "nvarchar(20)")
-//    private String job;
 
     @Column(name = "ACTIVE")
     private int active;
@@ -84,17 +85,6 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
-//    @ManyToOne
-//    @Nullable
-//    @JoinColumn(name="role_id")
-//    private Job job ;
-
-//	@JsonIgnore
-//	@ManyToMany(mappedBy = "users",fetch = FetchType.LAZY)
-//	private Set<Role> roles;
-
-
-
     public List<officeForm> getOfficeforms() {
         return officeforms;
     }
@@ -114,7 +104,6 @@ public class User implements Serializable, UserDetails {
     public void setFullname(String fullname) {
         this.fullname = fullname;
     }
-
 
     public Job getJob() {
         return job;
@@ -152,38 +141,29 @@ public class User implements Serializable, UserDetails {
         this.personalId = personalId;
     }
 
-
     public String getFName() {
         return FName;
     }
-
 
     public void setFName(String fName) {
         this.FName = fName;
     }
 
-
     public String getLname() {
         return Lname;
     }
-
 
     public void setLname(String lname) {
         this.Lname = lname;
     }
 
-
     public String getPass() {
         return pass;
     }
 
-
     public void setPass(String pass) {
         this.pass = pass;
     }
-
-
-
 
     public int getActive() {
         return active;
@@ -193,12 +173,10 @@ public class User implements Serializable, UserDetails {
         this.active = active;
     }
 
-
     @Override
     public String toString() {
         return "User [id=" + id + ", personalId=" + personalId + ", FName=" + FName + ", Lname=" + Lname + "]";
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
