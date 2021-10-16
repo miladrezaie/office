@@ -169,7 +169,7 @@
                     <th:block id="blk">
                         <th:block th:each="u : ${form.getUsers()}"
                                   sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_TASVIRBARDAR_1','OP_TASVIRBARDAR_2','OP_TASVIRBARDAR_3','OP_TASVIRBARDAR_4')">
-                            <div th:text="${u.getFullname()}"></div>
+                            <div th:if="${u.getJob() == 'تصویربردار'}" th:text="${u.getFullname()}"></div>
 
                         </th:block>
 
@@ -202,7 +202,7 @@
                     <th:block th:each="u : ${form.users}" id="blk">
                         <th:block
                                 sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_SEDABARDAR')">
-                            <div th:text="${u.getFullname()}"></div>
+                            <div th:if="${u.getJob() == 'صدابردار'}" th:text="${u.getFullname()}"></div>
                         </th:block>
                     </th:block>
                 </td>
@@ -239,7 +239,7 @@
                 <td>
                     <th:block th:each="u : ${form.users}" id="blk">
                         <th:block sec:authorize="hasAnyAuthority('OP_HAMAHANGIE','OP_TAHIEKONANDEH')">
-                            <div th:text="${u.getFullname()}"></div>
+                            <div th:if="${u.getJob() == 'تهیه کننده'}" th:text="${u.getFullname()}"></div>
                         </th:block>
                     </th:block>
                 </td>
@@ -294,8 +294,17 @@
                     <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.mdarkhastemza}}" class="img-responsive"
                          style="direction: ltr;">
                 </th>
-                <th th:if="${form.poshemza} != null">هماهنگی و پشتیبانی فنی<br>
+                <th th:if="${form.poshemza} != null">امضا هماهنگی و پشتیبانی فنی<br>
                     <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.poshemza}}" class="img-responsive"
+                         style="direction: ltr;">
+                </th>
+                <th th:if="${form.anbaremza} != null">مضای انبار دار<br>
+                    <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.anbaremza}}" class="img-responsive"
+                         style="direction: ltr;">
+                </th>
+                <th th:if="${form.hamlonaghlemza} != null">
+                    مسئول حمل و نقل<br>
+                    <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.hamlonaghlemza}}" class="img-responsive"
                          style="direction: ltr;">
                 </th>
             </tr>
@@ -345,15 +354,13 @@
                                 </select>
                                 <input type="hidden" name="fid" th:value="${form.id}">
                                 <input type="hidden" name="uid" th:value="${user.id}">
-                                <input type="submit" class="btn" value="تایید">
+                                <input th:if="${form.getHamlonaghlemza() == null}" type="submit" class="btn btn-info" value="تایید">
+                                <input th:if="${form.getHamlonaghlemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+
                             </form>
                         </th:block>
                     </th>
-                    <th th:if="${form.hamlonaghlemza} != null">
-                        مسئول حمل و نقل<br>
-                        <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.hamlonaghlemza}}" class="img-responsive"
-                             style="direction: ltr;">
-                    </th>
+
                 </tr>
             </table>
             <td th:if="${form.tasviremza2} != null"><p>امضا تصویر بردار2</p><br>

@@ -13,6 +13,8 @@ import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceIm
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -40,12 +42,13 @@ import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
 @Service
 @Controller
 public class OfficeController {
+    private static final Logger log = LoggerFactory.getLogger(ScheduledTasksLogin.class);
+
     @Autowired
     private TajhizatRepository tRepo;
 
     @Autowired
     private UserService userService;
-
 
     @Autowired
     private OfficeFormRepository formRepo;
@@ -55,16 +58,15 @@ public class OfficeController {
 
     @Autowired
     private LocationServiceImp locationServiceImp;
+
     @Autowired
     private JobServiceImp jobServiceImp;
+
     @Autowired
     private BrandServiceImp brandServiceImp;
 
     @Autowired
     private CarServiceImp carServiceImp;
-
-
-    private officeForm office;
 
 
     @GetMapping("/tajhizats")
@@ -98,34 +100,49 @@ public class OfficeController {
 
     @GetMapping("/office")
     public String viewoffice(Model model) {
+        log.trace("view from office");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("milad >>>>>>>>>" + auth);
         System.out.println("milad >>>>>>>>>" + auth.getName());
         User user = userService.findByUsername(auth.getName());
         List<User> us = new ArrayList<>();
+        List<officeForm> office_form = new ArrayList<>();
+
         us.add(userRepo.findByPersonalId(user.getPersonalId()));
         if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")) {
             model.addAttribute("forms", formRepo.findAll());
-        }  else {
+        } else {
             for (officeForm oo : formRepo.findByUsers(us)) {
                 if (userHasAuthority("OP_TAHIEKONANDEH")) {
-                    model.addAttribute("forms", formRepo.findByUsers(us));
-                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") ){
-                    model.addAttribute("forms", formRepo.findByUsers(us));
-                }else if ( oo.getMdarkhastemza() != null &&userHasAuthority("OP_MODIR_POSHTIBANIT")){
-                    model.addAttribute("forms", formRepo.findByUsers(us));
-                }else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR") ){
-                    model.addAttribute("forms", formRepo.findByUsers(us));
-                }else if (oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")  ){
-                    model.addAttribute("forms", formRepo.findByUsers(us));
-                }else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT") ){
-                    model.addAttribute("forms", formRepo.findByUsers(us));
-                }else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR") ){
-                    model.addAttribute("forms", formRepo.findByUsers(us));
-                }else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1") ){
-                    model.addAttribute("forms", formRepo.findByUsers(us));
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                } else if (oo.getAnbaremza() != null && oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
+                }else if (userHasAuthority("OP_HAMAHANGIE")){
+                    office_form.add(oo);
+//                    model.addAttribute("forms", oo);
                 }
             }
+            model.addAttribute("forms", office_form);
             System.out.println("form************ : " + formRepo.findByUsers(us));
 //            System.out.println("form************ : "+formRepo.);
         }
@@ -254,7 +271,6 @@ public class OfficeController {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -264,7 +280,6 @@ public class OfficeController {
         officeForm office_form = formRepo.findById(fj.getFid()).get();
         User u = userRepo.findById(fj.getUid()).get();
         System.out.println("userrr ---" + u.getJob() + "    " + u.getPersonalId());
-
         if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
             office_form.setPoshemza(u.getEmza());
         } else if (userHasAuthority("OP_SEDABARDAR") && office_form.getSedaemza() == null) {
@@ -284,7 +299,8 @@ public class OfficeController {
         } else if (userHasAuthority("OP_ANBARDAR") && office_form.getAnbaremza() == null) {
 //            office_form.seta(u.getEmza());
             office_form.setAnbaremza(u.getEmza());
-
+        }else if (userHasAuthority("OP_HAMAHANGIE") && office_form.getTahayeemza() == null) {
+            office_form.setTahayeemza(u.getEmza());
         }
 //        else if (userHasAuthority("OP_ANBARDAR")&& office_form.get() == null) {
 //            office_form.set(u.getEmza());

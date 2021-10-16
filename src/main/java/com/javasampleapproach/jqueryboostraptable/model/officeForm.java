@@ -30,7 +30,6 @@ public class officeForm implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(columnDefinition = "nvarchar(20)")
     @NotNull
     private String nameBarname;
 

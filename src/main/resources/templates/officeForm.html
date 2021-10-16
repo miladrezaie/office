@@ -68,15 +68,29 @@
             <td th:utext="${form.nameBarname}">...</td>
             <td th:utext="${form.location.getName()}">...</td>
             <td>
-                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
-                    <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
+                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                    <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن</a>
                 </th:block>
                 <a th:href="@{form/(id=${form.id})}" class="btn btn-warning mdelBtn" id="DeleteUser">نمایش</a>
+                <input sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')" th:if="${form.getMdarkhastemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_ANBARDAR')" th:if="${form.getAnbaremza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')" th:if="${form.getPoshemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TAHIEKONANDEH')" th:if="${form.getTahayeemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_HAML_NAGHL')" th:if="${form.getHamlonaghlemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_2')" th:if="${form.getTasviremza2() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_1')" th:if="${form.getTasviremza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_3')" th:if="${form.getTasviremza3() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getKhherasatemza() != null}" type="submit" class="btn btn-success" value="خروج تایید شد" disabled>
+
+                <!--                <a th:if="${form.}" class="btn btn-success "  readonly="readonly">نمایش</a>-->
 <!--                <a th:href="@{delete/form/(id=${form.id})}" class="btn btn-danger btn-danger" >حذف</a>-->
-                <button type="button" class="btn btn-danger" data-toggle="modal"
-                        th:attr="data-target='#modal-warning'+${form.getId() }">
-                    حذف
-                </button>
+                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
+                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                            th:attr="data-target='#modal-warning'+${form.getId() }">
+                        حذف
+                    </button>
+                </th:block>
+
 
                 <!-- Modal -->
                 <div class="modal fade" th:id="modal-warning+${form.getId()}" tabindex="-1" role="dialog"
@@ -208,19 +222,22 @@
                             </div>
                             <table>
                                 <tr>
+                                    <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
+                                        <td >
+                                            <label for="job" class="form-control-label">عنوان شغلی:</label>
+                                            <select id="job" class="form-control ch" name="job">
+                                                <option value="">انتخاب کنید</option>
+                                                <option th:each="job : ${jobs}" th:value="${job.getId()}"
+                                                        th:text="${job.getName()}"></option>
+                                            </select>
+                                            <!--     <th:block th:each="mem : ${users}">-->
+                                            <div id="wrapperfortestnames"></div>
+                                            <!--       </th:block> -->
+                                        </td>
+                                    </th:block>
+
                                     <td>
-                                        <label for="job" class="form-control-label">عنوان شغلی:</label>
-                                        <select id="job" class="form-control ch" name="job">
-                                            <option value="">انتخاب کنید</option>
-                                            <option th:each="job : ${jobs}" th:value="${job.getId()}"
-                                                    th:text="${job.getName()}"></option>
-                                        </select>
-                                        <!--     <th:block th:each="mem : ${users}">-->
-                                        <div id="wrapperfortestnames"></div>
-                                        <!--       </th:block> -->
-                                    </td>
-                                    <td>
-                                        <th:block th:each="t : ${tajhiz}">
+                                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')" th:each="t : ${tajhiz}">
                                             <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>
                                             <label th:text="${t.name}"></label><br>
                                         </th:block>
