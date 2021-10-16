@@ -112,6 +112,9 @@ public class officeForm implements Serializable {
     private String hamlonaghlemza;
 
     @Column(columnDefinition = "LONGBLOB")
+    private String anbaremza;
+
+    @Column(columnDefinition = "LONGBLOB")
     private String vherasatemza;
 
     @Column(columnDefinition = "LONGBLOB")

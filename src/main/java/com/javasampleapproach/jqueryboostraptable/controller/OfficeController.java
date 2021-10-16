@@ -64,6 +64,7 @@ public class OfficeController {
     private CarServiceImp carServiceImp;
 
 
+    private officeForm office;
 
 
     @GetMapping("/tajhizats")
@@ -105,13 +106,33 @@ public class OfficeController {
         us.add(userRepo.findByPersonalId(user.getPersonalId()));
         if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")) {
             model.addAttribute("forms", formRepo.findAll());
-        } else {
-            model.addAttribute("forms", formRepo.findByUsers(us));
+        }  else {
+            for (officeForm oo : formRepo.findByUsers(us)) {
+                if (userHasAuthority("OP_TAHIEKONANDEH")) {
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") ){
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                }else if ( oo.getMdarkhastemza() != null &&userHasAuthority("OP_MODIR_POSHTIBANIT")){
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                }else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR") ){
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                }else if (oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")  ){
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                }else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT") ){
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                }else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR") ){
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                }else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1") ){
+                    model.addAttribute("forms", formRepo.findByUsers(us));
+                }
+            }
+            System.out.println("form************ : " + formRepo.findByUsers(us));
+//            System.out.println("form************ : "+formRepo.);
         }
 
         model.addAttribute("user", user);
-        if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")){
-            model.addAttribute("tahie",user.getFullname());
+        if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
+            model.addAttribute("tahie", user.getFullname());
         }
         model.addAttribute("officeTypes", OfficeForm.values());
         model.addAttribute("rozhaehafte", RozHafteh.values());
@@ -213,6 +234,18 @@ public class OfficeController {
 
     }
 
+//    public  User findUserByAuthority(String authority) {
+//        List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+//        System.out.println("authority : " + authorities);
+//        for (GrantedAuthority grantedAuthority : authorities) {
+//            if (authority.equals(grantedAuthority.getAuthority())) {
+//                return
+//            }
+//        }
+//
+//
+//    }
+
     public static boolean userHasAuthority(String authority) {
         List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         System.out.println("authority : " + authorities);
@@ -248,9 +281,9 @@ public class OfficeController {
             office_form.setTasviremza3(u.getEmza());
         } else if (userHasAuthority("OP_TASVIRBARDAR_4") && office_form.getTasviremza4() == null) {
             office_form.setTasviremza4(u.getEmza());
-        }else if (userHasAuthority("OP_ANBARDAR") && office_form.getTasviremza4() == null){
+        } else if (userHasAuthority("OP_ANBARDAR") && office_form.getAnbaremza() == null) {
 //            office_form.seta(u.getEmza());
-            office_form.setHamlonaghlemza(u.getEmza());
+            office_form.setAnbaremza(u.getEmza());
 
         }
 //        else if (userHasAuthority("OP_ANBARDAR")&& office_form.get() == null) {
@@ -260,7 +293,7 @@ public class OfficeController {
             User us = userRepo.findById(fj.getTid()).get();
             office_form.setRanande(us.getFullname());
             office_form.setRanandeid(us.getPersonalId());
-            Car car= carServiceImp.findById(fj.getCar()).get();
+            Car car = carServiceImp.findById(fj.getCar()).get();
             office_form.getCars().add(car);
             office_form.setHamlonaghlemza(u.getEmza());
         } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
@@ -268,7 +301,7 @@ public class OfficeController {
             String h = time.getHour() + " : " + time.getMinute();
             if (fj.getTid().equals(1)) {
                 office_form.setSaatvorod(h);
-            office_form.setVherasatemza(u.getEmza());
+                office_form.setVherasatemza(u.getEmza());
             } else {
                 office_form.setSaatkhoroj(h);
                 office_form.setKhherasatemza(u.getEmza());

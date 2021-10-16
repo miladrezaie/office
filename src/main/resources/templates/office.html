@@ -410,14 +410,25 @@
                 <form th:action="@{/saveEmza}" method="post">
                     <input type="hidden" name="uid" th:value="${user.id}">
                     <input type="hidden" name="fid" th:value="${form.id}">
-                    <input th:if="${form.getMdarkhastemza() != null}" type="submit" class="btn btn-success"
+                    <input th:if="${form.getPoshemza() != null}" type="submit" class="btn btn-success"
                            value="تایید شد" disabled>
-                    <input th:if="${form.getMdarkhastemza() == null}" type="submit" class="btn btn-warning"
+                    <input th:if="${form.getPoshemza() == null}" type="submit" class="btn btn-warning"
                            value="تایید?">
                 </form>
 
         </th:block>
+        <th:block sec:authorize="hasAuthority('OP_ANBARDAR')">
 
+            <form th:action="@{/saveEmza}" method="post">
+                <input type="hidden" name="uid" th:value="${user.id}">
+                <input type="hidden" name="fid" th:value="${form.id}">
+                <input th:if="${form.getAnbaremza() != null}" type="submit" class="btn btn-success"
+                       value="تایید شد" disabled>
+                <input th:if="${form.getAnbaremza()== null}" type="submit" class="btn btn-warning"
+                       value="تایید?">
+            </form>
+
+        </th:block>
 
     </div>
 </div>

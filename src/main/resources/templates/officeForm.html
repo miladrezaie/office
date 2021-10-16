@@ -68,7 +68,7 @@
             <td th:utext="${form.nameBarname}">...</td>
             <td th:utext="${form.location.getName()}">...</td>
             <td>
-                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_TAHIEKONANDEH')">
+                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>
                 </th:block>
                 <a th:href="@{form/(id=${form.id})}" class="btn btn-warning mdelBtn" id="DeleteUser">نمایش</a>
@@ -97,7 +97,6 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                                 <a th:href="@{/admin/officeform/delete/{id}(id=${form.id})}" class="btn btn-danger">حذف</a>
-
                             </div>
                         </div>
                     </div>
