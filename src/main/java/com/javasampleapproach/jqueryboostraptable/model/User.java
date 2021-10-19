@@ -33,17 +33,17 @@ public class User implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @NotEmpty(message = "لطفا شماره پرسنلی خود را وارد کنید")
+    @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
     @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد",min = 8,max = 10)
     @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)")
     private String personalId;
 
     @Column(name = "NAME", columnDefinition = "nvarchar(20)")
-    @NotEmpty(message = "لطفا نام خود را وارد کنید")
+    @NotEmpty(message = "لطفا نام را وارد کنید")
     private String FName;
 
     @Column(name = "LAST_NAME", columnDefinition = "nvarchar(20)")
-    @NotEmpty(message = "لطفا نام خانوادگی خود را وارد کنید")
+    @NotEmpty(message = "لطفا نام خانوادگی را وارد کنید")
     private String Lname;
 
     @Column(name = "PASSWORD")
@@ -61,6 +61,7 @@ public class User implements Serializable, UserDetails {
 
     @Column(columnDefinition = "LONGBLOB")
     @JsonIgnore
+//    @NotEmpty(message = "تصویر امضای خود را وارد کنید")
     private String emza;
 
     @Column(columnDefinition = "nvarchar(25)")

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
@@ -20,35 +22,42 @@ public class Tajhizat implements Serializable {
 	private Integer id;
 	
 	@Column(columnDefinition="nvarchar(20)")
+	@NotNull(message = "وارد کردن نام تجهیز الزامی است")
 	private String name;
 	
 	@Column(columnDefinition="nvarchar(30)")
+	@NotNull(message = "وارد کردن شناسه اموال الزامی است")
 	private String amvalid;
 
 	@Column(columnDefinition="nvarchar(30)")
+	@NotNull(message = "وارد کردن شناسه سریال تجهیز الزامی است")
 	private String serial_id;
 
 	@Column(columnDefinition="nvarchar(20)")
+	@NotNull(message = "وارد کردن نوع الزامی است")
 	private String type;
 
 	@ManyToOne
 	@Nullable
 	@JoinColumn(name="location_id")
+	@NotNull(message = "وارد کردن مکان قرار گیری تجهیز الزامی است")
 	private Location location;
 
 	@ManyToOne
 	@Nullable
 	@JoinColumn(name="brand_id")
+	@NotNull(message = "وارد کردن برند الزامی است")
 	private Brand brand;
 
-
 	@Column(columnDefinition="nvarchar(20)")
+	@NotNull(message = "وارد کردن مدل الزامی است")
 	private String model;
 	
 	@ManyToMany(fetch=FetchType.LAZY,mappedBy = "Tajhizats")
 	private List<officeForm> tofficeforme;
 	
 	@Column(columnDefinition="LONGBLOB")
+	@NotNull(message = "وارد کردن تصویر الزامی است")
 	private String img;
 	
 	public Tajhizat() {

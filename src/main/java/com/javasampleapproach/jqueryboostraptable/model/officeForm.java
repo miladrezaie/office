@@ -7,9 +7,7 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import lombok.*;
@@ -30,33 +28,33 @@ public class officeForm implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
-    private String nameBarname;
-
     @Column(columnDefinition = "nvarchar(50)")
     private String tarikhsodur;
 
     @Column(columnDefinition = "nvarchar(50)")
+    @NotNull(message = "وارد کردن ساعت شروع الزامی است")
     private String saat_zabt;
 
     @Column(columnDefinition = "nvarchar(50)")
-    @NotNull
+    @NotNull(message = "وارد کردن ساعت خاتمه الزامی است")
+    private String saat_zabt_end;
+
+    @Column(columnDefinition = "nvarchar(50)")
+    @NotNull(message = "وارد کردن نام تهیه کننده الزامی است")
     private String tahayekonande;
 
-    @OneToMany(mappedBy="officeForm",orphanRemoval = true)
-    private Set<Car> cars;
-
-    @ElementCollection(targetClass = RozHafteh.class)
-    private List<RozHafteh> rozhafteh;
+    @OneToMany(mappedBy="officeForm")
+    private List<Car> car;
 
     //az no sima or zabtie
-    @NotNull
+    @NotNull(message = "وارد کردن نوع برنامه الزامی است")
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private OfficeForm type;
 
     @ManyToOne
     @JoinColumn(name="location_id")
+    @NotNull(message = "وارد کردن مکان برنامه الزامی است")
     private Location location;
 
     @JsonIgnore
@@ -129,9 +127,22 @@ public class officeForm implements Serializable {
     private String saatkhoroj;
 
     @Column(columnDefinition = "nvarchar(50)")
+    @NotNull(message = "وارد کردن روز شروع الزامی است")
     private String date_begin;
 
     @Column(columnDefinition = "nvarchar(50)")
+    @NotNull(message = "وارد کردن روز خاتمه الزامی است")
     private String date_end;
+
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "program_id", referencedColumnName = "id")
+//    @NotNull(message = "وارد کردن نام برنامه الزامی است")
+//    private Program program;
+
+    @ManyToOne
+    @Nullable
+    @JoinColumn(name = "program_id", referencedColumnName = "id")
+    @NotNull(message = "وارد کردن نام برنامه الزامی است")
+    private Program program ;
 
 }

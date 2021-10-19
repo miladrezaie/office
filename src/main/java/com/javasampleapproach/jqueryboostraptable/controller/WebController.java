@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
@@ -164,22 +165,28 @@ public class WebController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
+//    @Transactional
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
-        ModelAndView modelAndView = new ModelAndView();
-        System.out.println("personal id : " + userRepo.findByPersonalId(user.getPersonalId()));
-        System.out.println(user);
+        try {
+            ModelAndView modelAndView = new ModelAndView();
+            System.out.println("personal id : " + userRepo.findByPersonalId(user.getPersonalId()));
+            System.out.println(user);
 
-        System.out.println("***********************************");
-        if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
-            bindingResult.rejectValue("personalId", "error.user",
-                    "هم اکنون کاربری با این شماره کارمندی موجود است");
+            System.out.println("***********************************");
+            if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
+                bindingResult.rejectValue("personalId", "error.user",
+                        "هم اکنون کاربری با این شماره کارمندی موجود است");
+            }
+            if (bindingResult.hasErrors()) {
+                modelAndView.setViewName("registration");
+            } else {
+                userService.save(user);
+            }
+            return modelAndView;
+        } catch (Exception exception){
+            throw exception;
         }
-        if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("registration");
-        } else {
-            userService.save(user);
-        }
-        return modelAndView;
+
     }
 
     @GetMapping("/deleteUser")

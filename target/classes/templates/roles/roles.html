@@ -57,15 +57,19 @@
                         <div class="form-group">
                             <label for="name" class="form-control-label">نام سطح دسترسی:</label>
                             <input type="text" class="form-control" id="name" name="name" value=""/>
+<!--                            <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
+<!--                                   class="validation-message"></label>-->
                         </div>
                         <div class="form-group">
                             <label for="description" class="form-control-label">توضیحات سطح دسترسی:</label>
                             <input type="text" class="form-control" id="description" name="description" value=""/>
+<!--                            <label th:if="${#fields.hasErrors('description')}" th:errors="*{description}"-->
+<!--                                   class="validation-message"></label>-->
                         </div>
                         <div class="form-group">
-                            <label for="description" class="form-control-label">سطح دسترسی:</label>
+                            <label for="authorities" class="form-control-label">سطح دسترسی:</label>
 
-                            <select class="selectpicker" name="authorities" multiple data-live-search="true"
+                            <select class="selectpicker" id="authorities" name="authorities" multiple data-live-search="true"
                                     title="انتخاب کنید">
 
                                 <option th:each="authority  : ${authorities}"
@@ -73,6 +77,8 @@
                                         th:text="${authority.displayName}" ></option>
 
                             </select>
+<!--                            <label th:if="${#fields.hasErrors('authorities')}" th:errors="*{authorities}"-->
+<!--                                   class="validation-message"></label>-->
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 d-flex justify-content-center">

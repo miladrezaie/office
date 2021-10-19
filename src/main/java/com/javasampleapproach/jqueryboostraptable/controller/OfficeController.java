@@ -6,10 +6,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 
-import com.javasampleapproach.jqueryboostraptable.Service.Impl.BrandServiceImp;
-import com.javasampleapproach.jqueryboostraptable.Service.Impl.CarServiceImp;
-import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
-import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.*;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
@@ -43,7 +40,6 @@ import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
 @Controller
 public class OfficeController {
 
-
     @Autowired
     private TajhizatRepository tRepo;
 
@@ -68,6 +64,8 @@ public class OfficeController {
     @Autowired
     private CarServiceImp carServiceImp;
 
+    @Autowired
+    private ProgramServiceImp programServiceImp;
 
     @GetMapping("/tajhizats")
     public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
@@ -152,6 +150,7 @@ public class OfficeController {
             model.addAttribute("tahie", user.getFullname());
         }
         model.addAttribute("officeTypes", OfficeForm.values());
+        model.addAttribute("programs", programServiceImp.getAllPrograms());
         model.addAttribute("rozhaehafte", RozHafteh.values());
         model.addAttribute("locations", locationServiceImp.getAllLocations());
         model.addAttribute("users", userRepo.findAll());
@@ -251,18 +250,6 @@ public class OfficeController {
 
     }
 
-//    public  User findUserByAuthority(String authority) {
-//        List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-//        System.out.println("authority : " + authorities);
-//        for (GrantedAuthority grantedAuthority : authorities) {
-//            if (authority.equals(grantedAuthority.getAuthority())) {
-//                return
-//            }
-//        }
-//
-//
-//    }
-
     public static boolean userHasAuthority(String authority) {
         List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         System.out.println("authority : " + authorities);
@@ -275,7 +262,7 @@ public class OfficeController {
     }
 
     @PostMapping("/saveEmza")
-    public String saveEmza(FormJob fj) {
+    public String saveEmza(FormJob fj ) {
         String redirect = "redirect:/form/?id=" + fj.getFid();
         officeForm office_form = formRepo.findById(fj.getFid()).get();
         User u = userRepo.findById(fj.getUid()).get();
@@ -310,7 +297,7 @@ public class OfficeController {
             office_form.setRanande(us.getFullname());
             office_form.setRanandeid(us.getPersonalId());
             Car car = carServiceImp.findById(fj.getCar()).get();
-            office_form.getCars().add(car);
+            car.setOfficeForm(office_form);
             office_form.setHamlonaghlemza(u.getEmza());
         } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
             LocalTime time = LocalTime.now();
@@ -403,7 +390,7 @@ public class OfficeController {
     @PostMapping("/addForm")
     public String addutoform(officeForm f) {
         System.out.println("ffffffffffffffffffffff : " + f.getUsers());
-        System.out.println("ffffffffffffffffffffff : " + f.getNameBarname());
+//        System.out.println("ffffffffffffffffffffff : " + f.getNameBarname());
         System.out.println("ffffffffffffffffffffff : " + f.getId());
         officeForm form = formRepo.findById((long) f.getId()).get();
 

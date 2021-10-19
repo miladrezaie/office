@@ -11,15 +11,22 @@
 <!--    <a th:href="@{/times}">ساعت</a>-->
 
 <!--    | &nbsp;-->
+<th:block sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT')"><a th:href="@{/tajhizats}">تجهیزات</a></th:block>
 
-    <a th:href="@{/tajhizats}">تجهیزات</a>
     | &nbsp;
-    <a th:href="@{/members}">کاربرها</a>
+
+    <th:block sec:authorize="hasAuthority('OP_NEW_USER')"><a th:href="@{/members}">کاربرها</a></th:block>
+
     | &nbsp;
     <a th:href="@{/office}">فرم آفیش</a>
 
     | &nbsp;
+    <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')"><a th:href="@{/admin/programs}">برنامه ها</a></th:block>
+
+
+    | &nbsp;
     <a th:href="@{/admin/locations}">مکان ها</a>
+
 
     | &nbsp;
 <!--    <a th:href="@{/employee}">کارمندان</a>-->
@@ -28,7 +35,8 @@
     | &nbsp;
     <a th:href="@{/admin/brands}">برند ها</a>
     | &nbsp;
-    <a th:href="@{/admin/roles}">سطح دسترسی ها</a>
+
+    <th:block sec:authorize="hasAuthority('OP_ACCESS_ROLES')"><a th:href="@{/admin/roles}">سطح دسترسی ها</a></th:block>
  | &nbsp;
     <a th:href="@{/admin/cars}">وسایل نقیله سازمان</a>
 

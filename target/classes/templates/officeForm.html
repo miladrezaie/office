@@ -44,19 +44,19 @@
 <div class="container">
     <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
-    <h2>ثبت برنامه</h2>
+    <h2>ثبت آفیش</h2>
     <!--    <input type="text" id="normal-example">-->
 
     <div sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
-        <button class="btn btn-success fnBtn" id="newoffice">ثبت برنامه جدید</button>
+        <button class="btn btn-success fnBtn" id="newoffice">ثبت آفیش جدید</button>
     </div>
     <table class="table table-hover">
         <thead>
         <tr class="text-center">
             <th dir="rtl">ردیف</th>
             <th dir="rtl">نام تهیه کننده</th>
-            <th dir="rtl">نام برنامه</th>
-            <th dir="rtl">محل برنامه</th>
+            <th dir="rtl">نام آفیش</th>
+            <th dir="rtl">محل آفیش</th>
             <th dir="rtl">تنظیمات</th>
         </tr>
         </thead>
@@ -65,13 +65,19 @@
         <tr class="text-center" th:each="form : ${forms}">
             <td th:utext="${form.id}">...</td>
             <td th:utext="${form.getUsers().get(0).getFullname()}">...</td>
-            <td th:utext="${form.nameBarname}">...</td>
+            <td th:utext="${form.program.getName()}">...</td>
             <td th:utext="${form.location.getName()}">...</td>
             <td>
                 <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن</a>
                 </th:block>
-                <a th:href="@{form/(id=${form.id})}" class="btn btn-warning mdelBtn" id="DeleteUser">نمایش</a>
+                <a th:href="@{form/(id=${form.id})}" class="btn btn-default mdelBtn" id="DeleteUser">نمایش</a>
+                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
+                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                            th:attr="data-target='#modal-warning'+${form.getId() }">
+                        حذف
+                    </button>
+                </th:block>
                 <input sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')" th:if="${form.getMdarkhastemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
                 <input sec:authorize="hasAuthority('OP_ANBARDAR')" th:if="${form.getAnbaremza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
                 <input sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')" th:if="${form.getPoshemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
@@ -80,16 +86,12 @@
                 <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_2')" th:if="${form.getTasviremza2() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
                 <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_1')" th:if="${form.getTasviremza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
                 <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_3')" th:if="${form.getTasviremza3() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getKhherasatemza() != null}" type="submit" class="btn btn-success" value="خروج تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getKhherasatemza() != null}" type="submit" class="btn btn-warning" value="خروج تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getVherasatemza() != null}" type="submit" class="btn btn-success" value="ورود تایید شد" disabled>
 
                 <!--                <a th:if="${form.}" class="btn btn-success "  readonly="readonly">نمایش</a>-->
 <!--                <a th:href="@{delete/form/(id=${form.id})}" class="btn btn-danger btn-danger" >حذف</a>-->
-                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
-                    <button type="button" class="btn btn-danger" data-toggle="modal"
-                            th:attr="data-target='#modal-warning'+${form.getId() }">
-                        حذف
-                    </button>
-                </th:block>
+
 
 
                 <!-- Modal -->
@@ -141,39 +143,34 @@
                                 <input type="text" class="form-control" id="tahayekonande" name="tahayekonande"
                                        th:value="${tahie}" readonly="readonly" />
                             </div>
-
                             <div class="form-group">
-                                <label for="nameBarname" class="form-control-label">نام برنامه:</label>
-                                <input type="text" class="form-control" id="nameBarname" name="nameBarname"
-                                       value="" />
+                                <label for="program" class="form-control-label">نام برنامه:</label>
+                                <select class="form-control" id="program" name="program">
+                                    <option value="">نوع آفیش را انتخاب کنید</option>
+                                    <option th:each="pro :${programs}" th:value="${pro.getId()}"
+                                            th:text="${pro.getName()}"></option>
+                                </select>
                             </div>
 
                             <div class="form-inline form-group">
 <!--                                <label>انتخاب تاریخ:</label>-->
-
                                 <div class="input-group input-group-sm">
                                     <label for="date_begin" class="form-control-label">از تاریخ :</label>
                                     <input type="text" id="date_begin" name="date_begin" class=" pwt-datepicker-input-element normal-example">
                                     <label for="date_end" class="form-control-label">تا تاریخ : </label>
                                     <input type="text" id="date_end" name="date_end" class="pwt-datepicker-input-element normal-example">
                                 </div>
-
                                 <!-- /.input group -->
                             </div>
                             <div class="form-group">
-                                <label for="saat_zabt" class="form-control-label">ساعت برنامه:</label>
+                                <label for="saat_zabt" class="form-control-label">ساعت آفیش:</label>
                                 <input type="text"  id="saat_zabt" name="saat_zabt" value=""/>
+                                <label for="saat_zabt_end" class="form-control-label">ساعت آفیش:</label>
+                                <input type="text"  id="saat_zabt_end" name="saat_zabt_end" value=""/>
 
-                                <label for="rozhafteh" class="form-control-label"> روز های پخش:</label>
-                                <select class="selectpicker" id="rozhafteh" name="rozhafteh" multiple data-live-search="true" title="روز های پخش">
-
-                                    <option th:each="roz :${rozhaehafte}" th:value="${roz.name()}"
-                                            th:text="${roz.getDisplayName()}"></option>
-                                </select>
                             </div>
-
                             <div class="form-group">
-                                <label for="location" class="form-control-label">محل برنامه:</label>
+                                <label for="location" class="form-control-label">محل آفیش:</label>
                                 <select class="form-control" id="location" name="location">
                                     <option value="">مکان را انتخاب کنید</option>
 
@@ -182,18 +179,15 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="type" class="form-control-label">نوع برنامه:</label>
+                                <label for="type" class="form-control-label">نوع آفیش:</label>
                                 <select class="form-control" id="type" name="type">
-                                    <option value="">نوع برنامه را انتخاب کنید</option>
-
+                                    <option value="">نوع آفیش را انتخاب کنید</option>
                                     <option th:each="type :${officeTypes}" th:value="${type.name()}"
                                             th:text="${type.getDisplayName()}"></option>
                                 </select>
                             </div>
-
                         </div>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <input type="submit" class="btn btn-primary" value="save"/>
@@ -202,7 +196,6 @@
             </div>
         </form>
     </div>
-
     <div class="omyForm">
         <form th:action="@{/addForm}" method="post">
             <div class="modal fade" id="oexampleModal" tabindex="-1" role="dialog"
@@ -235,7 +228,6 @@
                                             <!--       </th:block> -->
                                         </td>
                                     </th:block>
-
                                     <td>
                                         <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')" th:each="t : ${tajhiz}">
                                             <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>
@@ -243,8 +235,6 @@
                                         </th:block>
                                     </td>
                             </table>
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -261,20 +251,18 @@
              aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-
-
                     <div class="card">
                         <div class="card-block">
                             <table class="table table-hover">
                                 <tr>
                                     <th>
-                                        <div class="form-group">
-                                            <label for="nameBarname" class="form-control-label">نام
-                                                برنامه:</label>
-                                            <input type="text" class="form-control" id="nameBarname"
-                                                   name="nameBarname"
-                                                   value=""/>
-                                        </div>
+<!--                                        <div class="form-group">-->
+<!--                                            <label for="nameBarname" class="form-control-label">نام-->
+<!--                                                آفیش:</label>-->
+<!--                                            <input type="text" class="form-control" id="nameBarname"-->
+<!--                                                   name="nameBarname"-->
+<!--                                                   value=""/>-->
+<!--                                        </div>-->
                                     </th>
                                     <th>
                                         <div class="form-group">
@@ -286,44 +274,35 @@
                                     </th>
                                     <th>
                                         <div class="form-group">
-                                            <label for="tarikh" class="form-control-label">تاریخ برنامه
+                                            <label for="tarikh" class="form-control-label">تاریخ آفیش
                                                 :</label>
                                             <input type="date" class="form-control" id="tarikh" name="tarikh"
                                                    value=""/>
                                         </div>
                                     </th>
                                     <th>
-
                                         <div class="form-group">
                                             <label for="saat" class="form-control-label">ساعت ضبط:</label>
                                             <input type="text" class="form-control" id="saat" name="saat"
                                                    value=""/>
                                         </div>
-
                                     </th>
                                     <th>
-
                                         <div class="form-group">
-                                            <label for="location" class="form-control-label">محل برنامه:</label>
+                                            <label for="location" class="form-control-label">محل آفیش:</label>
                                             <input type="text" class="form-control" id="location"
                                                    name="location"
                                                    value=""/>
                                         </div>
                                     </th>
                                 </tr>
-
                                 <tr>
-
                                     <td>ردیف</td>
-                                    <td>عوامل برنامه
-
-
+                                    <td>عوامل آفیش
                                     </td>
                                     <td width="300px">نام و نام خانوادگی</td>
                                     <td width="300px">تجهیزات همراه</td>
                                     <td width="300px">شماره اموال</td>
-
-
                                 </tr>
                             </table>
                         </div>

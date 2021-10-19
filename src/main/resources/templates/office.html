@@ -12,7 +12,6 @@
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
     <script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
     <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
-
 </head>
 
 <style>
@@ -75,13 +74,12 @@
         </h3>
         <h3 align="left" th:text="${form.getTarikhsodur()}"></h3>
 
-
         <table border="3">
             <tr>
                 <th>
                     <div class="form-group">
-                        <label for="nameBarname" class="form-control-label">نام برنامه:</label><br>
-                        [[${form.nameBarname}]]
+                        <label for="program" class="form-control-label">نام آفیش:</label><br>
+                        [[${form.program.getName()}]]
                     </div>
                 </th>
                 <th>
@@ -92,12 +90,11 @@
                 </th>
                 <th>
                     <div class="form-group">
-                        <label for="tarikh" class="form-control-label ">تاریخ برنامه :</label><br>
+                        <label for="tarikh" class="form-control-label ">تاریخ آفیش :</label><br>
                         از
                         <span th:text="${form.getDate_begin()}"></span>
                         تا<br>
                         <span th:text="${form.getDate_end()}"></span>
-
                     </div>
                 </th>
                 <th>
@@ -105,31 +102,22 @@
                     <div class="form-group">
                         <label for="saat" class="form-control-label">ساعت ضبط:</label><br>
                         [[${form.saat_zabt}]]
-
                     </div>
-
                 </th>
                 <th>
-
                     <div class="form-group">
-                        <label for="location" class="form-control-label">محل برنامه:</label><br>
+                        <label for="location" class="form-control-label">محل آفیش:</label><br>
                         [[${form.location.getName()}]]
                     </div>
                 </th>
             </tr>
-
             <tr>
-
                 <td>ردیف</td>
-                <td>عوامل برنامه
-
-
+                <td>عوامل آفیش
                 </td>
                 <td width="300px">نام و نام خانوادگی</td>
                 <td width="300px">تجهیزات همراه</td>
                 <td width="300px">شماره اموال</td>
-
-
             </tr>
             <tbody>
             <tr>
@@ -137,28 +125,24 @@
                 <td>گزارشگر</td>
                 <td>
                     <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH')"
-                              th:each="u : ${form.users}" id="blk">
+                              id="blk">
                         <th:block>
-                            <div th:text="${u.getFullname()}"></div>
-
+                            <div></div>
                         </th:block>
                     </th:block>
-
-
                 </td>
-
                 <td>
-                    <th:block sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH')"
+                    <th:block sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
                               th:each="t : ${form.getTajhizats()}" id="blk">
-                        <div th:text="${t.getAmvalid()}"></div>
-<!--                        <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>-->
+                        <div th:text="${t.getName()}"></div>
+                        <!--                        <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>-->
                     </th:block>
                 </td>
                 <td>
-                    <th:block sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH')"
-                              th:each="t : ${form.getTajhizats()}" id="blk">
-                        <div th:text="${t.getName()}"></div>
-
+                    <th:block
+                            sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
+                            th:each="t : ${form.getTajhizats()}" id="blk">
+                        <div th:text="${t.getAmvalid()}"></div>
                     </th:block>
                 </td>
             </tr>
@@ -168,17 +152,11 @@
                 <td>
                     <th:block id="blk">
                         <th:block th:each="u : ${form.getUsers()}"
-                                  sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_TASVIRBARDAR_1','OP_TASVIRBARDAR_2','OP_TASVIRBARDAR_3','OP_TASVIRBARDAR_4')">
-                            <div th:if="${u.getJob() == 'تصویربردار'}" th:text="${u.getFullname()}"></div>
-
+                                  sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_TAHIEKONANDEH','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_TASVIRBARDAR_1','OP_TASVIRBARDAR_2','OP_TASVIRBARDAR_3','OP_TASVIRBARDAR_4')">
+                            <div th:text="${u.getFullname() +'  --  '+u.getPersonalId()+'  --  '+u.getJob().getName()}"></div>
                         </th:block>
-
-
                     </th:block>
-
-
                 </td>
-
                 <td class="text-center">
                     <th:block
                             sec:authorize="hasAnyAuthority('OP_TASVIRBARDAR_1','OP_TASVIRBARDAR_2','OP_TASVIRBARDAR_3','OP_TASVIRBARDAR_4')">
@@ -194,7 +172,6 @@
                 </td>
                 <td><input type="text" class="form-control" name="shomareamval" value=""></td>
             </tr>
-
             <tr>
                 <td>4</td>
                 <td>صدابردار</td>
@@ -309,18 +286,14 @@
                 </th>
             </tr>
             <tr>
-
-
                 <th th:if="${form.sedaemza} != null">امضا صدابردار<br>
                     <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.sedaemza}}" class="img-responsive"
                          style="direction: ltr;">
                 </th>
-
                 <th th:if="${form.tasviremza} != null"><p>امضا تصویر بردار</p><br>
                     <img width="100px" th:src="*{'data:emza/jpg;base64,'+{form.tasviremza}}" class="img-responsive"
                          style="direction: ltr;">
                 </th>
-
 
                 <td th:if="${form.tasviremza2} != null"><p>امضا تصویر بردار5</p><br>
                     <img width="100px" th:src="*{'data:emza/jpg;base64,'+{form.tasviremza2}}" class="img-responsive"
@@ -333,30 +306,32 @@
             </tr>
         </table>
         <th:block sec:authorize="hasAuthority('OP_HAML_NAGHL')">
-            <table style="direction: rtl;" class="table table-hover" border="1"  >
+            <table style="direction: rtl;" class="table table-hover" border="1">
                 <tr>
                     <th width="300px">خودروی شماره..
-                        <button th:text="${form.getCars()}"></button>
+                        <button th:if="${!form.getCar().isEmpty()}" th:text="${form.getCar().get(0).getName()}"></button>
                         ..به رانندگی آقای..
                         <button>[[${form.ranande}]]</button>
                         ..شماره کارمندی..
                         <button>[[${form.ranandeid}]]</button>
-                        ..میتواند جهت برنامه فوق از محوطه خارج شود
+                        ..میتواند جهت آفیش فوق از محوطه خارج شود
                         <th:block sec:authorize="hasAuthority('OP_HAML_NAGHL')">
                             <form th:action="@{/saveEmza}" method="post">
-                                <select name="tid" dir="ltr">
+                                <select th:if="${form.getHamlonaghlemza() == null}" name="tid" dir="ltr">
                                     <option>انتخاب راننده</option>
                                     <option th:each="us :${userss}" th:value="${us.id}">[[${us.fullname}]]</option>
                                 </select>
-                                <select name="car" dir="ltr">
+                                <select th:if="${form.getHamlonaghlemza() == null}" name="car" dir="ltr">
                                     <option>انتخاب وسیله نقلیه</option>
-                                    <option th:each="car :${cars}" th:value="${car.getId()}" th:text="${car.getName()}"></option>
+                                    <option th:each="car :${cars}" th:value="${car.getId()}"
+                                            th:text="${car.getName()}"></option>
                                 </select>
                                 <input type="hidden" name="fid" th:value="${form.id}">
                                 <input type="hidden" name="uid" th:value="${user.id}">
-                                <input th:if="${form.getHamlonaghlemza() == null}" type="submit" class="btn btn-info" value="تایید">
-                                <input th:if="${form.getHamlonaghlemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-
+                                <input th:if="${form.getHamlonaghlemza() == null}" type="submit" class="btn btn-info"
+                                       value="تایید">
+                                <input th:if="${form.getHamlonaghlemza() != null}" type="submit" class="btn btn-success"
+                                       value="تایید شد" disabled>
                             </form>
                         </th:block>
                     </th>
@@ -373,9 +348,14 @@
             </td>
         </th:block>
 
-        <th:block sec:authorize="hasAuthority('OP_HERASAT')" >
-            <table border="3" >
-                <tr >
+        <th:block sec:authorize="hasAuthority('OP_HERASAT')">
+            <table border="3">
+                <th:block
+                        sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
+                        th:each="t : ${form.getTajhizats()}" id="blk">
+                    <div th:text="${t.getName()}"></div>
+                </th:block>
+                <tr>
                     <td>خروج اشیا فوق در ساعت [[${form.saatkhoroj}]] از مرکز تایید می شود<br>
 
                         <img th:if="${form.khherasatemza} != null" width="90px"
@@ -386,7 +366,8 @@
                                 <input type="hidden" name="uid" th:value="${user.id}">
                                 <input type="hidden" name="fid" th:value="${form.id}">
                                 <input type="hidden" name="tid" value="2">
-                                <input type="submit" class="btnn" value="تایید">
+                                <input th:if="${form.getKhherasatemza() == null}" type="submit" class="btnn" value="تایید">
+                                <input th:if="${form.getKhherasatemza() != null}" type="submit" class="btnn" value="تایید" disabled>
                             </form>
                         </th:block>
                     </td>
@@ -400,7 +381,8 @@
                                 <input type="hidden" name="uid" th:value="${user.id}">
                                 <input type="hidden" name="fid" th:value="${form.id}">
                                 <input type="hidden" name="tid" value="1">
-                                <input type="submit" class="btnn" value="تایید">
+                                <input th:if="${form.getVherasatemza() == null}" type="submit" class="btnn" value="تایید">
+                                <input th:if="${form.getVherasatemza() != null}" type="submit" class="btnn" value="تایید شد" disabled>
                             </form>
                         </th:block>
                     </td>
@@ -409,23 +391,18 @@
 
             </table>
         </th:block>
-
-
         <br>
         <th:block sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')">
-
-                <form th:action="@{/saveEmza}" method="post">
-                    <input type="hidden" name="uid" th:value="${user.id}">
-                    <input type="hidden" name="fid" th:value="${form.id}">
-                    <input th:if="${form.getPoshemza() != null}" type="submit" class="btn btn-success"
-                           value="تایید شد" disabled>
-                    <input th:if="${form.getPoshemza() == null}" type="submit" class="btn btn-warning"
-                           value="تایید?">
-                </form>
-
+            <form th:action="@{/saveEmza}" method="post">
+                <input type="hidden" name="uid" th:value="${user.id}">
+                <input type="hidden" name="fid" th:value="${form.id}">
+                <input th:if="${form.getPoshemza() != null}" type="submit" class="btn btn-success"
+                       value="تایید شد" disabled>
+                <input th:if="${form.getPoshemza() == null}" type="submit" class="btn btn-warning"
+                       value="تایید?">
+            </form>
         </th:block>
         <th:block sec:authorize="hasAuthority('OP_ANBARDAR')">
-
             <form th:action="@{/saveEmza}" method="post">
                 <input type="hidden" name="uid" th:value="${user.id}">
                 <input type="hidden" name="fid" th:value="${form.id}">
@@ -434,9 +411,7 @@
                 <input th:if="${form.getAnbaremza()== null}" type="submit" class="btn btn-warning"
                        value="تایید?">
             </form>
-
         </th:block>
-
     </div>
 </div>
 </body>

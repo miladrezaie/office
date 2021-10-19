@@ -1,11 +1,14 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -19,7 +22,9 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(columnDefinition = "nvarchar(20)")
+    @Column(columnDefinition = "nvarchar(30)")
+    @NotEmpty(message = "نام برند نمی تواند خالی باشد")
+    @Size(message = "نام برند حداقل 3 کاراکتر و حداکثر 30 کاراکتر می تواند باشد")
     private String name;
 
     @OneToMany(mappedBy="brand",orphanRemoval = true)

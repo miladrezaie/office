@@ -39,6 +39,7 @@
             <td dir="rtl">شماره سریال</td>
             <td>نام تجهیز</td>
             <td>نوع</td>
+            <td>مدل</td>
             <td>مکان</td>
             <td>برند</td>
             <td>تصویر</td>
@@ -53,6 +54,7 @@
             <td th:utext="${tajhiz.serial_id}">...</td>
             <td th:utext="${tajhiz.name}">...</td>
             <td th:utext="${tajhiz.type}">...</td>
+            <td th:utext="${tajhiz.model}">...</td>
             <td th:if="${tajhiz.location != null}" th:text="${tajhiz.location.getName()}">...</td>
             <td th:unless="${tajhiz.location != null}">...</td>
             <td th:if="${tajhiz.brand != null}" th:text="${tajhiz.brand.getName()}">...</td>
@@ -93,21 +95,29 @@
                             <div class="form-group">
                                 <label for="name" class="form-control-label"> نام:</label>
                                 <input type="text" class="form-control" id="name" name="name" value=""/>
+<!--                                <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
+<!--                                       class="validation-message"></label>-->
                             </div>
 
                             <div class="form-group">
                                 <label for="model" class="form-control-label"> مدل:</label>
                                 <input type="text" class="form-control" id="model" name="model" value=""/>
+<!--                                <label th:if="${#fields.hasErrors('model')}" th:errors="*{model}"-->
+<!--                                       class="validation-message"></label>-->
                             </div>
 
                             <div class="form-group">
                                 <label for="amvalid" class="form-control-label">شماره اموال:</label>
                                 <input type="text" class="form-control" id="amvalid" name="amvalid" value=""/>
+<!--                                <label th:if="${#fields.hasErrors('amvalid')}" th:errors="*{amvalid}"-->
+<!--                                       class="validation-message"></label>-->
                             </div>
 
                             <div class="form-group">
                                 <label for="serial_id" class="form-control-label">شماره سریال:</label>
                                 <input type="text" class="form-control" id="serial_id" name="serial_id" value=""/>
+<!--                                <label th:if="${#fields.hasErrors('serial_id')}" th:errors="*{serial_id}"-->
+<!--                                       class="validation-message"></label>-->
                             </div>
 
 
@@ -121,33 +131,38 @@
                                     <option value="نور">نور</option>
                                     <option value="سایر">سایر</option>
                                 </select>
+<!--                                <label th:if="${#fields.hasErrors('type')}" th:errors="*{type}"-->
+<!--                                       class="validation-message"></label>-->
                             </div>
 
                             <div class="form-group">
                                 <label for="location" class="form-control-label">مکان:</label>
                                 <select class="form-control" id="location" name="location">
                                     <option value="">مکان را انتخاب کنید</option>
-
                                     <option th:each="location :${locations}" th:value="${location.getId()}"
                                             th:text="${location.getName()}"></option>
                                 </select>
+<!--                                <label th:if="${#fields.hasErrors('location')}" th:errors="*{location}"-->
+<!--                                       class="validation-message"></label>-->
                             </div>
 
                             <div class="form-group">
-
                                 <label for="brand" class="form-control-label">انتخاب برند</label>
                                 <select class="form-control" id="brand" name="brand">
                                     <option value="">برند را انتخاب کنید</option>
-
                                     <option th:each="brand :${brands}" th:value="${brand.getId()}"
                                             th:text="${brand.getName()}"></option>
                                 </select>
+<!--                                <label th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}"-->
+<!--                                       class="validation-message"></label>-->
 
                             </div>
                             <div class="form-group">
                                 <label for="file" class="form-control-label">تصویر:</label>
                                 <input type="file" class="custom-file-input" id="file" name="file"/>
                             </div>
+<!--                            <label th:if="${#fields.hasErrors('file')}" th:errors="*{file}"-->
+<!--                                   class="validation-message"></label>-->
                         </div>
 
                     </div>

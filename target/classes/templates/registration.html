@@ -84,6 +84,9 @@
                         <button type="submit" class="btn btn-primary btn-block">ثبت نام</button>
                     </div>
                 </div>
+                <div align="center" th:if="${param.error}">
+                    <p style="font-size: 17px; color: #FF1C19;">کد پرسنلی یا پسورد اشتباه می باشد لطفا مجددا تلاش نمایید</p>
+                </div>
 
                 <h2><span class="text-success" th:utext="${successMessage}"></span></h2>
 

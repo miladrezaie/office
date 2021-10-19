@@ -42,44 +42,6 @@
     </button>
 
 
-    <div class="modal fade" id="form" tabindex="-1" car="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" car="document">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="exampleModalLabel">ایجاد وسیله نقلیه جدید</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form th:action="@{/admin/cars/create}" method="post" >
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name" class="form-control-label">نام وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="name" name="name" value=""/>
-                        </div>
-                        <div class="form-group">
-                            <label for="type" class="form-control-label">نوع وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="type" name="type" value=""/>
-                        </div>
-                        <div class="form-group">
-                            <label for="color" class="form-control-label">رنگ وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="color" name="color" value=""/>
-                        </div>
-                        <div class="form-group">
-                            <label for="plak_number" class="form-control-label">پلاک وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="plak_number" name="plak_number" value=""/>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success">ثبت</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <table class="table table-hover">
         <thead>
         <tr class="text-center">
@@ -140,6 +102,53 @@
 
         </tbody>
     </table>
+
+    <div class="modal fade" id="form" tabindex="-1" car="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" car="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">ایجاد وسیله نقلیه جدید</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form th:action="@{/admin/cars/create}" th:object="${car}" method="post" >
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name" class="form-control-label">نام وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="name" name="name"  value=""/>
+<!--                            <label th:if="${#fields.hasErrors('${car.name}')}" th:errors="*{car.name}"-->
+<!--                                   class="validation-message">dfgdfggf</label>-->
+                        </div>
+                        <div class="form-group">
+                            <label for="type" class="form-control-label">نوع وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="type" name="type" value=""/>
+                            <!--                            <label th:if="${#fields.hasErrors('type')}" th:errors="*{type}"-->
+                            <!--                                   class="validation-message"></label>-->
+                        </div>
+                        <div class="form-group">
+                            <label for="color" class="form-control-label">رنگ وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="color" name="color" value=""/>
+                            <!--                            <label th:if="${#fields.hasErrors('color')}" th:errors="*{color}"-->
+                            <!--                                   class="validation-message"></label>-->
+                        </div>
+                        <div class="form-group">
+                            <label for="plak_number" class="form-control-label">پلاک وسیله نقلیه:</label>
+                            <input type="text" class="form-control" id="plak_number" name="plak_number" value=""/>
+                            <!--                            <label th:if="${#fields.hasErrors('plak_number')}" th:errors="*{plak_number}"-->
+                            <!--                                   class="validation-message"></label>-->
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer border-top-0 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success">ثبت</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <hr/>
 
