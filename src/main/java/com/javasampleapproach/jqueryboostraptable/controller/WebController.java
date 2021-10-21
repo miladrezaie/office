@@ -171,7 +171,6 @@ public class WebController {
             ModelAndView modelAndView = new ModelAndView();
             System.out.println("personal id : " + userRepo.findByPersonalId(user.getPersonalId()));
             System.out.println(user);
-
             System.out.println("***********************************");
             if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
                 bindingResult.rejectValue("personalId", "error.user",
@@ -194,12 +193,10 @@ public class WebController {
     public String deleteUser(Integer id, Model model) {
         try {
             userRepo.deleteById(id);
-
         } catch (Exception e) {
             model.addAttribute("messege", "این کاربر در یک آفیش حضور دارد");
             return "errorPage";
         }
-
         return "redirect:/members";
     }
 

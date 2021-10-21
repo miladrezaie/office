@@ -52,13 +52,13 @@ public class officeForm implements Serializable {
     @Enumerated(EnumType.STRING)
     private OfficeForm type;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="location_id")
     @NotNull(message = "وارد کردن مکان برنامه الزامی است")
     private Location location;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<User> users;
 
     @JsonIgnore

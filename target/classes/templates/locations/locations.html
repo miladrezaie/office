@@ -10,8 +10,8 @@
 
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
-    <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
-    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
+    <script type="text/javascript" th:src="@{/js/main.js}" src="../../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
 
 </head>
 
@@ -24,6 +24,11 @@
     .message {
         color: blue;
     }
+
+    .error {
+        color: red;
+        font-size: 12px;
+    }
 </style>
 <body dir="rtl">
 <div class="container">
@@ -32,39 +37,43 @@
 
     <h2>مکان ها</h2>
 
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
+    <button type="button" class="btn btn-danger newLocations" id="newLocation">
         افزودن مکان
     </button>
 
-
-    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="exampleModalLabel">ایجاد مکان جدید</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form th:action="@{/admin/locations/create}" method="post">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name" class="form-control-label">نام مکان:</label>
-                            <input type="text" class="form-control" id="name" name="name" value=""/>
+    <div class="locationModal">
+        <form th:action="@{/admin/locations/create}" method="post" name="locationForm" id="locationForm">
+            <div id="locationFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="exampleModalLabel">ایجاد مکان جدید</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-<!--                        <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
-<!--                               class="validation-message"></label>-->
+                        <div class="modal-body">
+                            <div class="form-group" hidden="true">
+                                <label for="id" class="col-form-label">ID:</label> <input
+                                    type="text" class="form-control form-control-sm btn-space" id="id"
+                                    name="id" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-control-label">نام مکان:</label>
+                                <input type="text" id="name" class="form-control" name="name" value=""/>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                        </div>
                     </div>
-                    <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success">ثبت</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 
-    <table class="table table-hover">
+    <table class="table table-hover tablemy">
         <thead>
         <tr class="text-center">
             <td dir="rtl">آی دی</td>
@@ -73,18 +82,17 @@
         </tr>
         </thead>
         <tbody>
-
         <tr class="text-center" th:each="location : ${locations}">
             <td th:text="${location.getId()}">...</td>
             <td th:text="${location.getName()}">...</td>
 
             <td>
-                <a th:href="@{/admin/locations/edit/{id}(id=${location.getId()})}" class="btn btn-primary teBtn"
-                   id="EditTajhiz">ویرایش</a>
+                <a th:href="@{/admin/locations/find/{id}(id=${location.getId()})}" class="btn btn-primary editLocations"
+                   id="EditLocation">ویرایش</a>
 
 
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-danger" data-toggle="modal"
+                <button type="button" class="btn btn-danger btn-sm tdelBtn" data-toggle="modal"
                         th:attr="data-target='#modal-warning'+${location.getId() }">
                     حذف
                 </button>
@@ -114,46 +122,141 @@
                         </div>
                     </div>
                 </div>
+                <!-- Modal -->
+                <div class="modal fade" th:id="modal-warning+${location.getId()}" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${location.getName()}"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="alert alert-danger">
+                                    آیا شما مطمین هستید که میخواهید این مکان را پاک کنید ؟
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                                <a th:href="@{/admin/locations/delete/{id}(id=${location.getId()})}"
+                                   data-target="#deleteLocation" class="btn btn-danger tdelBtn"
+                                   id="deleteLocation">حذف</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </td>
-
         </tr>
-
         </tbody>
     </table>
 
     <hr/>
 
-    <!--            <ul class="nav nav-pills">-->
-    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,locations.totalPages-1)}">-->
-    <!--                    <a th:href="@{/admin/locations/(page=${i})}" th:text="${i}" class="nav-link"-->
-    <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
-    <!--                </li>-->
-    <!--            </ul>-->
-
-    <div class="modal fade" id="deleteLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">مکان ها </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p class="alert alert-danger">
-                        آیا شما مطمین هستید که میخواهید این تجهیز را پاک کنید ؟
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                    <a href="" class="btn btn-danger" id="tdelRef">پاک شود</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <ul class="nav nav-pills">
+        <li class="nav-item" th:each="i : ${#numbers.sequence(0,locations.totalPages-1)}">
+            <a th:href="@{/admin/locations/(page=${i})}" th:text="${i}" class="nav-link"
+               th:classappend="${currentPage}==${i}?'active':''"></a>
+        </li>
+    </ul>
 
 
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"
+        integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    // $(document).ready(function(){
+    //     $(".btn").click(function(){
+    //         $("#myModal").modal('show');
+    //     });
+    // });
+    // $(document).ready(function () {
+    //     $('#btnshow').click(function () {
+    //         console.log("click showd");
+    //
+    //         $('#btnshowplus').modal('show');
+    //
+    //         $.getJSON('http://localhost:8085/' + value, function (data) {
+    //
+    //             console.log("****************** data :" + data);
+    //             console.log("****************** data :" + data.ip);
+    //             console.log("milad shorooooooooooooooooooooooooooooooo");
+    //             var gencheckboxes = "";
+    //             for (var i = 0; i < data.length; i++) {
+    //                 console.log(data[i].fullname);
+    //                 gencheckboxes = gencheckboxes + '<input type="checkbox" name="users" value="' + data[i].id + '">' + data[i].fullname + '<br></input>';
+    //             }
+    //             var dwrap = document.getElementById('wrapperfortestnames');
+    //             dwrap.innerHTML = gencheckboxes;
+    //         });
+    //
+    //     });
+    // })
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    // $(document).ready(function(){
+    //     var forms = document.querySelectorAll('.needs-validation');
+    //
+    //     // Loop over them and prevent submission
+    //     Array.prototype.slice.call(forms)
+    //         .forEach(function (form) {
+    //             form.addEventListener('submit', function (event) {
+    //                 if (!form.checkValidity()) {
+    //                     event.preventDefault()
+    //                     event.stopPropagation()
+    //                 }
+    //
+    //                 form.classList.add('was-validated')
+    //             }, false)
+    //         });
+    // });
+
+    $(document).ready(function () {
+        $("form[name='locationFormp']").validate({
+            rules: {
+                name: "required"
+            },
+            messages: {
+                name: "لطفا نام مکان را وارد کنید"
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+        $('.newLocations, .tablemy .editLocations').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).attr('id');
+            if (text == 'EditLocation') {
+                $("#saveeditbutton").prop("value", "Save");
+                $("label.error").hide();
+                $(".error").removeClass("error");
+                $.get(href, function (location) {
+                    $('.locationModal #id').val(location.id);
+                    $('.locationModal #name').val(location.name);
+                })
+                $('.locationModal #saveeditbutton').prop("value", "ویرایش");
+
+                $('.locationModal #locationFrom').modal('show');
+            } else if (text == 'newLocation') {
+                $.get(href, function (location, status) {
+                    $("label.error").hide();
+                    $(".error").removeClass("error");
+                    $('.locationModal #saveeditbutton').prop("value", "افزودن");
+                    $('.locationModal #name').val('');
+                    $('.locationModal #id').val('');
+                    $('.locationModal #locationFrom').modal('show');
+                });
+
+            }
+        });
+
+
+    });
+
+
+</script>
 </body>
 </html>
