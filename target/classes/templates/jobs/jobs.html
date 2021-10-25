@@ -1,18 +1,15 @@
 <!DOCTYPE HTML>
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>IOT</title>
+    <title>اتوماسیون آفیش</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
-
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
-    <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
-    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
-
+    <script type="text/javascript" th:src="@{/js/main.js}" src="../../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
 </head>
 
 <style>
@@ -24,47 +21,56 @@
     .message {
         color: blue;
     }
+
+    .error {
+        color: red;
+        font-size: 12px;
+    }
+
+    .active {
+        background-color: #337ab7;
+        color: white;
+    }
 </style>
 <body dir="rtl">
 <div class="container">
-    <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
-
-    <h2>عنوان شغلی ها</h2>
-
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
-        افزودن عنوان شغلی
+    <h2>مکان ها</h2>
+    <button type="button" class="btn btn-danger newJobs" id="newJob">
+        افزودن مکان
     </button>
-
-
-    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="exampleModalLabel">ایجاد عنوان شغلی جدید</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form th:action="@{/admin/jobs/create}" method="post">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name" class="form-control-label">نام عنوان شغلی:</label>
-                            <input type="text" class="form-control" id="name" name="name" value=""/>
+    <div class="jobModal">
+        <form th:action="@{/admin/jobs/create}" method="post" name="jobForm" id="jobForm">
+            <div id="jobFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="exampleModalLabel">ایجاد مکان جدید</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-<!--                        <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
-<!--                               class="validation-message"></label>-->
+                        <div class="modal-body">
+                            <div class="form-group" hidden="true">
+                                <label for="id" class="col-form-label">ID:</label> <input
+                                    type="text" class="form-control form-control-sm btn-space" id="id"
+                                    name="id" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-control-label">نام مکان:</label>
+                                <input type="text" id="name" class="form-control" name="name" value=""/>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                        </div>
                     </div>
-                    <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success">ثبت</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
-
-    <table class="table table-hover">
+    <table class="table table-hover tablemy">
         <thead>
         <tr class="text-center">
             <td dir="rtl">آی دی</td>
@@ -73,17 +79,16 @@
         </tr>
         </thead>
         <tbody>
-
         <tr class="text-center" th:each="job : ${jobs}">
             <td th:text="${job.getId()}">...</td>
             <td th:text="${job.getName()}">...</td>
-
             <td>
-                <a th:href="@{/admin/jobs/edit/{id}(id=${job.getId()})}" class="btn-sm teBtn btn btn-primary teBtn"
-                   id="EditTajhiz">ویرایش</a>
+                <a th:href="@{/admin/jobs/find/{id}(id=${job.getId()})}"
+                   class="btn btn-sm btn-primary editJobs"
+                   id="EditJob">ویرایش</a>
 
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-danger btn-sm tdelBtn" data-toggle="modal"
+                <button type="button" class="btn btn-danger btn-sm " data-toggle="modal"
                         th:attr="data-target='#modal-warning'+${job.getId() }">
                     حذف
                 </button>
@@ -101,58 +106,72 @@
                             </div>
                             <div class="modal-body">
                                 <p class="alert alert-danger">
-                                    آیا شما مطمین هستید که میخواهید این عنوان شغلی را پاک کنید ؟
+                                    آیا شما مطمین هستید که میخواهید این مکان را پاک کنید ؟
                                 </p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                                 <a th:href="@{/admin/jobs/delete/{id}(id=${job.getId()})}"
-                                   data-target="#deleteLocation" class="btn btn-danger tdelBtn"
-                                   id="deleteLocation">حذف</a>
+                                   class="btn btn-danger"
+                                   id="deleteJob">حذف</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </td>
-
         </tr>
-
         </tbody>
     </table>
-
     <hr/>
 
-    <!--            <ul class="nav nav-pills">-->
-    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,jobs.totalPages-1)}">-->
-    <!--                    <a th:href="@{/admin/jobs/(page=${i})}" th:text="${i}" class="nav-link"-->
-    <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
-    <!--                </li>-->
-    <!--            </ul>-->
-
-    <div class="modal fade" id="deleteLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">عنوان شغلی ها </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p class="alert alert-danger">
-                        آیا شما مطمین هستید که میخواهید این تجهیز را پاک کنید ؟
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                    <a href="" class="btn btn-danger" id="tdelRef">پاک شود</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+    <ul class="nav nav-pills" th:if="${jobs.totalPages>=2}">
+        <li class="nav-item" th:each="i : ${#numbers.sequence(0,jobs.totalPages-1)}">
+            <a th:href="@{/admin/jobs/(page=${i})}" th:text="${i+1}" class="nav-link"
+               th:classappend="${currentPage}==${i}?'active':''"></a>
+        </li>
+    </ul>
 </div>
+
+<script th:src="@{/js/jquery.validate.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("form[name='jobForm']").validate({
+            rules: {
+                name: "required"
+            },
+            messages: {
+                name: "لطفا نام مکان را وارد کنید"
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+        $('.newJobs, .tablemy .editJobs').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).attr('id');
+            if (text == 'EditJob') {
+                $("#saveeditbutton").prop("value", "Save");
+                $("label.error").hide();
+                $(".error").removeClass("error");
+                $.get(href, function (job) {
+                    $('.jobModal #id').val(job.id);
+                    $('.jobModal #name').val(job.name);
+                })
+                $('.jobModal #saveeditbutton').prop("value", "ویرایش");
+                $('.jobModal #jobFrom').modal('show');
+            } else if (text == 'newJob') {
+                $.get(href, function (job, status) {
+                    $("label.error").hide();
+                    $(".error").removeClass("error");
+                    $('.jobModal #saveeditbutton').prop("value", "افزودن");
+                    $('.jobModal #name').val('');
+                    $('.jobModal #id').val('');
+                    $('.jobModal #jobFrom').modal('show');
+                });
+            }
+        });
+    });
+</script>
 </body>
 </html>

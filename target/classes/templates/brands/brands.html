@@ -1,18 +1,15 @@
 <!DOCTYPE HTML>
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>IOT</title>
+    <title>اتوماسیون آفیش</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
-
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
-    <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
-    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
-
+    <script type="text/javascript" th:src="@{/js/main.js}" src="../../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
 </head>
 
 <style>
@@ -24,47 +21,56 @@
     .message {
         color: blue;
     }
+
+    .error {
+        color: red;
+        font-size: 12px;
+    }
+
+    .active {
+        background-color: #337ab7;
+        color: white;
+    }
 </style>
 <body dir="rtl">
 <div class="container">
-    <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
-
     <h2>برند ها</h2>
-
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
+    <button type="button" class="btn btn-danger newBrands" id="newBrand">
         افزودن برند
     </button>
-
-
-    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="exampleModalLabel">ایجاد برند جدید</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form th:action="@{/admin/brands/create}" method="post">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name" class="form-control-label">نام برند:</label>
-                            <input type="text" class="form-control" id="name" name="name" value=""/>
+    <div class="brandModal">
+        <form th:action="@{/admin/brands/create}" method="post" name="brandForm" id="brandForm">
+            <div id="brandFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="exampleModalLabel">ایجاد برند جدید</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-<!--                        <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
-<!--                               class="validation-message"></label>-->
+                        <div class="modal-body">
+                            <div class="form-group" hidden="true">
+                                <label for="id" class="col-form-label">ID:</label> <input
+                                    type="text" class="form-control form-control-sm btn-space" id="id"
+                                    name="id" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-control-label">نام برند:</label>
+                                <input type="text" id="name" class="form-control" name="name" value=""/>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                        </div>
                     </div>
-                    <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success">ثبت</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
-
-    <table class="table table-hover">
+    <table class="table table-hover tablemy">
         <thead>
         <tr class="text-center">
             <td dir="rtl">آی دی</td>
@@ -73,23 +79,17 @@
         </tr>
         </thead>
         <tbody>
-
         <tr class="text-center" th:each="brand : ${brands}">
             <td th:text="${brand.getId()}">...</td>
             <td th:text="${brand.getName()}">...</td>
-
             <td>
-                <a th:href="@{/admin/brands/edit/{id}(id=${brand.getId()})}" class="btn btn-primary teBtn"
-                   id="EditTajhiz">ویرایش</a>
-
-
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-danger" data-toggle="modal"
+                <a th:href="@{/admin/brands/find/{id}(id=${brand.getId()})}"
+                   class="btn btn-sm btn-primary editBrands"
+                   id="EditBrand">ویرایش</a>
+                <button type="button" class="btn btn-danger btn-sm " data-toggle="modal"
                         th:attr="data-target='#modal-warning'+${brand.getId() }">
                     حذف
                 </button>
-
-                <!-- Modal -->
                 <div class="modal fade" th:id="modal-warning+${brand.getId()}" tabindex="-1" role="dialog"
                      aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -108,52 +108,65 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                                 <a th:href="@{/admin/brands/delete/{id}(id=${brand.getId()})}"
-                                   data-target="#deleteLocation" class="btn btn-danger tdelBtn"
-                                   id="deleteLocation">حذف</a>
+                                   class="btn btn-danger"
+                                   id="deleteBrand">حذف</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </td>
-
         </tr>
-
         </tbody>
     </table>
-
     <hr/>
-
-    <!--            <ul class="nav nav-pills">-->
-    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,brands.totalPages-1)}">-->
-    <!--                    <a th:href="@{/admin/brands/(page=${i})}" th:text="${i}" class="nav-link"-->
-    <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
-    <!--                </li>-->
-    <!--            </ul>-->
-
-    <div class="modal fade" id="deleteLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">برند ها </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p class="alert alert-danger">
-                        آیا شما مطمین هستید که میخواهید این تجهیز را پاک کنید ؟
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                    <a href="" class="btn btn-danger" id="tdelRef">پاک شود</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+    <ul class="nav nav-pills" th:if="${brands.totalPages>=2}">
+        <li class="nav-item" th:each="i : ${#numbers.sequence(0,brands.totalPages-1)}">
+            <a th:href="@{/admin/brands/(page=${i})}" th:text="${i+1}" class="nav-link"
+               th:classappend="${currentPage}==${i}?'active':''"></a>
+        </li>
+    </ul>
 </div>
+
+<script th:src="@{/js/jquery.validate.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("form[name='brandForm']").validate({
+            rules: {
+                name: "required"
+            },
+            messages: {
+                name: "لطفا نام برند را وارد کنید"
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+        $('.newBrands, .tablemy .editBrands').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).attr('id');
+            if (text == 'EditBrand') {
+                $("#saveeditbutton").prop("value", "Save");
+                $("label.error").hide();
+                $(".error").removeClass("error");
+                $.get(href, function (brand) {
+                    $('.brandModal #id').val(brand.id);
+                    $('.brandModal #name').val(brand.name);
+                })
+                $('.brandModal #saveeditbutton').prop("value", "ویرایش");
+                $('.brandModal #brandFrom').modal('show');
+            } else if (text == 'newBrand') {
+                $.get(href, function (brand, status) {
+                    $("label.error").hide();
+                    $(".error").removeClass("error");
+                    $('.brandModal #saveeditbutton').prop("value", "افزودن");
+                    $('.brandModal #name').val('');
+                    $('.brandModal #id').val('');
+                    $('.brandModal #brandFrom').modal('show');
+                });
+            }
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,23 +1,15 @@
 <!DOCTYPE HTML>
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>IOT</title>
+    <title>اتوماسیون آفیش</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <script th:src="@{/js/js-select/jquery.min.js}"></script>
-    <script th:src="@{/js/js-select/bootstrap.min.js}"></script>
-
-    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap.min.css}"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
-    <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
-    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
-    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
-    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
-    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
-    <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
-    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
-
+    <script type="text/javascript" th:src="@{/js/main.js}" src="../../static/js/main.js"></script>
+    <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
 </head>
 
 <style>
@@ -29,52 +21,102 @@
     .message {
         color: blue;
     }
+
+    .error {
+        color: red;
+        font-size: 12px;
+    }
+
+    .active {
+        background-color: #337ab7;
+        color: white;
+    }
 </style>
 <body dir="rtl">
 <div class="container">
-    <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
-
     <h2>وسیله نقلیه ها</h2>
-
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
+    <button type="button" class="btn btn-danger newCar" id="newCar">
         افزودن وسیله نقلیه
     </button>
+    <div class="carModal">
+        <form th:action="@{/admin/cars/create}" method="post" name="carForm" id="carForm">
+            <div id="carFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="exampleModalLabel">ایجاد وسیله نقلیه جدید</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group" hidden="true">
+                                <label for="id" class="col-form-label">ID:</label> <input
+                                    type="text" class="form-control form-control-sm btn-space" id="id"
+                                    name="id" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-control-label">نام وسیله نقلیه:</label>
+                                <input type="text" id="name" class="form-control" name="name" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="plak_number" class="form-control-label">پلاک وسیله نقلیه:</label>
+                                <input type="text" id="plak_number" class="form-control" name="plak_number" value=""/>
+                            </div>
 
+                            <div class="form-group">
+                                <label for="color" class="form-control-label">رنگ وسیله نقلیه:</label>
+                                <input type="text" id="color" class="form-control" name="color" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="type" class="form-control-label">نوع وسیله نقلیه:</label>
+                                <input type="text" id="type" class="form-control" name="type" value=""/>
+                            </div>
 
-    <table class="table table-hover">
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <table class="table table-hover tablemy">
         <thead>
-        <tr class="text-center">
-            <td dir="rtl">آی دی</td>
-            <td dir="rtl">نام</td>
-            <td dir="rtl">نوع</td>
-            <td dir="rtl">شماره پلاک</td>
-            <td dir="rtl">رنگ</td>
-            <td dir="rtl">تنظیمات</td>
-        </tr>
+            <tr class="text-center">
+                <td dir="rtl">آی دی</td>
+                <td dir="rtl">نام</td>
+                <td dir="rtl">رنگ</td>
+                <td dir="rtl">پلاک</td>
+                <td dir="rtl">نوع</td>
+                <td dir="rtl">تنظیمات</td>
+            </tr>
         </thead>
         <tbody>
-
         <tr class="text-center" th:each="car : ${cars}">
             <td th:text="${car.getId()}">...</td>
             <td th:text="${car.getName()}">...</td>
-            <td th:text="${car.getType()}">...</td>
-            <td th:text="${car.getPlak_number()}">...</td>
             <td th:text="${car.getColor()}">...</td>
-
+            <td th:text="${car.getPlak_number()}">...</td>
+            <td th:text="${car.getType()}">...</td>
             <td>
-                <a th:href="@{/admin/cars/edit/{id}(id=${car.getId()})}" class="btn btn-primary teBtn"
-                   id="EditTajhiz">ویرایش</a>
+                <a th:href="@{/admin/cars/find/{id}(id=${car.getId()})}"
+                   class="btn btn-sm btn-primary editCar"
+                   id="EditCar">ویرایش</a>
 
-                <button type="button" class="btn btn-danger" data-toggle="modal"
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger btn-sm " data-toggle="modal"
                         th:attr="data-target='#modal-warning'+${car.getId() }">
                     حذف
                 </button>
 
                 <!-- Modal -->
-                <div class="modal fade" th:id="modal-warning+${car.getId()}" tabindex="-1" car="dialog"
+                <div class="modal fade" th:id="modal-warning+${car.getId()}" tabindex="-1" role="dialog"
                      aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" car="document">
+                    <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel" th:utext="${car.getName()}"></h5>
@@ -90,76 +132,87 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                                 <a th:href="@{/admin/cars/delete/{id}(id=${car.getId()})}"
-                                   data-target="#deleteRole" class="btn btn-danger tdelBtn"
-                                   id="deleteRole">حذف</a>
+                                   class="btn btn-danger"
+                                   id="deleteCar">حذف</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </td>
-
         </tr>
-
         </tbody>
     </table>
-
-    <div class="modal fade" id="form" tabindex="-1" car="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" car="document">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="exampleModalLabel">ایجاد وسیله نقلیه جدید</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form th:action="@{/admin/cars/create}" th:object="${car}" method="post" >
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name" class="form-control-label">نام وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="name" name="name"  value=""/>
-<!--                            <label th:if="${#fields.hasErrors('${car.name}')}" th:errors="*{car.name}"-->
-<!--                                   class="validation-message">dfgdfggf</label>-->
-                        </div>
-                        <div class="form-group">
-                            <label for="type" class="form-control-label">نوع وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="type" name="type" value=""/>
-                            <!--                            <label th:if="${#fields.hasErrors('type')}" th:errors="*{type}"-->
-                            <!--                                   class="validation-message"></label>-->
-                        </div>
-                        <div class="form-group">
-                            <label for="color" class="form-control-label">رنگ وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="color" name="color" value=""/>
-                            <!--                            <label th:if="${#fields.hasErrors('color')}" th:errors="*{color}"-->
-                            <!--                                   class="validation-message"></label>-->
-                        </div>
-                        <div class="form-group">
-                            <label for="plak_number" class="form-control-label">پلاک وسیله نقلیه:</label>
-                            <input type="text" class="form-control" id="plak_number" name="plak_number" value=""/>
-                            <!--                            <label th:if="${#fields.hasErrors('plak_number')}" th:errors="*{plak_number}"-->
-                            <!--                                   class="validation-message"></label>-->
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success">ثبت</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <hr/>
 
-    <!--            <ul class="nav nav-pills">-->
-    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,cars.totalPages-1)}">-->
-    <!--                    <a th:href="@{/admin/cars/(page=${i})}" th:text="${i}" class="nav-link"-->
-    <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
-    <!--                </li>-->
-    <!--            </ul>-->
-
-
+    <ul class="nav nav-pills" th:if="${cars.totalPages>=2}">
+        <li class="nav-item" th:each="i : ${#numbers.sequence(0,cars.totalPages-1)}">
+            <a th:href="@{/admin/cars/(page=${i})}" th:text="${i+1}" class="nav-link"
+               th:classappend="${currentPage}==${i}?'active':''"></a>
+        </li>
+    </ul>
 </div>
+
+<script th:src="@{/js/jquery.validate.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("form[name='carForm']").validate({
+            rules: {
+                name:{
+                    'required' :true,
+                    'minlength': 3
+                } ,
+
+                color: "required",
+                plak_number: "required",
+                type: "required",
+            },
+            messages: {
+                name: {
+                    required: "لطفا نام وسیله نقلیه را وارد کنید",
+                    minlength:"حداقل باید 3 کاراکتر وارد شود"
+                },
+                // name: "لطفا نام وسیله نقلیه را وارد کنید",
+                color: "لطفا رنگ وسیله نقلیه را وارد کنید",
+                plak_number: "لطفا شماره پلاک وسیله نقلیه را وارد کنید",
+                type: "لطفا نوع وسیله نقلیه را وارد کنید",
+
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+        $('.newCar, .tablemy .editCar').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).attr('id');
+            if (text == 'EditCar') {
+                $("#saveeditbutton").prop("value", "Save");
+                $("label.error").hide();
+                $(".error").removeClass("error");
+                $.get(href, function (car) {
+                    $('.carModal #id').val(car.id);
+                    $('.carModal #name').val(car.name);
+                    $('.carModal #color').val(car.color);
+                    $('.carModal #plak_number').val(car.plak_number);
+                    $('.carModal #type').val(car.type);
+                })
+                $('.carModal #saveeditbutton').prop("value", "ویرایش");
+                $('.carModal #carFrom').modal('show');
+            } else if (text == 'newCar') {
+                $.get(href, function (car, status) {
+                    $("label.error").hide();
+                    $(".error").removeClass("error");
+                    $('.carModal #saveeditbutton').prop("value", "افزودن");
+                    $('.carModal #name').val('');
+                    $('.carModal #id').val('');
+                    $('.carModal #color').val('');
+                    $('.carModal #plak_number').val('');
+                    $('.carModal #type').val('');
+                    $('.carModal #carFrom').modal('show');
+                });
+            }
+        });
+    });
+</script>
 </body>
 </html>

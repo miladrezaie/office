@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
@@ -28,8 +29,8 @@ public class Job {
     private Long id;
 
     @Column(columnDefinition = "nvarchar(40)")
-    @Size(message = "نام عنوان شغلی حداقل 3 کاراکتر و حداکثر 40 کاراکتر می تواند باشد",min = 3,max = 40)
-    @NotEmpty(message = "نام عنوان شغلی نمی تواند خالی باشد")
+    @Size(message = "نام عنوان شغلی حداقل 1 کاراکتر و حداکثر 40 کاراکتر می تواند باشد",min = 1,max = 40)
+    @NotNull(message = "نام عنوان شغلی نمی تواند خالی باشد")
     private String name;
 
     //is ok
@@ -38,7 +39,7 @@ public class Job {
 //    private List<Employee> employees;
 
 
-    @OneToMany(mappedBy = "job", orphanRemoval = true)
+    @OneToMany(mappedBy = "job")
     private Set<User> users;
 
     @Override

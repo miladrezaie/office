@@ -33,7 +33,6 @@ public class LocationController {
     public LocationController(LocationServiceImp locationService, UserService userService, LocationRepository locationRepository) {
         this.locationService = locationService;
         this.userService = userService;
-
         this.locationRepository = locationRepository;
     }
 
@@ -60,14 +59,7 @@ public class LocationController {
             model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
             return "errorPage";
         }
-
     }
-
-//    @GetMapping(value = "/admin/locations/edit/{id}")
-//    public String update(@PathVariable(name = "id") Long id, Model model) {
-//        model.addAttribute("location", locationService.getLocation(id));
-//        return "redirect:/admin/locations";
-//    }
 
     @GetMapping(value = "/admin/locations/delete/{id}")
     public String delete(@PathVariable Long id) {

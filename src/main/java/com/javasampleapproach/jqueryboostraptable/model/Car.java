@@ -8,7 +8,8 @@ import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 
@@ -23,21 +24,21 @@ public class Car {
     private Long id;
 
     @Column(columnDefinition = "nvarchar(30)")
-    @NotEmpty(message = "نام وسیله نقلیه نمی تواند خالی باشد")
+    @NotBlank(message = "نام وسیله نقلیه نمی تواند خالی باشد")
     @Size(message = "نام وسیله نقلیه حداقل 3 کاراکتر و حداکثر 30 کاراکتر می تواند باشد",min = 3,max = 30)
     private String name;
 
     @Column(columnDefinition = "nvarchar(30)")
 //    @Pattern(regexp = "/^[0-9]{2}[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی][0-9]{3}-[0-9]{2}$/",message = "فرمت ارسالی پلاک اشتباه است")
-    @NotEmpty(message = " پلاک خودرو نمی تواند خالی باشد")
+    @NotBlank(message = " پلاک خودرو نمی تواند خالی باشد")
     private String plak_number;
 
     @Column(columnDefinition = "nvarchar(20)")
-    @NotEmpty(message = "لطفا رنگ خوردو را وارد کنید")
+    @NotBlank(message = "لطفا رنگ خوردو را وارد کنید")
     private String color;
 
     @Column(columnDefinition = "nvarchar(20)")
-    @NotEmpty(message = "لطفا نوع خوردو را وارد کنید به عنوان مثال : ون ، اتوبوس ، سواری و ..")
+    @NotBlank(message = "لطفا نوع خوردو را وارد کنید به عنوان مثال : ون ، اتوبوس ، سواری و ..")
     private String type;
 
     @ManyToOne

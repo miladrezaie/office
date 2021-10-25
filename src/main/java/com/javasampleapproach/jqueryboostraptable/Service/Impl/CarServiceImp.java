@@ -2,6 +2,7 @@ package com.javasampleapproach.jqueryboostraptable.Service.Impl;
 
 import com.javasampleapproach.jqueryboostraptable.Service.CarService;
 import com.javasampleapproach.jqueryboostraptable.model.Car;
+import com.javasampleapproach.jqueryboostraptable.model.Location;
 import com.javasampleapproach.jqueryboostraptable.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,5 +37,9 @@ public class CarServiceImp implements CarService {
 
     public Car getCar(Long id) {
         return carRepository.findById(id).get();
+    }
+
+    public Optional<Car> findByIdCar(Long id) {
+        return carRepository.findById(id);
     }
 }

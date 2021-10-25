@@ -52,7 +52,7 @@ public class Program {
     @NotNull(message = "وارد کردن روز هفته الزامی است")
     private List<RozHafteh> rozhafteh;
 
-    @OneToMany(mappedBy = "program", orphanRemoval = true)
+    @OneToMany(mappedBy = "program")
     private Set<officeForm> office_form;
 
 

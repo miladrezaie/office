@@ -44,5 +44,4 @@ public class LocationServiceImp implements LocationService {
         return locationRepository.findById(id);
     }
 
-
 }

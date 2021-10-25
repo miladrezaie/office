@@ -2,6 +2,7 @@ package com.javasampleapproach.jqueryboostraptable.Service.Impl;
 
 import com.javasampleapproach.jqueryboostraptable.Service.BrandService;
 import com.javasampleapproach.jqueryboostraptable.model.Brand;
+import com.javasampleapproach.jqueryboostraptable.model.Location;
 import com.javasampleapproach.jqueryboostraptable.repository.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,5 +37,10 @@ public class BrandServiceImp implements BrandService {
 
     public Brand getBrand(Long id) {
         return brandRepository.findById(id).get();
+    }
+
+
+    public Optional<Brand> findByIdBrand(Long id) {
+        return brandRepository.findById(id);
     }
 }

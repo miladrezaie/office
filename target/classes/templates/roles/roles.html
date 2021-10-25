@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>IOT</title>
+    <title>اتوماسیون آفیش - نقش ها و سطح دسترسی کاربران</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script th:src="@{/js/js-select/jquery.min.js}"></script>
@@ -10,14 +10,10 @@
 
     <link rel="stylesheet" th:href="@{/css/css-select/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
-    <script type="text/javascript" th:src="@{js/main.js}" src="../../static/js/main.js"></script>
-    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}" src="../../static/js/jqueryAjaxGet.js"></script>
-    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
-    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
+    <script type="text/javascript" th:src="@{js/main.js}"></script>
+    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}"></script>
     <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
     <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
-    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
-
 </head>
 
 <style>
@@ -26,8 +22,18 @@
         direction: rtl;
     }
 
+    .error {
+        color: red;
+        font-size: 12px;
+    }
+
     .message {
         color: blue;
+    }
+
+    .active {
+        background-color: #337ab7;
+        color: white;
     }
 </style>
 <body dir="rtl">
@@ -35,61 +41,64 @@
     <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
 
-    <h2>سطح دسترسی ها</h2>
-
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form">
-        افزودن سطح دسترسی
+    <h2> نقش ها و سطح دسترسی ها</h2>
+    <button type="button" class="btn btn-danger newRoles" id="newRole">
+        افزودن نقش
     </button>
+    <div class="roleModal" id="role_modal">
+        <form th:action="@{/admin/roles/create}" method="post" name="roleForm" id="roleForm">
+            <div id="roleFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="exampleModalLabel">ایجاد نقش جدید</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group" hidden="true">
+                                <label for="id" class="col-form-label">ID:</label> <input
+                                    type="text" class="form-control form-control-sm btn-space" id="id"
+                                    name="id" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-control-label" >نام نقش:</label>
+                                <input type="text" class="form-control"  id="name" name="name" value=""/>
+                                <!--                            <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
+                                <!--                                   class="validation-message"></label>-->
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="form-control-label">توضیحات نقش:</label>
+                                <input type="text" class="form-control" id="description" name="description" value=""/>
+                                <!--                            <label th:if="${#fields.hasErrors('description')}" th:errors="*{description}"-->
+                                <!--                                   class="validation-message"></label>-->
+                            </div>
+                            <div class="form-group">
+                                <label for="authorities" class="form-control-label">سطح دسترسی:</label>
+                                <select class="selectpicker" id="authorities" name="authorities" multiple
+                                        data-live-search="true"
+                                        title="انتخاب کنید">
+                                    <option th:each="authority  : ${authorities}"
+                                            th:value="${authority.name()}"
+                                            th:text="${authority.displayName}"></option>
+                                </select>
+                                <!--                            <label th:if="${#fields.hasErrors('authorities')}" th:errors="*{authorities}"-->
+                                <!--                                   class="validation-message"></label>-->
+                            </div>
 
-
-    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="exampleModalLabel">ایجاد سطح دسترسی جدید</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                        </div>
+                    </div>
                 </div>
-                <form th:action="@{/admin/roles/create}" method="post" >
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name" class="form-control-label">نام سطح دسترسی:</label>
-                            <input type="text" class="form-control" id="name" name="name" value=""/>
-<!--                            <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
-<!--                                   class="validation-message"></label>-->
-                        </div>
-                        <div class="form-group">
-                            <label for="description" class="form-control-label">توضیحات سطح دسترسی:</label>
-                            <input type="text" class="form-control" id="description" name="description" value=""/>
-<!--                            <label th:if="${#fields.hasErrors('description')}" th:errors="*{description}"-->
-<!--                                   class="validation-message"></label>-->
-                        </div>
-                        <div class="form-group">
-                            <label for="authorities" class="form-control-label">سطح دسترسی:</label>
-
-                            <select class="selectpicker" id="authorities" name="authorities" multiple data-live-search="true"
-                                    title="انتخاب کنید">
-
-                                <option th:each="authority  : ${authorities}"
-                                        th:value="${authority.name()}"
-                                        th:text="${authority.displayName}" ></option>
-
-                            </select>
-<!--                            <label th:if="${#fields.hasErrors('authorities')}" th:errors="*{authorities}"-->
-<!--                                   class="validation-message"></label>-->
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success">ثبت</button>
-                    </div>
-                </form>
             </div>
-        </div>
+        </form>
     </div>
 
-    <table class="table table-hover">
+    <table class="table table-hover tablemy">
         <thead>
         <tr class="text-center">
             <td dir="rtl">آی دی</td>
@@ -106,8 +115,8 @@
             <td th:text="${role.getDescription()}">...</td>
 
             <td>
-                <a th:href="@{/admin/roles/edit/{id}(id=${role.getId()})}" class="btn btn-primary teBtn"
-                   id="EditTajhiz">ویرایش</a>
+                <a th:href="@{/admin/roles/find/{id}(id=${role.getId()})}" class="btn btn-primary editRoles"
+                   id="EditRole">ویرایش</a>
 
                 <button type="button" class="btn btn-danger" data-toggle="modal"
                         th:attr="data-target='#modal-warning'+${role.getId() }">
@@ -133,7 +142,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                                 <a th:href="@{/admin/roles/delete/{id}(id=${role.getId()})}"
-                                   data-target="#deleteRole" class="btn btn-danger tdelBtn"
+                                   data-target="#deleteRole" class="btn btn-danger"
                                    id="deleteRole">حذف</a>
                             </div>
                         </div>
@@ -148,14 +157,72 @@
 
     <hr/>
 
-    <!--            <ul class="nav nav-pills">-->
-    <!--                <li class="nav-item" th:each="i : ${#numbers.sequence(0,roles.totalPages-1)}">-->
-    <!--                    <a th:href="@{/admin/roles/(page=${i})}" th:text="${i}" class="nav-link"-->
-    <!--                       th:classappend="${currentPage}==${i}?'active':''"></a>-->
-    <!--                </li>-->
-    <!--            </ul>-->
+    <ul class="nav nav-pills" th:if="${roles.totalPages>=2}">
+        <li class="nav-item" th:each="i : ${#numbers.sequence(0,roles.totalPages-1)}">
+            <a th:href="@{/admin/roles/(page=${i})}" th:text="${i+1}" class="nav-link"
+               th:classappend="${currentPage}==${i}?'active':''"></a>
+        </li>
+    </ul>
 
 
 </div>
+<script th:src="@{/js/jquery.validate.min.js}"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#role_modal').on('shown.bs.modal', function() {
+            $('#role_modal #name').focus();
+        });
+        // $('#role_modal #name').focus();
+        $("form[name='roleForm']").validate({
+            rules: {
+                name: "required",
+                description: "required",
+                authorities: "required",
+            },
+            messages: {
+                name: "لطفا نام نقش را وارد کنید",
+                description: "وارد کردن توضیحات الزامی است",
+                authorities: "دادن حداقل یک سطح دسترسی به کاربر الزامی است",
+
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+        $('.newRoles, .tablemy .editRoles').on('click', function (event) {
+            event.preventDefault();
+
+
+            var href = $(this).attr('href');
+            var text = $(this).attr('id');
+            if (text == 'EditRole') {
+                $("label.error").hide();
+                $(".error").removeClass("error");
+                $.get(href, function (role) {
+
+                    $('.roleModal #id').val(role.id);
+                    $('.roleModal #name').val(role.name);
+                    $('.roleModal #description').val(role.description);
+                    $('.roleModal #authorities').selectpicker('val', role.authorities);
+                })
+                $('.roleModal #saveeditbutton').prop("value", "ویرایش");
+                $('.roleModal #roleFrom').modal('show');
+            } else if (text == 'newRole') {
+
+                $.get(href, function (role, status) {
+                    $("label.error").hide();
+                    $(".error").removeClass("error");
+                    $('.roleModal #saveeditbutton').prop("value", "افزودن");
+                    $('.roleModal #name').val('');
+                    $('.roleModal #description').val('');
+                    $('.roleModal #authorities').selectpicker('val', '');
+                    $('.roleModal #id').val('');
+                    $('.roleModal #roleFrom').modal('show');
+                });
+            }
+        });
+    });
+</script>
 </body>
 </html>

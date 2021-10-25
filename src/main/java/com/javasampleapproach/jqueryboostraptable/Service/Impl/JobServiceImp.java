@@ -2,11 +2,13 @@ package com.javasampleapproach.jqueryboostraptable.Service.Impl;
 
 import com.javasampleapproach.jqueryboostraptable.Service.JobService;
 import com.javasampleapproach.jqueryboostraptable.model.Job;
+import com.javasampleapproach.jqueryboostraptable.model.Job;
 import com.javasampleapproach.jqueryboostraptable.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobServiceImp implements JobService {
@@ -35,5 +37,9 @@ public class JobServiceImp implements JobService {
 
     public Job getJob(Long id) {
         return jobRepository.findById(id).get();
+    }
+
+    public Optional<Job> findByIdJob(Long id) {
+        return jobRepository.findById(id);
     }
 }
