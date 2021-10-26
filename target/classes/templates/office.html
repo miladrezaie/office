@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>IOT</title>
+    <title>اتوماسیون آفیش </title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script th:src="@{/js/jquery.min.js}"></script>
@@ -74,6 +74,7 @@
         </h3>
         <h3 align="left" th:text="${form.getTarikhsodur()}"></h3>
 
+
         <table border="3">
             <tr>
                 <th>
@@ -100,8 +101,12 @@
                 <th>
 
                     <div class="form-group">
-                        <label for="saat" class="form-control-label">ساعت ضبط:</label><br>
+                        <label for="saat" class="form-control-label">ساعت شروع ضبط:</label><br>
                         [[${form.saat_zabt}]]
+                    </div>
+                    <div class="form-group">
+                        <label for="saat" class="form-control-label">ساعت پایان ضبط:</label><br>
+                        [[${form.saat_zabt_end}]]
                     </div>
                 </th>
                 <th>
@@ -113,8 +118,7 @@
             </tr>
             <tr>
                 <td>ردیف</td>
-                <td>عوامل آفیش
-                </td>
+                <td>عوامل آفیش</td>
                 <td width="300px">نام و نام خانوادگی</td>
                 <td width="300px">تجهیزات همراه</td>
                 <td width="300px">شماره اموال</td>
@@ -132,8 +136,9 @@
                     </th:block>
                 </td>
                 <td>
-                    <th:block sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
-                              th:each="t : ${form.getTajhizats()}" id="blk">
+                    <th:block
+                            sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
+                            th:each="t : ${form.getTajhizats()}" id="blk">
                         <div th:text="${t.getName()}"></div>
                         <!--                        <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>-->
                     </th:block>
@@ -170,7 +175,14 @@
                         </form>
                     </th:block>
                 </td>
-                <td><input type="text" class="form-control" name="shomareamval" value=""></td>
+                <td>امضا تهیه کننده , امضای مدیر واحد درخواست کننده<br>
+                    <img th:if="${form.tahayeemza} != null" width="85px"
+                         th:src="*{'data:emza/jpg;base64,'+{form.tahayeemza}}" class="img-responsive"
+                         style="direction: ltr;">
+                    <img th:if="${form.mdarkhastemza} != null" width="85px"
+                         th:src="*{'data:emza/jpg;base64,'+{form.mdarkhastemza}}" class="img-responsive"
+                         style="direction: ltr;">
+                </td>
             </tr>
             <tr>
                 <td>4</td>
@@ -232,7 +244,10 @@
                         </form>
                     </th:block>
                 </td>
-                <td><input type="text" class="form-control" name="shomareamval" value=""></td>
+                <td th:if="${form.poshemza} != null">امضا هماهنگی و پشتیبانی فنی<br>
+                    <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.poshemza}}" class="img-responsive"
+                         style="direction: ltr;">
+                </td>
             </tr>
             <tr>
                 <td>6</td>
@@ -260,21 +275,22 @@
             </tr>
             </tbody>
         </table>
+
         <hr>
         <table style="direction: rtl;" class="table table-hover" border="1">
             <tr>
-                <th th:if="${form.tahayeemza} != null">امضا تهیه کننده<br>
-                    <img width="100px" th:src="*{'data:emza/jpg;base64,'+{form.tahayeemza}}" class="img-responsive"
-                         style="direction: ltr;">
-                </th>
-                <th th:if="${form.mdarkhastemza} != null">امضا مدیر واحد درخواست کننده<br>
-                    <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.mdarkhastemza}}" class="img-responsive"
-                         style="direction: ltr;">
-                </th>
-                <th th:if="${form.poshemza} != null">امضا هماهنگی و پشتیبانی فنی<br>
-                    <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.poshemza}}" class="img-responsive"
-                         style="direction: ltr;">
-                </th>
+                <!--                <th th:if="${form.tahayeemza} != null">امضا تهیه کننده<br>-->
+                <!--                    <img width="100px" th:src="*{'data:emza/jpg;base64,'+{form.tahayeemza}}" class="img-responsive"-->
+                <!--                         style="direction: ltr;">-->
+                <!--                </th>-->
+                <!--                <th th:if="${form.mdarkhastemza} != null">امضا مدیر واحد درخواست کننده<br>-->
+                <!--                    <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.mdarkhastemza}}" class="img-responsive"-->
+                <!--                         style="direction: ltr;">-->
+                <!--                </th>-->
+                <!--                <th th:if="${form.poshemza} != null">امضا هماهنگی و پشتیبانی فنی<br>-->
+                <!--                    <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.poshemza}}" class="img-responsive"-->
+                <!--                         style="direction: ltr;">-->
+                <!--                </th>-->
                 <th th:if="${form.anbaremza} != null">مضای انبار دار<br>
                     <img width="90px" th:src="*{'data:emza/jpg;base64,'+{form.anbaremza}}" class="img-responsive"
                          style="direction: ltr;">
@@ -305,11 +321,13 @@
                 </td>
             </tr>
         </table>
+
         <th:block sec:authorize="hasAuthority('OP_HAML_NAGHL')">
             <table style="direction: rtl;" class="table table-hover" border="1">
                 <tr>
                     <th width="300px">خودروی شماره..
-                        <button th:if="${!form.getCar().isEmpty()}" th:text="${form.getCar().get(0).getName()}"></button>
+                        <button th:if="${!form.getCar().isEmpty()}"
+                                th:text="${form.getCar().get(0).getName()}"></button>
                         ..به رانندگی آقای..
                         <button>[[${form.ranande}]]</button>
                         ..شماره کارمندی..
@@ -366,8 +384,10 @@
                                 <input type="hidden" name="uid" th:value="${user.id}">
                                 <input type="hidden" name="fid" th:value="${form.id}">
                                 <input type="hidden" name="tid" value="2">
-                                <input th:if="${form.getKhherasatemza() == null}" type="submit" class="btnn" value="تایید">
-                                <input th:if="${form.getKhherasatemza() != null}" type="submit" class="btnn" value="تایید" disabled>
+                                <input th:if="${form.getKhherasatemza() == null}" type="submit" class="btnn"
+                                       value="تایید">
+                                <input th:if="${form.getKhherasatemza() != null}" type="submit" class="btnn"
+                                       value="تایید" disabled>
                             </form>
                         </th:block>
                     </td>
@@ -381,8 +401,10 @@
                                 <input type="hidden" name="uid" th:value="${user.id}">
                                 <input type="hidden" name="fid" th:value="${form.id}">
                                 <input type="hidden" name="tid" value="1">
-                                <input th:if="${form.getVherasatemza() == null}" type="submit" class="btnn" value="تایید">
-                                <input th:if="${form.getVherasatemza() != null}" type="submit" class="btnn" value="تایید شد" disabled>
+                                <input th:if="${form.getVherasatemza() == null}" type="submit" class="btnn"
+                                       value="تایید">
+                                <input th:if="${form.getVherasatemza() != null}" type="submit" class="btnn"
+                                       value="تایید شد" disabled>
                             </form>
                         </th:block>
                     </td>
@@ -402,6 +424,7 @@
                        value="تایید?">
             </form>
         </th:block>
+
         <th:block sec:authorize="hasAuthority('OP_ANBARDAR')">
             <form th:action="@{/saveEmza}" method="post">
                 <input type="hidden" name="uid" th:value="${user.id}">

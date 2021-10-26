@@ -15,13 +15,13 @@
 
     | &nbsp;
 
-    <th:block sec:authorize="hasAuthority('OP_NEW_USER')"><a th:href="@{/members}">کاربرها</a></th:block>
+    <th:block ><a th:href="@{/members}">کاربرها</a></th:block>
 
     | &nbsp;
     <a th:href="@{/office}">فرم آفیش</a>
 
     | &nbsp;
-    <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')"><a th:href="@{/admin/programs}">برنامه ها</a></th:block>
+    <th:block ><a th:href="@{/admin/programs}">برنامه ها</a></th:block>
 
 
     | &nbsp;
@@ -36,7 +36,7 @@
     <a th:href="@{/admin/brands}">برند ها</a>
     | &nbsp;
 
-    <th:block sec:authorize="hasAuthority('OP_ACCESS_ROLES')"><a th:href="@{/admin/roles}">سطح دسترسی ها</a></th:block>
+    <th:block ><a th:href="@{/admin/roles}">سطح دسترسی ها</a></th:block>
  | &nbsp;
     <a th:href="@{/admin/cars}">وسایل نقیله سازمان</a>
 

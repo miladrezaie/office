@@ -35,9 +35,9 @@
 <body dir="rtl">
 <div class="container">
     <th:block th:include="/_menu"></th:block>
-    <h2>مکان ها</h2>
+    <h2>عنوان شغلی ها</h2>
     <button type="button" class="btn btn-danger newJobs" id="newJob">
-        افزودن مکان
+        افزودن عنوان شغلی
     </button>
     <div class="jobModal">
         <form th:action="@{/admin/jobs/create}" method="post" name="jobForm" id="jobForm">
@@ -46,7 +46,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title" id="exampleModalLabel">ایجاد مکان جدید</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">ایجاد عنوان شغلی جدید</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -58,7 +58,7 @@
                                     name="id" value=""/>
                             </div>
                             <div class="form-group">
-                                <label for="name" class="form-control-label">نام مکان:</label>
+                                <label for="name" class="form-control-label">نام عنوان شغلی:</label>
                                 <input type="text" id="name" class="form-control" name="name" value=""/>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                             </div>
                             <div class="modal-body">
                                 <p class="alert alert-danger">
-                                    آیا شما مطمین هستید که میخواهید این مکان را پاک کنید ؟
+                                    آیا شما مطمین هستید که میخواهید این عنوان شغلی را پاک کنید ؟
                                 </p>
                             </div>
                             <div class="modal-footer">
@@ -140,7 +140,7 @@
                 name: "required"
             },
             messages: {
-                name: "لطفا نام مکان را وارد کنید"
+                name: "لطفا نام عنوان شغلی را وارد کنید"
             },
             submitHandler: function (form) {
                 form.submit();

@@ -1,13 +1,13 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -28,6 +28,7 @@ public class Brand {
     @Size(message = "نام برند حداقل 3 کاراکتر و حداکثر 30 کاراکتر می تواند باشد")
     private String name;
 
-    @OneToMany(mappedBy="brand")
+    @OneToMany(mappedBy="brand",cascade = CascadeType.ALL)
+    @JsonBackReference
     private Set<Tajhizat> tajhiz;
 }

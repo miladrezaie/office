@@ -23,12 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormRepository;
@@ -77,10 +74,8 @@ public class OfficeController {
         model.addAttribute("tajhizats", tRepo.findAll(new PageRequest(page, 10)));
         model.addAttribute("locations", locationServiceImp.getAllLocations());
         model.addAttribute("brands", brandServiceImp.getAllBrands());
-        System.out.println("ttttttttttttttttttt" + tRepo.findAll(new PageRequest(page, 10)));
-        System.out.println("lllllllllllllllllllll" + locationServiceImp.getAllLocations());
-
         model.addAttribute("currentPage", page);
+
         return "Tajhizat";
     }
 
@@ -100,8 +95,6 @@ public class OfficeController {
     public String viewoffice(Model model) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("milad >>>>>>>>>" + auth);
-        System.out.println("milad >>>>>>>>>" + auth.getName());
         User user = userService.findByUsername(auth.getName());
         List<User> us = new ArrayList<>();
         List<officeForm> office_form = new ArrayList<>();
@@ -116,33 +109,24 @@ public class OfficeController {
 //                    model.addAttribute("forms", oo);
                 } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 } else if (oo.getAnbaremza() != null && oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 } else if (userHasAuthority("OP_HAMAHANGIE")) {
                     office_form.add(oo);
-//                    model.addAttribute("forms", oo);
                 }
             }
             model.addAttribute("forms", office_form);
-            System.out.println("form************ : " + formRepo.findByUsers(us));
-//            System.out.println("form************ : "+formRepo.);
+
         }
 
         model.addAttribute("user", user);
@@ -155,7 +139,7 @@ public class OfficeController {
         model.addAttribute("locations", locationServiceImp.getAllLocations());
         model.addAttribute("users", userRepo.findAll());
         model.addAttribute("jobs", jobServiceImp.getAllJobs());
-        model.addAttribute("tajhiz", tRepo.findAll());
+        model.addAttribute("tajhizats", tRepo.findAll());
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         return "officeForm";
     }
@@ -180,17 +164,24 @@ public class OfficeController {
 
     @GetMapping("/findOneTajhiz")
     @ResponseBody
-    public Optional<Tajhizat> findOneTajhiz(Integer id) {
+    public Optional<Tajhizat> findOneTajhiz(long id) {
         return tRepo.findById(id);
     }
 
-    @GetMapping("/deleteTajhiz")
-    public String deleteTajhiz(Integer id) {
+    @GetMapping("/admin/tajhizat/find/{id}")
+    @ResponseBody
+    public Optional<Tajhizat> fiOptionalTajhizat(@PathVariable long id){
+        System.out.println("***************** + "+ id);
+        return tRepo.findById(id);
+    }
+
+    @GetMapping("/deleteTajhiz/{id}")
+    public String deleteTajhiz(@PathVariable Long id) {
         tRepo.deleteById(id);
         return "redirect:/tajhizats";
     }
 
-    @PostMapping("/saveTajhiz")
+    @PostMapping("/admin/tajhizats/create")
     public String Esave(Tajhizat t, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         if (fileName.contains("..")) {
@@ -206,13 +197,13 @@ public class OfficeController {
         return "redirect:/tajhizats";
     }
 
-    //	 @PostMapping("/addToForm")
-//	 public String AddToForm(String pid) {
-//		 User user = userRepo.findBypersonalId(pid).get(0);
-//		 officeForm form = new officeForm();
-//		 form.getUsers().add(user);
-
-    //	 }
+//     @PostMapping("/addToForm")
+//    public String AddToForm(String pid) {
+//        User user = userRepo.findBypersonalId(pid).get(0);
+//        officeForm form = new officeForm();
+//        form.getUsers().add(user);
+//
+//     }
 
     @PostMapping("/saveForm")
     public String saveForm(officeForm form) {
@@ -388,11 +379,14 @@ public class OfficeController {
     }
 
     @PostMapping("/addForm")
-    public String addutoform(officeForm f) {
-        System.out.println("ffffffffffffffffffffff : " + f.getUsers());
-//        System.out.println("ffffffffffffffffffffff : " + f.getNameBarname());
-        System.out.println("ffffffffffffffffffffff : " + f.getId());
+    public String addutoform(@ModelAttribute officeForm f,BindingResult bindingResult) {
+        System.out.println("*********************************************");
+        System.out.println("&&&&&&&" + f.getTajhizatss());
+//        System.out.println("&&&&&&&" + tajhizatss);
+        System.out.println("&&&&&&&" + f);
+
         officeForm form = formRepo.findById((long) f.getId()).get();
+        System.out.println("*********************************************");
 
         boolean found = false;
         if (f.getUsers() != null) {
@@ -410,18 +404,18 @@ public class OfficeController {
             }
         }
 
-        if (f.getTajhizats() != null) {
-            Iterator<Tajhizat> itr = f.getTajhizats().iterator();
+        if (f.getTajhizatss() != null) {
+            Iterator<Tajhizat> itr = f.getTajhizatss().iterator();
             while (itr.hasNext()) {
-                if (form.getTajhizats().contains(itr.next())) {
+                if (form.getTajhizatss().contains(itr.next())) {
                     found = true;
                 }
             }
             if (found) {
                 return "redirect:/office";
             }
-            for (Tajhizat tj : f.getTajhizats()) {
-                form.getTajhizats().add(tj);
+            for (Tajhizat tj : f.getTajhizatss()) {
+                form.getTajhizatss().add(tj);
             }
         }
         formRepo.save(form);
@@ -432,11 +426,7 @@ public class OfficeController {
     @ResponseBody
     public Set<User> findU(@PathVariable long job) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("user : " + auth.getName());
-        System.out.println("user : " + job);
-        System.out.println("*****************user : " + auth.getDetails());
         Job job1 = jobServiceImp.findById(job);
-        System.out.println("***************** users &&&&&&&&&&&&& : " + job1.getUsers());
 
         return job1.getUsers();
     }

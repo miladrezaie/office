@@ -7,7 +7,9 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import lombok.*;
@@ -43,7 +45,7 @@ public class officeForm implements Serializable {
     @NotNull(message = "وارد کردن نام تهیه کننده الزامی است")
     private String tahayekonande;
 
-    @OneToMany(mappedBy="officeForm")
+    @OneToMany(mappedBy="officeForm",cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Car> car;
 
     //az no sima or zabtie
@@ -52,18 +54,19 @@ public class officeForm implements Serializable {
     @Enumerated(EnumType.STRING)
     private OfficeForm type;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="location_id")
+    @JsonManagedReference
     @NotNull(message = "وارد کردن مکان برنامه الزامی است")
     private Location location;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<User> users;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Tajhizat> Tajhizats;
+    private List<Tajhizat> tajhizatss;
 
     //taied or laghv office_form
     @Column(columnDefinition = "smallint")

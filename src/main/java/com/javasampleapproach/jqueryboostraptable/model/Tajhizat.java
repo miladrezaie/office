@@ -1,5 +1,7 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
@@ -19,7 +21,7 @@ public class Tajhizat implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	private Long id;
 	
 	@Column(columnDefinition="nvarchar(20)")
 	@NotNull(message = "وارد کردن نام تجهیز الزامی است")
@@ -33,6 +35,14 @@ public class Tajhizat implements Serializable {
 	@NotNull(message = "وارد کردن شناسه سریال تجهیز الزامی است")
 	private String serial_id;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@Column(columnDefinition="nvarchar(20)")
 	@NotNull(message = "وارد کردن نوع الزامی است")
 	private String type;
@@ -40,22 +50,27 @@ public class Tajhizat implements Serializable {
 	@ManyToOne
 	@Nullable
 	@JoinColumn(name="location_id")
-	@NotNull(message = "وارد کردن مکان قرار گیری تجهیز الزامی است")
+	@JsonManagedReference
+//	@NotNull(message = "وارد کردن مکان قرار گیری تجهیز الزامی است")
 	private Location location;
 
 	@ManyToOne
 	@Nullable
 	@JoinColumn(name="brand_id")
-	@NotNull(message = "وارد کردن برند الزامی است")
+	@JsonManagedReference
+//	@JsonIgnore
+//	@NotNull(message = "وارد کردن برند الزامی است")
 	private Brand brand;
 
 	@Column(columnDefinition="nvarchar(20)")
 	@NotNull(message = "وارد کردن مدل الزامی است")
 	private String model;
-	
-	@ManyToMany(fetch=FetchType.LAZY,mappedBy = "Tajhizats")
+
+//	@JsonIgnore
+//	@JsonManagedReference
+	@ManyToMany(fetch=FetchType.LAZY,mappedBy = "tajhizatss")
 	private List<officeForm> tofficeforme;
-	
+
 	@Column(columnDefinition="LONGBLOB")
 	@NotNull(message = "وارد کردن تصویر الزامی است")
 	private String img;
@@ -64,7 +79,7 @@ public class Tajhizat implements Serializable {
 
 	}
 
-	public Tajhizat(Integer id, String name, String amvalid,String serial_id, String type, String img) {
+	public Tajhizat(Long id, String name, String amvalid,String serial_id, String type, String img) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -111,16 +126,6 @@ public class Tajhizat implements Serializable {
 		this.img = img;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -153,13 +158,11 @@ public class Tajhizat implements Serializable {
 		this.serial_id = serial_id;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Tajhizat [id=" + id + ", name=" + name + ", amvalid=" + amvalid 
 				+  "]";
 	}
-
 
 	public Location getLocation() {
 		return location;
@@ -168,6 +171,5 @@ public class Tajhizat implements Serializable {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-
 
 }

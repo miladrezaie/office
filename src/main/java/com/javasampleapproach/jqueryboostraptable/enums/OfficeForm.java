@@ -1,7 +1,7 @@
 package com.javasampleapproach.jqueryboostraptable.enums;
 
 public enum OfficeForm {
-    OFFICE_FORM_ESTEDIO_SIMA("آفیش برنامه های استدیوی سیما"),
+    OFFICE_FORM_ESTEDIO_SIMA("آفیش برنامه های استودیویی سیما(یا واحد سیار)"),
     OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE("آفیش ضبط برنامه های تولیدی و خبری");
 
     private final String displayName;

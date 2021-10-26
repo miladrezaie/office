@@ -68,7 +68,8 @@
             <td th:utext="${form.program.getName()}">...</td>
             <td th:utext="${form.location.getName()}">...</td>
             <td>
-                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                <th:block
+                        sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن</a>
                 </th:block>
                 <a th:href="@{form/(id=${form.id})}" class="btn btn-default mdelBtn" id="DeleteUser">نمایش</a>
@@ -78,29 +79,34 @@
                         حذف
                     </button>
                 </th:block>
-                <input sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')" th:if="${form.getMdarkhastemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_ANBARDAR')" th:if="${form.getAnbaremza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')" th:if="${form.getPoshemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_TAHIEKONANDEH')" th:if="${form.getTahayeemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_HAML_NAGHL')" th:if="${form.getHamlonaghlemza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_2')" th:if="${form.getTasviremza2() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_1')" th:if="${form.getTasviremza() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_3')" th:if="${form.getTasviremza3() != null}" type="submit" class="btn btn-success" value="تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getKhherasatemza() != null}" type="submit" class="btn btn-warning" value="خروج تایید شد" disabled>
-                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getVherasatemza() != null}" type="submit" class="btn btn-success" value="ورود تایید شد" disabled>
-
-                <!--                <a th:if="${form.}" class="btn btn-success "  readonly="readonly">نمایش</a>-->
-<!--                <a th:href="@{delete/form/(id=${form.id})}" class="btn btn-danger btn-danger" >حذف</a>-->
-
-
-
-                <!-- Modal -->
+                <input sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')"
+                       th:if="${form.getMdarkhastemza() != null}" type="submit" class="btn btn-success" value="تایید شد"
+                       disabled>
+                <input sec:authorize="hasAuthority('OP_ANBARDAR')" th:if="${form.getAnbaremza() != null}" type="submit"
+                       class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')" th:if="${form.getPoshemza() != null}"
+                       type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TAHIEKONANDEH')" th:if="${form.getTahayeemza() != null}"
+                       type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_HAML_NAGHL')" th:if="${form.getHamlonaghlemza() != null}"
+                       type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_2')" th:if="${form.getTasviremza2() != null}"
+                       type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_1')" th:if="${form.getTasviremza() != null}"
+                       type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_TASVIRBARDAR_3')" th:if="${form.getTasviremza3() != null}"
+                       type="submit" class="btn btn-success" value="تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getKhherasatemza() != null}"
+                       type="submit" class="btn btn-warning" value="خروج تایید شد" disabled>
+                <input sec:authorize="hasAuthority('OP_HERASAT')" th:if="${form.getVherasatemza() != null}"
+                       type="submit" class="btn btn-success" value="ورود تایید شد" disabled>
                 <div class="modal fade" th:id="modal-warning+${form.getId()}" tabindex="-1" role="dialog"
                      aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${form.getTahayekonande()}"></h5>
+                                <h5 class="modal-title" id="exampleModalLabel"
+                                    th:utext="${form.getTahayekonande()}"></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -112,14 +118,14 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                                <a th:href="@{/admin/officeform/delete/{id}(id=${form.id})}" class="btn btn-danger">حذف</a>
+                                <a th:href="@{/admin/officeform/delete/{id}(id=${form.id})}"
+                                   class="btn btn-danger">حذف</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </td>
         </tr>
-
         </tbody>
     </table>
     <hr/>
@@ -141,7 +147,7 @@
                             <div class="form-group">
                                 <label for="tahayekonande" class="form-control-label">نام تهیه کننده:</label>
                                 <input type="text" class="form-control" id="tahayekonande" name="tahayekonande"
-                                       th:value="${tahie}" readonly="readonly" />
+                                       th:value="${tahie}" readonly="readonly"/>
                             </div>
                             <div class="form-group">
                                 <label for="program" class="form-control-label">نام برنامه:</label>
@@ -153,20 +159,22 @@
                             </div>
 
                             <div class="form-inline form-group">
-<!--                                <label>انتخاب تاریخ:</label>-->
+                                <!--                                <label>انتخاب تاریخ:</label>-->
                                 <div class="input-group input-group-sm">
                                     <label for="date_begin" class="form-control-label">از تاریخ :</label>
-                                    <input type="text" id="date_begin" name="date_begin" class=" pwt-datepicker-input-element normal-example">
+                                    <input type="text" id="date_begin" name="date_begin"
+                                           class=" pwt-datepicker-input-element normal-example">
                                     <label for="date_end" class="form-control-label">تا تاریخ : </label>
-                                    <input type="text" id="date_end" name="date_end" class="pwt-datepicker-input-element normal-example">
+                                    <input type="text" id="date_end" name="date_end"
+                                           class="pwt-datepicker-input-element normal-example">
                                 </div>
                                 <!-- /.input group -->
                             </div>
                             <div class="form-group">
                                 <label for="saat_zabt" class="form-control-label">ساعت آفیش:</label>
-                                <input type="text"  id="saat_zabt" name="saat_zabt" value=""/>
+                                <input type="text" id="saat_zabt" name="saat_zabt" value=""/>
                                 <label for="saat_zabt_end" class="form-control-label">ساعت آفیش:</label>
-                                <input type="text"  id="saat_zabt_end" name="saat_zabt_end" value=""/>
+                                <input type="text" id="saat_zabt_end" name="saat_zabt_end" value=""/>
 
                             </div>
                             <div class="form-group">
@@ -211,33 +219,39 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <input type="hidden" class="form-control" id="fid" name="id"/><!--  -->
+                                <input type="hidden" class="form-control" id="fid" name="id"/>
                             </div>
                             <table>
                                 <tr>
                                     <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
-                                        <td >
+                                        <td>
                                             <label for="job" class="form-control-label">عنوان شغلی:</label>
                                             <select id="job" class="form-control ch" name="job">
                                                 <option value="">انتخاب کنید</option>
                                                 <option th:each="job : ${jobs}" th:value="${job.getId()}"
                                                         th:text="${job.getName()}"></option>
                                             </select>
-                                            <!--     <th:block th:each="mem : ${users}">-->
                                             <div id="wrapperfortestnames"></div>
-                                            <!--       </th:block> -->
                                         </td>
                                     </th:block>
                                     <td>
-                                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')" th:each="t : ${tajhiz}">
-                                            <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>
-                                            <label th:text="${t.name}"></label><br>
-                                        </th:block>
+<!--                                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')" th:each="t : ${tajhizats}">-->
+<!--                                            <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>-->
+<!--                                            <label th:text="${t.name}"></label><br>-->
+<!--                                        </th:block>-->
+                                        <label for="tajhizatss" class="form-control-label">تجهیزات:</label>
+                                        <select class="selectpicker" id="tajhizatss" name="tajhizatss" multiple
+                                                data-live-search="true"
+                                                title="انتخاب کنید">
+                                            <option th:each="t  : ${tajhizats}"
+                                                    th:value="${t}"
+                                                    th:text="${t.getName()}"></option>
+                                        </select>
                                     </td>
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                             <input type="submit" class="btn btn-primary" value="save"/>
                         </div>
                     </div>
@@ -245,7 +259,6 @@
             </div>
         </form>
     </div>
-
     <div class="tblForm">
         <div class="modal fade bd-example-modal-lg" id="tblmodal" tabindex="-1" role="dialog"
              aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -256,13 +269,13 @@
                             <table class="table table-hover">
                                 <tr>
                                     <th>
-<!--                                        <div class="form-group">-->
-<!--                                            <label for="nameBarname" class="form-control-label">نام-->
-<!--                                                آفیش:</label>-->
-<!--                                            <input type="text" class="form-control" id="nameBarname"-->
-<!--                                                   name="nameBarname"-->
-<!--                                                   value=""/>-->
-<!--                                        </div>-->
+                                        <!--                                        <div class="form-group">-->
+                                        <!--                                            <label for="nameBarname" class="form-control-label">نام-->
+                                        <!--                                                آفیش:</label>-->
+                                        <!--                                            <input type="text" class="form-control" id="nameBarname"-->
+                                        <!--                                                   name="nameBarname"-->
+                                        <!--                                                   value=""/>-->
+                                        <!--                                        </div>-->
                                     </th>
                                     <th>
                                         <div class="form-group">

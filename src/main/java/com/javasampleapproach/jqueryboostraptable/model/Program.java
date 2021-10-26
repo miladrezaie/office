@@ -52,8 +52,7 @@ public class Program {
     @NotNull(message = "وارد کردن روز هفته الزامی است")
     private List<RozHafteh> rozhafteh;
 
-    @OneToMany(mappedBy = "program")
+    @OneToMany(mappedBy = "program" ,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<officeForm> office_form;
-
 
 }

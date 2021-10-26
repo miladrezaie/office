@@ -43,7 +43,9 @@ public class Car {
 
     @ManyToOne
     @Nullable
-    @JoinColumn(name="officeForm_id")
+//    @JoinColumn(name="officeForm_id")
+    @JoinColumn(name = "officeForm_id", referencedColumnName = "id")
+
     private officeForm officeForm;
 
 

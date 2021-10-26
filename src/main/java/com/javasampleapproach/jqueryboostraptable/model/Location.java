@@ -1,6 +1,7 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Set;
 @Getter
 @Table(name = "locations")
 @Setter
+
 public class Location {
 
     @Id
@@ -34,9 +36,11 @@ public class Location {
 
 
     @OneToMany(mappedBy="location")
+    @JsonBackReference
     private Set<Tajhizat> tajhiz;
 
 
     @OneToMany(mappedBy="location")
+    @JsonBackReference
     private Set<officeForm> officeForms;
 }
