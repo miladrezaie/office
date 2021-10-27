@@ -122,19 +122,23 @@ public class WebController {
     }
 
     @PostMapping("/saveeUser")
-    public String saveue(@ModelAttribute User user, @RequestParam("file") MultipartFile file) {
+    public String saveue(@ModelAttribute User user, @RequestParam("file") MultipartFile file,Model model) {
         System.out.println("******************* user : " + user);
         System.out.println("******************* user : " + user.getRoles());
+        try{
+            if (!file.isEmpty()) {
+                userService.saveuemza(user, file);
+            } else {
+                User us = userRepo.findById(user.getId()).get();
+                user.setEmza(us.getEmza());
+                userService.save(user);
+            }
+            return "redirect:/members";
 
-        if (!file.isEmpty()) {
-            userService.saveuemza(user, file);
-        } else {
-            User us = userRepo.findById(user.getId()).get();
-            user.setEmza(us.getEmza());
-            userService.save(user);
+        }catch (Exception e){
+            model.addAttribute("messege", "لطفا مجددا تلاش نمایید ");
+            return "errorPage";
         }
-
-        return "redirect:/members";
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)

@@ -11,10 +11,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -51,26 +56,55 @@ public class RoleController {
     }
 
     @PostMapping(value = "/admin/roles/create")
-    @Transactional
-    public String create(@ModelAttribute Role role, Model model) {
+    public String create(@ModelAttribute @Valid Role role , BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
-//            if (errors.hasErrors()){
-//                throw new Exception("اطلاعات ارسالی نادرست است مجدد تلاش نمایید");
-//            }
+            if (bindingResult.hasErrors()){
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY : "+bindingResult.getAllErrors());
+//                for (Object object : bindingResult.getAllErrors()) {
+//                    redirectAttributes.addFlashAttribute("message", object+"\n");
+//
+//                    if(object instanceof FieldError) {
+//                        FieldError fieldError = (FieldError) object;
+//
+//                        System.out.println("field error : " + fieldError.getCode());
+//                    }
+//
+//                    if(object instanceof ObjectError) {
+//                        ObjectError objectError = (ObjectError) object;
+//
+//                        System.out.println("object error : " +objectError.getCode().);
+//                    }
+//                }
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/roles";
+            }
             roleService.saveRole(role);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
             return "redirect:/admin/roles";
-        } catch (ConstraintViolationException exception) {
-            model.addAttribute("message", "خطایی به وجود آمده مجددا تلاش نمایید");
-            return "errorPage";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/roles";
         }
     }
 
 
     @GetMapping(value = "/admin/roles/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        System.out.println("saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        roleService.deleteRole(id);
-        return "redirect:/admin/roles";
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            roleService.deleteRole(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "دسترسی مورنظر با موفقیت حذف گردید.");
+            return "redirect:/admin/roles";
+        } catch (Exception exception) {
+//            redirectAttributes.addFlashAttribute("message", "امکان وجود دادن دسترسی به کاربر وجود دارد.");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "امکان دسترسی دادن به کاربر وجود دارد.");
+            return "redirect:/admin/roles";
+        }
+
     }
 
     @GetMapping("/admin/roles/find/{id}")

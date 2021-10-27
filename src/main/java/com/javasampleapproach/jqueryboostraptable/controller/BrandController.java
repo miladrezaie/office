@@ -12,10 +12,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -35,54 +38,59 @@ public class BrandController {
     }
 
     @GetMapping(value = "/admin/brands")
-    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
 
         model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
-        model.addAttribute("brands", brandRepository.findAll(new PageRequest(page,10)));
+        model.addAttribute("brands", brandRepository.findAll(new PageRequest(page, 10)));
         model.addAttribute("currentPage", page);
 
         return "brands/brands";
     }
 
     @PostMapping(value = "/admin/brands/create")
-    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
-    @Transactional
-    public String create(@ModelAttribute Brand brand,Model model) {
-        try{
-//            if (errors.hasErrors()){
-//                throw new Exception("اطلاعات ارسالی نادرست است مجدد تلاش نمایید");
-//            }
+//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    public String create(@ModelAttribute @Valid Brand brand, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        try {
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/brands";
+            }
             brandService.saveBrand(brand);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
             return "redirect:/admin/brands";
-
-        }catch (ConstraintViolationException exception){
-            model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
-            return "errorPage";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/brands";
         }
     }
 
-    @GetMapping(value = "/admin/brands/edit/{id}")
-    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
-    public String update(@PathVariable(name = "id") Long id, Model model) {
-        model.addAttribute("brand", brandService.getBrand(id));
-        return "redirect:/admin/brands";
-    }
 
     @GetMapping(value = "/admin/brands/delete/{id}")
-    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
-    public String delete(@PathVariable Long id) {
-        brandService.deleteBrand(id);
-        return "redirect:/admin/brands";
+//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            brandService.deleteBrand(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "برند مورنظر با موفقیت حذف گردید.");
+            return "redirect:/admin/brands";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "برند به تجهیز خاص مرتبط است.");
+            return "redirect:/admin/brands";
+        }
     }
 
     @GetMapping("/admin/brands/find/{id}")
     @ResponseBody
-    public Optional<Brand> fiOptionalBrand(@PathVariable long id){
-        System.out.println("***************** + "+ id);
+    public Optional<Brand> fiOptionalBrand(@PathVariable long id) {
+        System.out.println("***************** + " + id);
         return brandService.findByIdBrand(id);
     }
 }

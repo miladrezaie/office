@@ -17,12 +17,14 @@ import com.javasampleapproach.jqueryboostraptable.model.User;
 
 @Repository
 @Transactional
-public interface TajhizatRepository extends JpaRepository<Tajhizat, Integer> {
+public interface TajhizatRepository extends JpaRepository<Tajhizat, Long> {
 	
 	List<Tajhizat> findByTofficeforme(String tofficeforme);
 
 	Optional<Tajhizat> findById(Long id);
 
-	String deleteById(Long id);
+	@Override
+	void deleteById(Long id);
+
 	
 }

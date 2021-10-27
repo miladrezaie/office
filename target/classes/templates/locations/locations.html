@@ -39,7 +39,7 @@
     <button type="button" class="btn btn-danger newLocations" id="newLocation">
         افزودن مکان
     </button>
-    <div class="locationModal">
+    <div class="locationModal" id="location_modal">
         <form th:action="@{/admin/locations/create}" method="post" name="locationForm" id="locationForm">
             <div id="locationFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -134,6 +134,11 @@
 <script th:src="@{/js/jquery.validate.min.js}"></script>
 <script>
     $(document).ready(function () {
+        $('#location_modal').on('shown.bs.modal', function() {
+            $('#location_modal #name').focus();
+        });
+        $('.alerting').delay(2000).fadeOut();
+
         $("form[name='locationForm']").validate({
             rules: {
                 name: "required"

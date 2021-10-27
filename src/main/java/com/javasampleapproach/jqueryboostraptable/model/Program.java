@@ -1,5 +1,6 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,7 +53,8 @@ public class Program {
     @NotNull(message = "وارد کردن روز هفته الزامی است")
     private List<RozHafteh> rozhafteh;
 
-    @OneToMany(mappedBy = "program" ,cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "program" )
+    @JsonIgnore
     private Set<officeForm> office_form;
 
 }

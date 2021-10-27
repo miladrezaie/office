@@ -53,10 +53,11 @@
     <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
     <h2>برنامه ها</h2>
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
     <button type="button" class="btn btn-danger newPrograms" id="newProgram">
         افزودن برنامه
     </button>
-    <div class="programModal">
+    <div class="programModal" id="program_modal">
         <form th:action="@{/admin/programs/create}" method="post" name="programForm" id="programForm">
             <div id="programFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
@@ -185,6 +186,10 @@
 <script th:src="@{/js/jquery.validate.min.js}"></script>
 <script>
     $(document).ready(function () {
+        $('#program_modal').on('shown.bs.modal', function() {
+            $('#program_modal #name').focus();
+        });
+        $('.alerting').delay(2000).fadeOut();
         $("form[name='programForm']").validate({
             rules: {
                 name: "required",

@@ -10,11 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -47,29 +47,36 @@ public class CarController {
     }
 
     @PostMapping(value = "/admin/cars/create")
-    @Transactional
-    public String create(@ModelAttribute @Valid Car car, Model model,Errors errors) {
-        try{
-            System.out.println("asdasdasdadsadd");
-//            if () {
-//                System.out.println("try");
-//                throw new RuntimeException("test exception");
-//
-//            }
+    public String create(@ModelAttribute @Valid Car car, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        try {
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/cars";
+            }
             carService.saveCar(car);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
             return "redirect:/admin/cars";
-        }catch (ConstraintViolationException exception){
-            System.out.println("sadasdasd");
-            model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
-            return "errorPage";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/cars";
         }
-
     }
 
     @GetMapping(value = "/admin/cars/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        carService.deleteCar(id);
-        return "redirect:/admin/cars";
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            carService.deleteCar(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "وسیله نقلیه مورنظر با موفقیت حذف گردید.");
+            return "redirect:/admin/cars";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "وسیله نقلیه به آفیش خاص مرتبط است.");
+            return "redirect:/admin/cars";
+        }
     }
 
     @GetMapping("/admin/cars/find/{id}")

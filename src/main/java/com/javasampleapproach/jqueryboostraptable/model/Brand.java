@@ -28,7 +28,7 @@ public class Brand {
     @Size(message = "نام برند حداقل 3 کاراکتر و حداکثر 30 کاراکتر می تواند باشد")
     private String name;
 
-    @OneToMany(mappedBy="brand",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="brand")
     @JsonBackReference
     private Set<Tajhizat> tajhiz;
 }

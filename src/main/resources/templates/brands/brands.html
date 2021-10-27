@@ -36,17 +36,18 @@
 <div class="container">
     <th:block th:include="/_menu"></th:block>
     <h2>برند ها</h2>
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
     <button type="button" class="btn btn-danger newBrands" id="newBrand">
         افزودن برند
     </button>
-    <div class="brandModal">
+    <div class="brandModal" id="brand_modal">
         <form th:action="@{/admin/brands/create}" method="post" name="brandForm" id="brandForm">
-            <div id="brandFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <div id="brandFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="brandLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title" id="exampleModalLabel">ایجاد برند جدید</h5>
+                            <label class="modal-title" id="brandLabel" ></label>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -91,11 +92,11 @@
                     حذف
                 </button>
                 <div class="modal fade" th:id="modal-warning+${brand.getId()}" tabindex="-1" role="dialog"
-                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                     aria-labelledby="brandSLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel" th:utext="${brand.getName()}"></h5>
+                                <h5 class="modal-title" id="brandSLabel" th:utext="${brand.getName()}"></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -130,6 +131,10 @@
 <script th:src="@{/js/jquery.validate.min.js}"></script>
 <script>
     $(document).ready(function () {
+        $('#brand_modal').on('shown.bs.modal', function() {
+            $('#brand_modal #name').focus();
+        });
+        $('.alerting').delay(2000).fadeOut();
         $("form[name='brandForm']").validate({
             rules: {
                 name: "required"
@@ -154,12 +159,15 @@
                     $('.brandModal #name').val(brand.name);
                 })
                 $('.brandModal #saveeditbutton').prop("value", "ویرایش");
+                $('.brandModal #brandLabel').prop("value", "ویرایش");
+
                 $('.brandModal #brandFrom').modal('show');
             } else if (text == 'newBrand') {
                 $.get(href, function (brand, status) {
                     $("label.error").hide();
                     $(".error").removeClass("error");
                     $('.brandModal #saveeditbutton').prop("value", "افزودن");
+                    $('.brandModal #brandLabel').prop("value", "افزودن");
                     $('.brandModal #name').val('');
                     $('.brandModal #id').val('');
                     $('.brandModal #brandFrom').modal('show');

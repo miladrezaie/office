@@ -1,10 +1,12 @@
 $(document).ready(function () {
     $('.ch').on('change', function (event) {
         event.preventDefault();
-        var value = $('.ch').val();
+        console.log("event : " +$(this).val());
+
+        var value = $('.selectpicker').val();
         console.log("salam" + value);
 
-        console.log("salam" + event.ip);
+        // console.log("salam" + event.ip);
         $.getJSON('/findbyjob/' + value, function (data) {
 
             console.log("****************** data :" + data);

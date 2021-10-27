@@ -10,10 +10,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -45,32 +48,43 @@ public class JobController {
 
     @PostMapping(value = "/admin/jobs/create")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-    @Transactional
-    public String create(@ModelAttribute Job job,Model model) {
-        try{
-//            if (errors.hasErrors()){
-//                throw new Exception("اطلاعات ارسالی نادرست است مجدد تلاش نمایید");
-//            }
+//    @Transactional
+    public String create(@ModelAttribute @Valid Job job, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        try {
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/jobs";
+            }
             jobService.saveJob(job);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
             return "redirect:/admin/jobs";
-        }catch (ConstraintViolationException exception){
-            model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
-            return "errorPage";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/jobs";
         }
+
     }
 
-    @GetMapping(value = "/admin/jobs/edit/{id}")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-    public String update(@PathVariable(name = "id") Long id, Model model) {
-        model.addAttribute("job", jobService.getJob(id));
-        return "redirect:/admin/jobs";
-    }
 
     @GetMapping(value = "/admin/jobs/delete/{id}")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-    public String delete(@PathVariable Long id) {
-        jobService.deleteJob(id);
-        return "redirect:/admin/jobs";
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            jobService.deleteJob(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عنوان شغلی مورنظر با موفقیت حذف گردید.");
+            return "redirect:/admin/jobs";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "عنوان شغلی به آفیش خاص مرتبط است.");
+            return "redirect:/admin/jobs";
+        }
+
+
+
     }
 
     @GetMapping("/admin/jobs/find/{id}")

@@ -226,8 +226,9 @@
                                     <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
                                         <td>
                                             <label for="job" class="form-control-label">عنوان شغلی:</label>
-                                            <select id="job" class="form-control ch" name="job">
-                                                <option value="">انتخاب کنید</option>
+                                            <select id="job"  class="selectpicker ch" name="job" data-live-search="true"
+                                                    title="انتخاب کنید">
+<!--                                                <option value="">انتخاب کنید</option>-->
                                                 <option th:each="job : ${jobs}" th:value="${job.getId()}"
                                                         th:text="${job.getName()}"></option>
                                             </select>
@@ -243,7 +244,7 @@
                                         <select class="selectpicker" id="tajhizatss" name="tajhizatss" multiple
                                                 data-live-search="true"
                                                 title="انتخاب کنید">
-                                            <option th:each="t  : ${tajhizats}" th:value="${t}" th:text="${t.getName()}"></option>
+                                            <option th:each="t  : ${tajhizats}" th:value="${t.getId()}" th:text="${t.getName()}"></option>
                                         </select>
                                     </td>
                             </table>

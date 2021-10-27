@@ -36,10 +36,11 @@
 <div class="container">
     <th:block th:include="/_menu"></th:block>
     <h2>وسیله نقلیه ها</h2>
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
     <button type="button" class="btn btn-danger newCar" id="newCar">
         افزودن وسیله نقلیه
     </button>
-    <div class="carModal">
+    <div class="carModal" id="car_modal">
         <form th:action="@{/admin/cars/create}" method="post" name="carForm" id="carForm">
             <div id="carFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
@@ -155,6 +156,10 @@
 <script th:src="@{/js/jquery.validate.min.js}"></script>
 <script>
     $(document).ready(function () {
+        $('#car_modal').on('shown.bs.modal', function() {
+            $('#car_modal #name').focus();
+        });
+        $('.alerting').delay(2000).fadeOut();
         $("form[name='carForm']").validate({
             rules: {
                 name:{

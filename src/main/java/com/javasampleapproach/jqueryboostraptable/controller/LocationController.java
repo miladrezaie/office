@@ -11,7 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
@@ -47,24 +49,47 @@ public class LocationController {
     }
 
     @PostMapping(value = "/admin/locations/create")
-    @Transactional
-    public String create(@Valid Location location ,Model model) {
-        try{
-//            if (errors.hasErrors()){
-//                throw new Exception("اطلاعات ارسالی نادرست است مجدد تلاش نمایید");
-//            }
+//    @Transactional
+    public String create(@ModelAttribute @Valid Location location , BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        try {
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/locations";
+            }
             locationService.saveLocation(location);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
             return "redirect:/admin/locations";
-        }catch (ConstraintViolationException exception){
-            model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
-            return "errorPage";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/locations";
         }
+//        try{
+////            if (errors.hasErrors()){
+////                throw new Exception("اطلاعات ارسالی نادرست است مجدد تلاش نمایید");
+////            }
+//
+//
+//        }catch (ConstraintViolationException exception){
+//            model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
+//            return "errorPage";
+//        }
     }
 
     @GetMapping(value = "/admin/locations/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        locationService.deleteLocation(id);
-        return "redirect:/admin/locations";
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            locationService.deleteLocation(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "وسیله نقلیه مورنظر با موفقیت حذف گردید.");
+            return "redirect:/admin/locations";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "وسیله نقلیه به آفیش خاص مرتبط است.");
+            return "redirect:/admin/locations";
+        }
     }
 
     @GetMapping("/admin/locations/find/{id}")

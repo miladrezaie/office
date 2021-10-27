@@ -34,7 +34,7 @@ public class User implements Serializable, UserDetails {
     private Integer id;
 
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
-    @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد",min = 8,max = 10)
+    @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد", min = 8, max = 10)
     @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)")
     private String personalId;
 
@@ -73,8 +73,8 @@ public class User implements Serializable, UserDetails {
 
     @ManyToOne
     @Nullable
-    @JoinColumn(name="job_id")
-    private Job job ;
+    @JoinColumn(name = "job_id")
+    private Job job;
 
     @JoinTable(
             name = "role_user",
@@ -110,7 +110,7 @@ public class User implements Serializable, UserDetails {
         return job;
     }
 
-    public void setJob( Job job) {
+    public void setJob(Job job) {
         this.job = job;
     }
 

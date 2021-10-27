@@ -138,7 +138,7 @@
                 <td>
                     <th:block
                             sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
-                            th:each="t : ${form.getTajhizats()}" id="blk">
+                            th:each="t : ${form.getTajhizatss()}" id="blk">
                         <div th:text="${t.getName()}"></div>
                         <!--                        <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن نفرات</a>-->
                     </th:block>
@@ -146,7 +146,7 @@
                 <td>
                     <th:block
                             sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
-                            th:each="t : ${form.getTajhizats()}" id="blk">
+                            th:each="t : ${form.getTajhizatss()}" id="blk">
                         <div th:text="${t.getAmvalid()}"></div>
                     </th:block>
                 </td>
@@ -370,7 +370,7 @@
             <table border="3">
                 <th:block
                         sec:authorize="hasAnyAuthority('OP_ANBARDAR','OP_MODIR_POSHTIBANIT','OP_TAHIEKONANDEH','OP_HERASAT')"
-                        th:each="t : ${form.getTajhizats()}" id="blk">
+                        th:each="t : ${form.getTajhizatss()}" id="blk">
                     <div th:text="${t.getName()}"></div>
                 </th:block>
                 <tr>

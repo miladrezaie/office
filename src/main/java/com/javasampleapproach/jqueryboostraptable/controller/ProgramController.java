@@ -12,10 +12,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -51,25 +54,39 @@ public class ProgramController {
 
     @PostMapping(value = "/admin/programs/create")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-    @Transactional
-    public String create(@ModelAttribute Program program,Model model) {
-        try{
-//            if (errors.hasErrors()){
-//                throw new Exception("اطلاعات ارسالی نادرست است مجدد تلاش نمایید");
-//            }
+//    @Transactional
+    public String create(@ModelAttribute @Valid Program program, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        try {
+            if (bindingResult.hasErrors()){
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/programs";
+            }
             programService.saveProgram(program);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
             return "redirect:/admin/programs";
-        }catch (ConstraintViolationException exception){
-            model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
-            return "errorPage";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/programs";
         }
     }
 
     @GetMapping(value = "/admin/programs/delete/{id}")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-    public String delete(@PathVariable Long id) {
-        programService.deleteProgram(id);
-        return "redirect:/admin/programs";
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            programService.deleteProgram(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "برنامه مورنظر با موفقیت حذف گردید.");
+            return "redirect:/admin/programs";
+        } catch (Exception exception) {
+//            redirectAttributes.addFlashAttribute("message", "امکان وجود دادن برنامه به کاربر وجود دارد.");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "برنامه به آفیش خاص مربوط است.");
+            return "redirect:/admin/programs";
+        }
     }
 
     @GetMapping("/admin/programs/find/{id}")

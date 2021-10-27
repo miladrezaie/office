@@ -9,8 +9,8 @@
     <script th:src="@{/js/js-select/bootstrap.min.js}"></script>
     <link rel="stylesheet" th:href="@{/css/css-select/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/table.css}"/>
-    <script type="text/javascript" th:src="@{js/main.js}"></script>
-    <script type="text/javascript" th:src="@{js/jqueryAjaxGet.js}"></script>
+    <script type="text/javascript" th:src="@{/js/main.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}"></script>
     <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
     <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
 </head>
@@ -45,6 +45,13 @@
     <th:block th:include="/_menu"></th:block>
 
     <h2> نقش ها و سطح دسترسی ها</h2>
+<!--    <th:block >-->
+<!--        -->
+<!--    </th:block>-->
+<!--    <div class="alert alert-success">-->
+<!--        <strong>Success!</strong> Indicates a successful or positive action.-->
+<!--    </div>-->
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
     <button type="button" class="btn btn-danger newRoles" id="newRole">
         افزودن نقش
     </button>
@@ -176,6 +183,7 @@
         $('#role_modal').on('shown.bs.modal', function() {
             $('#role_modal #name').focus();
         });
+        $('.alerting').delay(2000).fadeOut();
         // $('#role_modal #name').focus();
         $("form[name='roleForm']").validate({
             rules: {
@@ -195,7 +203,6 @@
         });
         $('.newRoles, .tablemy .editRoles').on('click', function (event) {
             event.preventDefault();
-
 
             var href = $(this).attr('href');
             var text = $(this).attr('id');

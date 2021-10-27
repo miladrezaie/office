@@ -170,14 +170,19 @@ public class OfficeController {
 
     @GetMapping("/admin/tajhizat/find/{id}")
     @ResponseBody
-    public Optional<Tajhizat> fiOptionalTajhizat(@PathVariable long id){
-        System.out.println("***************** + "+ id);
+    public Optional<Tajhizat> fiOptionalTajhizat(@PathVariable long id) {
+        System.out.println("***************** + " + id);
         return tRepo.findById(id);
     }
 
     @GetMapping("/deleteTajhiz/{id}")
-    public String deleteTajhiz(@PathVariable Long id) {
-        tRepo.deleteById(id);
+    public String deleteTajhiz(@PathVariable Long id,Model model) {
+        try {
+            tRepo.deleteById(id);
+        } catch (Exception e) {
+            model.addAttribute("message", "این تجهیز در یک آفیش قرار دارد");
+            return "errorPage";
+        }
         return "redirect:/tajhizats";
     }
 
@@ -253,7 +258,7 @@ public class OfficeController {
     }
 
     @PostMapping("/saveEmza")
-    public String saveEmza(FormJob fj ) {
+    public String saveEmza(FormJob fj) {
         String redirect = "redirect:/form/?id=" + fj.getFid();
         officeForm office_form = formRepo.findById(fj.getFid()).get();
         User u = userRepo.findById(fj.getUid()).get();
@@ -379,14 +384,18 @@ public class OfficeController {
     }
 
     @PostMapping("/addForm")
-    public String addutoform(@ModelAttribute officeForm f,BindingResult bindingResult) {
+    public String addutoform(@ModelAttribute officeForm f, BindingResult bindingResult) {
         System.out.println("*********************************************");
-        System.out.println("&&&&&&&" + f.getTajhizatss());
+        System.out.println("****************** : " + bindingResult.getAllErrors());
+        System.out.println("&&&&&&& : " + f.getId());
+        System.out.println("&&&&&&& : " + f.getTajhizatss());
+        System.out.println("&&&&&&& : " + f.getUsers());
 //        System.out.println("&&&&&&&" + tajhizatss);
         System.out.println("&&&&&&&" + f);
 
         officeForm form = formRepo.findById((long) f.getId()).get();
         System.out.println("*********************************************");
+        System.out.println("&&&&&&&&&&&&&&&&&&& : " + form.getTajhizatss());
 
         boolean found = false;
         if (f.getUsers() != null) {

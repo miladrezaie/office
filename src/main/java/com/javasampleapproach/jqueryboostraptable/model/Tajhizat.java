@@ -66,9 +66,9 @@ public class Tajhizat implements Serializable {
 	@NotNull(message = "وارد کردن مدل الزامی است")
 	private String model;
 
-//	@JsonIgnore
+	@JsonIgnore
 //	@JsonManagedReference
-	@ManyToMany(fetch=FetchType.LAZY,mappedBy = "tajhizatss")
+	@ManyToMany(fetch=FetchType.LAZY,mappedBy = "tajhizatss",cascade = CascadeType.DETACH)
 	private List<officeForm> tofficeforme;
 
 	@Column(columnDefinition="LONGBLOB")

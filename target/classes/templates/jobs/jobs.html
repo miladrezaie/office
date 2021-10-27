@@ -36,10 +36,11 @@
 <div class="container">
     <th:block th:include="/_menu"></th:block>
     <h2>عنوان شغلی ها</h2>
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
     <button type="button" class="btn btn-danger newJobs" id="newJob">
         افزودن عنوان شغلی
     </button>
-    <div class="jobModal">
+    <div class="jobModal" id="job_modal">
         <form th:action="@{/admin/jobs/create}" method="post" name="jobForm" id="jobForm">
             <div id="jobFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
@@ -135,6 +136,11 @@
 <script th:src="@{/js/jquery.validate.min.js}"></script>
 <script>
     $(document).ready(function () {
+        $('#job_modal').on('shown.bs.modal', function() {
+            $('#job_modal #name').focus();
+        });
+        $('.alerting').delay(2000).fadeOut();
+
         $("form[name='jobForm']").validate({
             rules: {
                 name: "required"
