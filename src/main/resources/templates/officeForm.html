@@ -57,6 +57,7 @@
             <th dir="rtl">نام تهیه کننده</th>
             <th dir="rtl">نام آفیش</th>
             <th dir="rtl">محل آفیش</th>
+            <th dir="rtl">تکمیل آفیش</th>
             <th dir="rtl">تنظیمات</th>
         </tr>
         </thead>
@@ -67,6 +68,7 @@
             <td th:utext="${form.getUsers().get(0).getFullname()}">...</td>
             <td th:utext="${form.program.getName()}">...</td>
             <td th:utext="${form.location.getName()}">...</td>
+            <td th:utext="${form.status}">...</td>
             <td>
                 <th:block
                         sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">

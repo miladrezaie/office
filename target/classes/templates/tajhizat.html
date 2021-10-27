@@ -39,9 +39,13 @@
 
     <th:block th:include="/_menu"></th:block>
     <h2>تجهیزات</h2>
+
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+
     <button type="button" class="btn btn-danger newTajhizats" id="newTajhizat">
         افزودن تجهیز
     </button>
+
     <div class="tajhizatModal" id="tajhizat_modal">
         <form th:action="@{/admin/tajhizats/create}" enctype="multipart/form-data" method="post" name="tajhizatForm" id="tajhizatForm">
             <div id="tajhizatFrom" class="modal fade" tabindex="-1" role="dialog"
@@ -207,6 +211,7 @@
         $('#tajhizat_modal').on('shown.bs.modal', function () {
             $('#tajhizat_modal #name').focus();
         });
+        $('.alerting').delay(2000).fadeOut();
         $("form[name='tajhizatForm']").validate({
             rules: {
                 name: "required",
@@ -220,7 +225,7 @@
             messages: {
                 name: "لطفا نام تجهیز را وارد کنید",
                 amvalid: "وارد کردن شماره اموال الزامی است",
-                serial_id: "وارد کردن شماره اموال الزامی است",
+                serial_id: "وارد کردن شماره سریال الزامی است",
                 model: "وارد کردن مدل تجهیز الزامی است",
                 location: "وارد کردن مکان قرار گیری تجهیز الزامی است",
                 brand: "وارد کردن برند تجهیز الزامی است",

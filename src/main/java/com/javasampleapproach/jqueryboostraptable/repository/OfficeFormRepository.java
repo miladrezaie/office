@@ -21,6 +21,8 @@ public interface OfficeFormRepository extends JpaRepository<officeForm, Long> {
 
 	//List<officeForm> findByUsers(Set<User> users);
 	
-	List<officeForm> findByUsers(List<User> user);
+	List<officeForm> findByUsersAndStatusIsFalse(List<User> user);
+
+	List<officeForm> findAllByStatusTrue();
 	
 }

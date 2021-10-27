@@ -32,6 +32,9 @@ import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormRepositor
 import com.javasampleapproach.jqueryboostraptable.repository.Roozh;
 import com.javasampleapproach.jqueryboostraptable.repository.TajhizatRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Service
 @Controller
@@ -93,7 +96,6 @@ public class OfficeController {
 
     @GetMapping("/office")
     public String viewoffice(Model model) {
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         List<User> us = new ArrayList<>();
@@ -103,7 +105,7 @@ public class OfficeController {
         if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")) {
             model.addAttribute("forms", formRepo.findAll());
         } else {
-            for (officeForm oo : formRepo.findByUsers(us)) {
+            for (officeForm oo : formRepo.findByUsersAndStatusIsFalse(us)) {
                 if (userHasAuthority("OP_TAHIEKONANDEH")) {
                     office_form.add(oo);
 //                    model.addAttribute("forms", oo);
@@ -126,9 +128,7 @@ public class OfficeController {
                 }
             }
             model.addAttribute("forms", office_form);
-
         }
-
         model.addAttribute("user", user);
         if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
             model.addAttribute("tahie", user.getFullname());
@@ -176,30 +176,49 @@ public class OfficeController {
     }
 
     @GetMapping("/deleteTajhiz/{id}")
-    public String deleteTajhiz(@PathVariable Long id,Model model) {
+    public String deleteTajhiz(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             tRepo.deleteById(id);
-        } catch (Exception e) {
-            model.addAttribute("message", "این تجهیز در یک آفیش قرار دارد");
-            return "errorPage";
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "تجهیز مود نظر با موفقیت حذف گردید.");
+            return "redirect:/tajhizats";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تجهیز مود نظر به آفیش خاصی تعلق دارد است.");
+            return "redirect:/tajhizats";
         }
-        return "redirect:/tajhizats";
+
     }
 
     @PostMapping("/admin/tajhizats/create")
-    public String Esave(Tajhizat t, MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        if (fileName.contains("..")) {
-            System.out.println("not a valid file");
-        }
+    public String Esave(@RequestParam MultipartFile file, @ModelAttribute @Valid Tajhizat t, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
-            t.setImg(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException er) {
-            System.out.println("file ");
-            er.printStackTrace();
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            if (fileName.contains("..")) {
+                System.out.println("not a valid file");
+            }
+            try {
+                t.setImg(Base64.getEncoder().encodeToString(file.getBytes()));
+            } catch (IOException er) {
+                System.out.println("file ");
+                er.printStackTrace();
+            }
+            if (bindingResult.hasErrors()) {
+                System.out.println("############################ : " + bindingResult.getAllErrors());
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/tajhizats";
+            }
+            tRepo.save(t);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+            return "redirect:/tajhizats";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/tajhizats";
         }
-        tRepo.save(t);
-        return "redirect:/tajhizats";
+
     }
 
 //     @PostMapping("/addToForm")

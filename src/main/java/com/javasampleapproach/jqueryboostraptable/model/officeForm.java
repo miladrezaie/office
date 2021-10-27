@@ -22,6 +22,7 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class officeForm implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,8 +70,9 @@ public class officeForm implements Serializable {
     private List<Tajhizat> tajhizatss;
 
     //taied or laghv office_form
-    @Column(columnDefinition = "smallint")
-    private Integer status;
+//    @Column(columnDefinition = "smallint",nullable = false)
+    @Column(columnDefinition="tinyint(1) default 0")
+    private Boolean status ;
 
     @Column(columnDefinition = "nvarchar(25)")
     private String khodro;

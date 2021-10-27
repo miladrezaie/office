@@ -6,10 +6,9 @@ import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -23,16 +22,16 @@ public class Tajhizat implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(columnDefinition="nvarchar(20)")
-	@NotNull(message = "وارد کردن نام تجهیز الزامی است")
+	@Column(columnDefinition="nvarchar(60)")
+	@NotBlank(message = "وارد کردن نام تجهیز الزامی است")
 	private String name;
 	
-	@Column(columnDefinition="nvarchar(30)")
-	@NotNull(message = "وارد کردن شناسه اموال الزامی است")
+	@Column(columnDefinition="nvarchar(60)")
+	@NotBlank(message = "وارد کردن شناسه اموال الزامی است")
 	private String amvalid;
 
-	@Column(columnDefinition="nvarchar(30)")
-	@NotNull(message = "وارد کردن شناسه سریال تجهیز الزامی است")
+	@Column(columnDefinition="nvarchar(40)")
+	@NotBlank(message = "وارد کردن شناسه سریال تجهیز الزامی است")
 	private String serial_id;
 
 	public Long getId() {
@@ -43,27 +42,25 @@ public class Tajhizat implements Serializable {
 		this.id = id;
 	}
 
-	@Column(columnDefinition="nvarchar(20)")
-	@NotNull(message = "وارد کردن نوع الزامی است")
+	@Column(columnDefinition="nvarchar(40)")
+	@NotBlank(message = "وارد کردن نوع الزامی است")
 	private String type;
 
 	@ManyToOne
-	@Nullable
 	@JoinColumn(name="location_id")
 	@JsonManagedReference
-//	@NotNull(message = "وارد کردن مکان قرار گیری تجهیز الزامی است")
+	@NotNull(message = "وارد کردن مکان قرار گیری تجهیز الزامی است")
 	private Location location;
 
 	@ManyToOne
-	@Nullable
 	@JoinColumn(name="brand_id")
 	@JsonManagedReference
 //	@JsonIgnore
-//	@NotNull(message = "وارد کردن برند الزامی است")
+	@NotNull(message = "وارد کردن برند الزامی است")
 	private Brand brand;
 
-	@Column(columnDefinition="nvarchar(20)")
-	@NotNull(message = "وارد کردن مدل الزامی است")
+	@Column(columnDefinition="nvarchar(50)")
+	@NotBlank(message = "وارد کردن مدل الزامی است")
 	private String model;
 
 	@JsonIgnore
@@ -72,7 +69,7 @@ public class Tajhizat implements Serializable {
 	private List<officeForm> tofficeforme;
 
 	@Column(columnDefinition="LONGBLOB")
-	@NotNull(message = "وارد کردن تصویر الزامی است")
+//	@NotNull(message = "وارد کردن تصویر الزامی است")
 	private String img;
 	
 	public Tajhizat() {
@@ -89,12 +86,12 @@ public class Tajhizat implements Serializable {
 		this.img = img;
 	}
 
-	@Nullable
+
 	public Brand getBrand() {
 		return brand;
 	}
 
-	public void setBrand(@Nullable Brand brand) {
+	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
 
