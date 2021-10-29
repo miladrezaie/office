@@ -68,7 +68,9 @@
             <td th:utext="${form.getUsers().get(0).getFullname()}">...</td>
             <td th:utext="${form.program.getName()}">...</td>
             <td th:utext="${form.location.getName()}">...</td>
-            <td th:utext="${form.status}">...</td>
+
+            <td th:if="${form.status ==false}" >به اتمام نرسیده</td>
+            <td th:if="${form.status ==true}" >تکمیل شده</td>
             <td>
                 <th:block
                         sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">

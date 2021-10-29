@@ -66,16 +66,6 @@ public class LocationController {
             redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
             return "redirect:/admin/locations";
         }
-//        try{
-////            if (errors.hasErrors()){
-////                throw new Exception("اطلاعات ارسالی نادرست است مجدد تلاش نمایید");
-////            }
-//
-//
-//        }catch (ConstraintViolationException exception){
-//            model.addAttribute("message","خطایی به وجود آمده مجددا تلاش نمایید");
-//            return "errorPage";
-//        }
     }
 
     @GetMapping(value = "/admin/locations/delete/{id}")

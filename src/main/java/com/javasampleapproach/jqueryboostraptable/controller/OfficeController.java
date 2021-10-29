@@ -105,7 +105,8 @@ public class OfficeController {
         if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")) {
             model.addAttribute("forms", formRepo.findAll());
         } else {
-            for (officeForm oo : formRepo.findByUsersAndStatusIsFalse(us)) {
+            for (officeForm oo : formRepo.findByStatusIsFalse()) {
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$1");
                 if (userHasAuthority("OP_TAHIEKONANDEH")) {
                     office_form.add(oo);
 //                    model.addAttribute("forms", oo);
@@ -239,6 +240,8 @@ public class OfficeController {
         jCal.gregorianToPersian(myear, mmonth, mday);
 
         form.setTarikhsodur(jCal.toString());
+        form.setStatus(false);
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<User> u = new ArrayList<>();
         u.add(userRepo.findByPersonalId(auth.getName()));
@@ -254,11 +257,6 @@ public class OfficeController {
             form.getUsers().add(u.get(0));
             System.out.println("foorm add user else ");
         }
-        System.out.println("foorrrmmm" + form);
-        System.out.println("ussserrrrr" + u);
-
-        System.out.println("user saved");
-
         formRepo.save(form);
         System.out.println("form saved");
         return "redirect:/office";
@@ -320,9 +318,14 @@ public class OfficeController {
             if (fj.getTid().equals(1)) {
                 office_form.setSaatvorod(h);
                 office_form.setVherasatemza(u.getEmza());
+                formRepo.setStatusForOfficeForm(true,office_form.getId());
             } else {
                 office_form.setSaatkhoroj(h);
                 office_form.setKhherasatemza(u.getEmza());
+
+
+                System.out.println("----------------tayyyyyied shod-------------------------");
+
             }
         } else {
             System.out.println("----------------emzaa nashod 1-------------------------");

@@ -36,6 +36,8 @@
 <div class="container">
     <th:block th:include="/_menu"></th:block>
     <h2>مکان ها</h2>
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+
     <button type="button" class="btn btn-danger newLocations" id="newLocation">
         افزودن مکان
     </button>
