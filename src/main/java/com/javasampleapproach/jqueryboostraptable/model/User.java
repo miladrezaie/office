@@ -35,7 +35,7 @@ public class User implements Serializable, UserDetails {
 
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
     @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد", min = 8, max = 10)
-    @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)")
+    @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)",unique = true)
     private String personalId;
 
     @Column(name = "NAME", columnDefinition = "nvarchar(20)")
@@ -76,13 +76,27 @@ public class User implements Serializable, UserDetails {
     @JoinColumn(name = "job_id")
     private Job job;
 
+    @ManyToOne
+    @Nullable
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @Nullable
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(@Nullable Category category) {
+        this.category = category;
+    }
+
     @JoinTable(
             name = "role_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"role_id", "user_id"})}
     )
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 

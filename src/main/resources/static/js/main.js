@@ -7,12 +7,19 @@ $(document).ready(function () {
         var text = $(this).attr('id');
 
         if (text == 'EditUser') {
+            $("label.error").hide();
+            $(".error").removeClass("error");
             $.get(href, function (member, status) {
+                console.log(member);
                 $('.umyForm #id').val(member.id);
                 $('.umyForm #personalId').val(member.personalId);
                 $('.umyForm #FName').val(member.fname);
                 $('.umyForm #Lname').val(member.lname);
-                $('.umyForm #job').val(member.job);
+
+                $('.umyForm #job').selectpicker('val',member.job.id);
+                $('.umyForm #roles').selectpicker('val',member.roles[0].id);
+                $('.umyForm #category').selectpicker('val',member.category.id);
+
             });
             $('.umyForm #uexampleModal').modal();
         } else if (text == 'OpenForm') {
@@ -61,12 +68,17 @@ $(document).ready(function () {
             });
             $('.tmyForm #texampleModal').modal();
         } else if (text == 'NUser') {
+            $("label.error").hide();
+            $(".error").removeClass("error");
             $('.umyForm #uexampleModal').modal();
             $('.umyForm #id').val('');
             $('.umyForm #personalId').val('');
             $('.umyForm #FName').val('');
             $('.umyForm #Lname').val('');
             $('.umyForm #DMac').val('');
+            $('.umyForm #job').selectpicker('val', '');
+            $('.umyForm #roles').selectpicker('val', '');
+            $('.umyForm #category').selectpicker('val', '');
         } else {
             $('.emyForm #eexampleModal').modal();
             $('.emyForm #id').val('');

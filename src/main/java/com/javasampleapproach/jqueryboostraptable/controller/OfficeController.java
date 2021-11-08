@@ -67,6 +67,9 @@ public class OfficeController {
     @Autowired
     private ProgramServiceImp programServiceImp;
 
+    @Autowired
+    private CategoryServiceImp categoryServiceImp;
+
     @GetMapping("/tajhizats")
     public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
 
@@ -88,10 +91,17 @@ public class OfficeController {
     }
 
     @GetMapping(value = "/admin/officeform/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        System.out.println("saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        formRepo.deleteById(id);
-        return "redirect:/office";
+    public String delete(@PathVariable Long id,RedirectAttributes redirectAttributes) {
+        try {
+            formRepo.deleteById(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "آفیش مود نظر با موفقیت حذف گردید.");
+            return "redirect:/office";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "خطایی رخ داده لطفا بعدا تلاش نمایید.");
+            return "redirect:/office";
+        }
     }
 
     @GetMapping("/office")
@@ -231,35 +241,44 @@ public class OfficeController {
 //     }
 
     @PostMapping("/saveForm")
-    public String saveForm(officeForm form) {
+    public String saveForm(@ModelAttribute @Valid officeForm form,BindingResult bindingResult,RedirectAttributes redirectAttributes) {
+        try {
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/office";
+            }
+            Roozh jCal = new Roozh();
+            int myear = LocalDate.now().getYear();
+            int mmonth = LocalDate.now().getMonthValue();
+            int mday = LocalDate.now().getDayOfMonth();
+            jCal.gregorianToPersian(myear, mmonth, mday);
 
-        Roozh jCal = new Roozh();
-        int myear = LocalDate.now().getYear();
-        int mmonth = LocalDate.now().getMonthValue();
-        int mday = LocalDate.now().getDayOfMonth();
-        jCal.gregorianToPersian(myear, mmonth, mday);
+            form.setTarikhsodur(jCal.toString());
+            form.setStatus(false);
 
-        form.setTarikhsodur(jCal.toString());
-        form.setStatus(false);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            List<User> u = new ArrayList<>();
+            u.add(userRepo.findByPersonalId(auth.getName()));
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        List<User> u = new ArrayList<>();
-        u.add(userRepo.findByPersonalId(auth.getName()));
-
-        System.out.println("nameeeeeeeeeeeeeeeeeeee" + auth.getName());
-        System.out.println("-------------------->" + form.toString());
-        System.out.println("---------formgetuser----------->" + (form.getUsers() == null));
-        if (form.getUsers() == null) {
-            form.setUsers(u);
-            System.out.println("foorm if is empty");
-            // form.setUsers(new HashSet<>(userRepo.findBypersonalId(u.getPersonalId())));
-        } else {
-            form.getUsers().add(u.get(0));
-            System.out.println("foorm add user else ");
+            if (form.getUsers() == null) {
+                form.setUsers(u);
+                System.out.println("foorm if is empty");
+                // form.setUsers(new HashSet<>(userRepo.findBypersonalId(u.getPersonalId())));
+            } else {
+                form.getUsers().add(u.get(0));
+                System.out.println("foorm add user else ");
+            }
+            formRepo.save(form);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+            return "redirect:/office";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/office";
         }
-        formRepo.save(form);
-        System.out.println("form saved");
-        return "redirect:/office";
+
 
     }
 
@@ -330,95 +349,13 @@ public class OfficeController {
         } else {
             System.out.println("----------------emzaa nashod 1-------------------------");
         }
-//        switch (u.getEmza()) {
-//            case "حراست":
-//                LocalTime time = LocalTime.now();
-//                String h = time.getHour() + " : " + time.getMinute();
-//                if (fj.getTid().equals(1)) {
-//                    office_form.setSaatvorod(h);
-//                    office_form.setVherasatemza(u.getEmza());
-//                } else {
-//                    office_form.setSaatkhoroj(h);
-//                    office_form.setKhherasatemza(u.getEmza());
-//                }
-//                break;
-//            case "معاونت سیما":
-//                System.out.println("moaven------majazi---beforset");
-//                User ux = userService.findByUsername("999999");
-//                System.out.println("---------->" + ux);
-//                if (!office_form.getUsers().contains(ux))
-//                    office_form.getUsers().add(ux);
-//                office_form.setMdarkhastemza(u.getEmza());
-//                System.out.println("moaven------majazi---afterset");
-//                // office_form.getUsers().add(userRepo.findByJob("مدیر پشتیبانی فنی").get(0));
-//                break;
-//            case "مسئول حمل و نقل":
-//                User us = userRepo.findById(fj.getTid()).get();
-//                office_form.setRanande(us.getFullname());
-//                office_form.setRanandeid(us.getPersonalId());
-//                office_form.setKhodro(fj.getJob());
-//                office_form.setHamlonaghlemza(u.getEmza());
-//                break;
-//            case "مدیر پشتیبانی فنی":
-//                office_form.setPoshemza(u.getEmza());
-//
-////                office_form.getUsers().add(userRepo.findByJob("هماهنگی سیما").get(0));
-////                System.out.println("after add hamahangi");
-////                office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
-////                System.out.println("after add hamlonaghl");
-////                office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
-////                System.out.println("after add herasat");
-////                office_form.getUsers().add(userRepo.findByJob("انباردار").get(0));
-//                break;
-//            case "هماهنگی سیما":
-////			 office_form.getUsers().add(userRepo.findByJob("مسئول حمل و نقل").get(0));
-////			 office_form.getUsers().add(userRepo.findByJob("حراست").get(0));
-//                break;
-//            case "تهیه کننده":
-//                office_form.setTahayeemza(u.getEmza());
-//                User user = userService.findByUsername("11000010");
-//                if (!office_form.getUsers().contains(user))
-//                    office_form.getUsers().add(user);
-//                break;
-//            case "تصویربردار":
-//                if (office_form.getTasviremza() == null)
-//                    office_form.setTasviremza(u.getEmza());
-//                else if (office_form.getTasviremza2() == null)
-//                    office_form.setTasviremza2(u.getEmza());
-//                else if (office_form.getTasviremza3() == null)
-//                    office_form.setTasviremza3(u.getEmza());
-//                else if (office_form.getTasviremza4() == null)
-//                    office_form.setTasviremza4(u.getEmza());
-//                else if (office_form.getTasviremza5() == null)
-//                    office_form.setTasviremza5(u.getEmza());
-//                else
-//                    office_form.setTasviremza6(u.getEmza());
-//                break;
-//            case "صدابردار":
-//                office_form.setSedaemza(u.getEmza());
-//                break;
-//
-//            default:
-//                System.out.println("----------------emzaa nashod -------------------------");
-//        }
         formRepo.save(office_form);
         return redirect;
     }
 
     @PostMapping("/addForm")
     public String addutoform(@ModelAttribute officeForm f, BindingResult bindingResult) {
-        System.out.println("*********************************************");
-        System.out.println("****************** : " + bindingResult.getAllErrors());
-        System.out.println("&&&&&&& : " + f.getId());
-        System.out.println("&&&&&&& : " + f.getTajhizatss());
-        System.out.println("&&&&&&& : " + f.getUsers());
-//        System.out.println("&&&&&&&" + tajhizatss);
-        System.out.println("&&&&&&&" + f);
-
         officeForm form = formRepo.findById((long) f.getId()).get();
-        System.out.println("*********************************************");
-        System.out.println("&&&&&&&&&&&&&&&&&&& : " + form.getTajhizatss());
-
         boolean found = false;
         if (f.getUsers() != null) {
             Iterator<User> itr = f.getUsers().iterator();
@@ -456,9 +393,10 @@ public class OfficeController {
     @GetMapping("/findbyjob/{job}")
     @ResponseBody
     public Set<User> findU(@PathVariable long job) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        Category category=categoryServiceImp.findByIdCategory(job);
+//        category.getUsers()
         Job job1 = jobServiceImp.findById(job);
-
         return job1.getUsers();
     }
 

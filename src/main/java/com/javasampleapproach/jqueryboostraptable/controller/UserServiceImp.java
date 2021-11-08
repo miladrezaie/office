@@ -20,13 +20,13 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Override
     public void save(User user) {
         user.setPass(bCryptPasswordEncoder.encode(user.getPass()));
         user.setFullname(user.getFName() + " " + user.getLname());
@@ -36,8 +36,10 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void saveuemza(User user, MultipartFile file) {
-        user.setPass(bCryptPasswordEncoder.encode(user.getPass()));
-        user.setFullname(user.getFName() + " " + user.getLname());
+//        System.out.println("password is a Encode Method: "+ bCryptPasswordEncoder.encode(user.getPass()));
+//        System.out.println("password is a : "+ bCryptPasswordEncoder.matches(,user.getPass()));
+//        user.setPass(bCryptPasswordEncoder.encode(user.getPass()));
+//        user.setFullname(user.getFName() + " " + user.getLname());
 //        System.out.println("get role user : "+user.getRoles());
 //        System.out.println("new hash role user : "+new HashSet<>(user.getRoles()));
         user.setRoles(new HashSet<>(user.getRoles()));
@@ -51,7 +53,7 @@ public class UserServiceImp implements UserService {
             System.out.println("file ");
             er.printStackTrace();
         }
-        userRepository.save(user);
+//        userRepository.save(user);
     }
 
     @Override

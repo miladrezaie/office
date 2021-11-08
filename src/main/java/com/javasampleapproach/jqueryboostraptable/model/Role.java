@@ -1,6 +1,7 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Role {
     private String description;
 
     @ManyToMany(mappedBy = "roles" ,fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<User> users;
 
     @ElementCollection(targetClass = Authority.class)

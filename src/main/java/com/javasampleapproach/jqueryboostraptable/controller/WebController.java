@@ -8,9 +8,9 @@ import java.time.LocalTime;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.CategoryServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.RoleServiceImp;
 import com.javasampleapproach.jqueryboostraptable.model.*;
@@ -31,6 +31,7 @@ import com.javasampleapproach.jqueryboostraptable.repository.EmployeeRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.Roozh;
 import com.javasampleapproach.jqueryboostraptable.repository.TimeRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 //@CrossOrigin(origins = "http://localhost:4200")
 @Service
@@ -55,6 +56,9 @@ public class WebController {
     @Autowired
     private RoleServiceImp roleServiceImp;
 
+    @Autowired
+    private CategoryServiceImp categoryServiceImp;
+
     @GetMapping("/employee")
     public String viewEmployee(Model model, @RequestParam(defaultValue = "0") int page) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -78,19 +82,23 @@ public class WebController {
     }
 
     @GetMapping("/members")
-    public String viewMembers(Model model, String keyword, HttpServletRequest request) {
+    public String viewMembers(Model model, String keyword, @RequestParam(defaultValue = "0") int page, HttpServletRequest request) {
         //data have devices information
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         List<Job> jobs = jobServiceImp.getAllJobs();
         List<Role> roles = roleServiceImp.getAllRoles();
+        List<Category> categories = categoryServiceImp.getAllCategories();
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         if (keyword != null) {
             model.addAttribute("members", userRepo.search(keyword));
         } else {
-            model.addAttribute("members", userRepo.findAll());
+//            model.addAttribute("members", userRepo.findAll());
             model.addAttribute("jobs", jobs);
             model.addAttribute("roles", roles);
+            model.addAttribute("members", userRepo.findAll(new PageRequest(page, 10)));
+            model.addAttribute("currentPage", page);
+            model.addAttribute("categories", categories);
         }
         return "membersPage";
     }
@@ -99,7 +107,6 @@ public class WebController {
     public String qrScan() {
         return "scanner";
     }
-
 
     @GetMapping("/access-denied")
     public String access(Model model, @RequestParam(defaultValue = "0") int page) {
@@ -122,22 +129,36 @@ public class WebController {
     }
 
     @PostMapping("/saveeUser")
-    public String saveue(@ModelAttribute User user, @RequestParam("file") MultipartFile file,Model model) {
-        System.out.println("******************* user : " + user);
-        System.out.println("******************* user : " + user.getRoles());
-        try{
-            if (!file.isEmpty()) {
-                userService.saveuemza(user, file);
+    public String saveue(@ModelAttribute @Valid User user, BindingResult bindingResult, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+        try {
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/members";
             } else {
-                User us = userRepo.findById(user.getId()).get();
-                user.setEmza(us.getEmza());
+                if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
+                    bindingResult.rejectValue("personalId", "error.user",
+                            "هم اکنون کاربری با این شماره کارمندی موجود است");
+                }
+                if (!file.isEmpty()) {
+                    userService.saveuemza(user, file);
+                } else {
+                    User us = userRepo.findByPersonalId(user.getPersonalId());
+                    user.setEmza(us.getEmza());
+                }
                 userService.save(user);
-            }
-            return "redirect:/members";
 
-        }catch (Exception e){
-            model.addAttribute("messege", "لطفا مجددا تلاش نمایید ");
-            return "errorPage";
+                redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+                redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+                return "redirect:/members";
+            }
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید لا.");
+//            model.addAttribute("message", "لطفا مجددا تلاش نمایید");
+            System.out.println("************" + e);
+            return "redirect:/members";
         }
     }
 
@@ -169,44 +190,49 @@ public class WebController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-//    @Transactional
-    public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
+    public String createNewUser(@ModelAttribute @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        System.out.println("create user form");
         try {
-            ModelAndView modelAndView = new ModelAndView();
-            System.out.println("personal id : " + userRepo.findByPersonalId(user.getPersonalId()));
-            System.out.println(user);
-            System.out.println("***********************************");
-            if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
-                bindingResult.rejectValue("personalId", "error.user",
-                        "هم اکنون کاربری با این شماره کارمندی موجود است");
-            }
             if (bindingResult.hasErrors()) {
-                modelAndView.setViewName("registration");
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/members";
             } else {
+//            if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
+//                bindingResult.rejectValue("personalId", "error.user",
+//                        "هم اکنون کاربری با این شماره کارمندی موجود است");
+//            }
+                System.out.println("create user form else");
                 userService.save(user);
             }
-            return modelAndView;
-        } catch (Exception exception){
-            throw exception;
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+            return "redirect:/members";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/members";
         }
-
     }
 
-    @GetMapping("/deleteUser")
+    @GetMapping("/deleteUser/{id}")
 //    @PreAuthorize("#userRepo.name != authentication.name")
-    public String deleteUser(Integer id, Model model) {
+    public String deleteUser(@PathVariable Integer id,RedirectAttributes redirectAttributes) {
         try {
             userRepo.deleteById(id);
         } catch (Exception e) {
-            model.addAttribute("messege", "این کاربر در یک آفیش حضور دارد");
-            return "errorPage";
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "کاربر مورد نظر در یک آفیش حضور دارد .");
+            return "redirect:/members";
         }
+        redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+        redirectAttributes.addFlashAttribute("message", "کاربر مورد نظر با موفیت حذف گردید .");
         return "redirect:/members";
     }
 
-    @GetMapping("/findOneUser")
+    @GetMapping("/members/findOneUser/{id}")
     @ResponseBody
-    public Optional<User> findOneUser(Integer id) {
+    public Optional<User> findOneUser(@PathVariable Integer id) {
         return userRepo.findById(id);
     }
 

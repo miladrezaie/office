@@ -7,12 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script th:src="@{../js/jquery.min.js}"></script>
     <script th:src="@{../js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap.min.css}"/>
+
     <link rel="stylesheet" type="text/css" th:href="@{../css/bootstrap.min.css}"/>
     <script type="text/javascript" th:src="@{../js/main.js}" src="../static/js/main.js"></script>
     <script type="text/javascript" th:src="@{../js/get.js}" src="../static/js/get.js"></script>
     <script type="text/javascript" th:src="@{../js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
 
-
+    <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
+    <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
 </head>
 
 <style>
@@ -23,17 +26,27 @@
     .message {
         color: blue;
     }
+
+    .error {
+        color: red;
+        font-size: 12px;
+    }
+
+    .active {
+        background-color: #337ab7;
+        color: white;
+    }
 </style>
 <script type="text/javascript">
-
 
 </script>
 <body dir="rtl">
 <div class="container">
-    <!-- Include _menu.html -->
     <th:block th:include="/_menu"></th:block>
 
     <h2>کاربرها</h2>
+    <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+
     <button class="btn btn-succes mnBtn" id="NUser">اضافه کردن کاربر جدید</button>
 
     <table class="table table-hover">
@@ -49,7 +62,6 @@
         </tr>
         </thead>
         <tbody>
-
         <tr class="text-center" th:each="member : ${members}">
             <td th:utext="${member.id}">...</td>
             <td th:utext="${member.personalId}">...</td>
@@ -61,26 +73,54 @@
             </td>
             <!--            <td th:each="${T(com.javasampleapproach.jqueryboostraptable.model.Role) role :member.getRoles()}" th:utext="${role.getName()}">...</td>-->
             <td width="40px"><img th:src="*{'data:emza/jpg;base64,'+{member.emza}}" class="img-responsive"></td>
-
             <td>
-                <a sec:authorize="hasAuthority('ADMIN')" th:href="@{findOneUser/(id=${member.id})}"
+                <a sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')" th:href="@{/members/findOneUser/{id}(id=${member.id})}"
                    class="btn btn-primary meBtn" id="EditUser">ویرایش</a>
-                <a th:href="@{deleteUser/(id=${member.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">حذف</a>
+                <button sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')" type="button" class="btn btn-danger btn-sm " data-toggle="modal"
+                        th:attr="data-target='#modal-warning'+${member.getId() }">
+                    حذف
+                </button>
+<!--                <a th:href="@{deleteUser/(id=${member.id})}" class="btn btn-danger mdelBtn" id="DeleteUser">حذف</a>-->
             </td>
+
+            <div class="modal fade" th:id="modal-warning+${member.getId()}" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" th:utext="${member.getFullname()}"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="alert alert-danger">
+                                آیا شما مطمین هستید که میخواهید این کاربر را پاک کنید ؟
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                            <a th:href="@{/deleteUser/{id}(id=${member.id})}"
+                               class="btn btn-danger"
+                               id="deleteUsermoa">حذف</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </tr>
         </tbody>
     </table>
     <hr/>
-    <!--		<ul class="nav nav-pills">
-            <li class="nav-item" th:each="i : ${#numbers.sequence(0,members.totalPages-1)}">
-            <a th:href="@{/members/(page=${i})}" th:text="${i}" class="nav-link" th:classappend="${currentPage}==${i}?'active':''"></a>
-            </li>
 
-            </ul> -->
-
+    <ul class="nav nav-pills" th:if="${members.totalPages>=2}">
+        <li class="nav-item" th:each="i : ${#numbers.sequence(0,members.totalPages-1)}">
+            <a th:href="@{/members/(page=${i})}" th:text="${i+1}" class="nav-link"
+               th:classappend="${currentPage}==${i}?'active':''"></a>
+        </li>
+    </ul>
 
     <div class="umyForm">
-        <form th:action="@{/saveeUser}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/saveeUser}" method="post" enctype="multipart/form-data" name="user_Form" id="user_Form">
             <div class="modal fade" id="uexampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -92,50 +132,56 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div class="row" hidden="true">
+                                <div class="form-group col-sm-12">
+                                    <label for="id" class="col-form-label">ID:</label> <input
+                                        type="text" class="form-control form-control-sm btn-space" id="id"
+                                        name="id" value=""/>
+                                </div>
+                            </div>
                             <div class="row">
-
                                 <div class="form-group col-sm-12">
                                     <label for="personalId" class="form-control-label">شماره کارمندی:</label>
                                     <input type="text" class="form-control" id="personalId" name="personalId" value=""/>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="form-group col-sm-6">
                                     <label for="FName" class="form-control-label">نام:</label>
                                     <input type="text" class="form-control" id="FName" name="FName" value=""/>
                                 </div>
-
                                 <div class="form-group col-sm-6">
                                     <label for="Lname" class="form-control-label">نام خانوادگی:</label>
                                     <input type="text" class="form-control" id="Lname" name="Lname" value=""/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group col-sm-6">
+                                <div class="form-group col-sm-4">
                                     <label for="job" class="form-control-label">عنوان شغلی:</label>
-
-                                    <select id="job" class="form-control" name="job">
+                                    <select  id="job" class="selectpicker form-control" title="انتخاب کنید" name="job">
                                         <option th:each="job : ${jobs}" th:value="${job.getId()}"
                                                 th:text="${job.getName()}"></option>
                                     </select>
                                 </div>
-
-                                <!--                                <div class="form-group col-sm-6">-->
-                                <!--                                    <label for="job" class="form-control-label">شغل:</label>-->
-                                <!--                                    <input type="text" class="form-control" id="job" name="job" value=""/>-->
-                                <!--                                </div>-->
-
-                                <div class="form-group col-sm-6">
+                                <div class="form-group col-sm-4">
                                     <label for="roles" class="form-control-label">نقش:</label>
-
-                                    <select id="roles" class="form-control" name="roles">
+                                    <select  id="roles" class="selectpicker form-control" title="انتخاب کنید" name="roles">
                                         <option th:each="role : ${roles}" th:value="${role.getId()}"
-                                                th:text="${role.getName()}">..
+                                                th:text="${role.getName()}">
                                         </option>
-
                                     </select>
                                 </div>
+                                <div class="form-group col-sm-4">
+                                    <label for="category" class="form-control-label">دسته:</label>
+                                    <select  id="category" class="selectpicker form-control" title="انتخاب کنید" name="category">
+                                        <option th:each="category : ${categories}" th:value="${category.getId()}"
+                                                th:text="${category.getName()}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
                             </div>
                             <div class="form-group">
                                 <label for="pass" class="form-control-label">رمز عبور:</label>
@@ -146,12 +192,13 @@
                                 <input type="file" class="custom-file-input" id="file" name="file"/>
                             </div>
                         </div>
+                    </div>
 
-                    </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-primary" value="save"/>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                        <input type="submit" class="btn btn-primary" value="ذخیره و ثبت"/>
                     </div>
+
                 </div>
             </div>
         </form>
@@ -160,6 +207,36 @@
 
 </div>
 
-
+<script th:src="@{/js/jquery.validate.min.js}"></script>
+<script >
+    $(document).ready(function () {
+        $('.alerting').delay(2000).fadeOut();
+        $("form[name='user_Form']").validate({
+            rules: {
+                personalId: "required",
+                FName: "required",
+                Lname: "required",
+                job: "required",
+                roles: "required",
+                pass: "required",
+                file: "required",
+                category: "required",
+            },
+            messages: {
+                personalId: "لطفا نام نقش را وارد کنید",
+                FName: "وارد کردن نام الزامی است",
+                Lname: "وارد کردن نام خانوادگی الزامی است",
+                job: "وارد کردن عنوان شغلی الزامی است",
+                roles: "وارد کردن سطح دسترسی الزامی است",
+                pass: "وارد کردن رمز عبور الزامی است",
+                file: "وارد کردن فایل الزامی است",
+                category: "وارد کردن دسته بندی الزامی است",
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+    });
+</script>
 </body>
 </html>
