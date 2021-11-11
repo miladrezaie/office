@@ -1,12 +1,16 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
 
+import com.itextpdf.text.DocumentException;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.*;
+import com.javasampleapproach.jqueryboostraptable.Service.OfficePdfGenerator;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
@@ -34,6 +38,7 @@ import com.javasampleapproach.jqueryboostraptable.repository.TajhizatRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Service
@@ -239,7 +244,6 @@ public class OfficeController {
 //        form.getUsers().add(user);
 //
 //     }
-
     @PostMapping("/saveForm")
     public String saveForm(@ModelAttribute @Valid officeForm form,BindingResult bindingResult,RedirectAttributes redirectAttributes) {
         try {
@@ -400,4 +404,22 @@ public class OfficeController {
         return job1.getUsers();
     }
 
+    @GetMapping("/office/exports/{id}")
+    public void exportToPdf(HttpServletResponse response,@PathVariable long id) throws DocumentException, IOException{
+
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=offices_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        Optional<officeForm> officeForms = formRepo.findById(id);
+        //System.out.println("*********************************** : "+officeForms.get());
+        System.out.println("*********************************** : "+officeForms.get().getProgram().getName());
+        OfficePdfGenerator generator = new OfficePdfGenerator(officeForms.get());
+        generator.export(response);
+
+    }
 }

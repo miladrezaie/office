@@ -14,20 +14,14 @@
     <script type="text/javascript" th:src="@{/js/get.js}" src="../static/js/get.js"></script>
     <script type="text/javascript" th:src="@{/js/jqueryAjaxGet.js}" src="../static/js/jqueryAjaxGet.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/persian-datepicker.min.css">
+    <link rel="stylesheet" href="/css/persian-datepicker.min.css">
     <link rel="stylesheet" th:href="@{/css/css-select/bootstrap-select.css}">
     <script th:src="@{/js/js-select/bootstrap-select.js}"></script>
     <script th:src="@{/js/persian-date.min.js}"></script>
     <script th:src="@{/js/persian-datepicker.min.js}"></script>
-    <script>
-        $(function () {
-            $(".normal-example").persianDatepicker({
-                formatDate: "YYYY-0M-0D",
-                showGregorianDate: true,
-                autoClose: true
-            });
-        })
-    </script>
+
+
+
 </head>
 
 <style>
@@ -52,7 +46,9 @@
 
 <body dir="rtl">
 <div class="container">
+
     <th:block th:include="/_menu"></th:block>
+
     <h2>ثبت آفیش</h2>
 
     <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
@@ -60,6 +56,8 @@
     <div sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
         <button class="btn btn-success fnBtn" id="newoffice">ثبت آفیش جدید</button>
     </div>
+
+
     <table class="table table-hover">
         <thead>
         <tr class="text-center">
@@ -179,7 +177,7 @@
                                 <div class="input-group input-group-sm">
                                     <label for="date_begin" class="form-control-label">از تاریخ :</label>
                                     <input type="text" id="date_begin" name="date_begin"
-                                           class=" pwt-datepicker-input-element normal-example">
+                                           class="pwt-datepicker-input-element normal-example">
                                     <label for="date_end" class="form-control-label">تا تاریخ : </label>
                                     <input type="text" id="date_end" name="date_end"
                                            class="pwt-datepicker-input-element normal-example">
@@ -337,6 +335,15 @@
     </div>
 
 </div>
+<script>
+    $(function () {
+        $(".normal-example").persianDatepicker({
+            formatDate: "YYYY/MM/DD",
+            showGregorianDate: true,
+            autoClose: true
+        });
+    })
+</script>
 <script th:src="@{/js/jquery.validate.min.js}"></script>
 <script>
 
