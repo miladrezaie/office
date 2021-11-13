@@ -96,7 +96,7 @@ public class OfficeController {
     }
 
     @GetMapping(value = "/admin/officeform/delete/{id}")
-    public String delete(@PathVariable Long id,RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             formRepo.deleteById(id);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
@@ -168,6 +168,7 @@ public class OfficeController {
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("userss", userRepo.findAll());
         model.addAttribute("jobs", jobServiceImp.getAllJobs());
+        model.addAttribute("enumField",OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE );
         model.addAttribute("user", user);
         model.addAttribute("cars", carServiceImp.getAllCars());
         return "office";
@@ -237,7 +238,7 @@ public class OfficeController {
 
     }
 
-//     @PostMapping("/addToForm")
+    //     @PostMapping("/addToForm")
 //    public String AddToForm(String pid) {
 //        User user = userRepo.findBypersonalId(pid).get(0);
 //        officeForm form = new officeForm();
@@ -245,13 +246,15 @@ public class OfficeController {
 //
 //     }
     @PostMapping("/saveForm")
-    public String saveForm(@ModelAttribute @Valid officeForm form,BindingResult bindingResult,RedirectAttributes redirectAttributes) {
+    public String saveForm(@ModelAttribute @Valid officeForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
+
             if (bindingResult.hasErrors()) {
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/office";
             }
+
             Roozh jCal = new Roozh();
             int myear = LocalDate.now().getYear();
             int mmonth = LocalDate.now().getMonthValue();
@@ -302,57 +305,66 @@ public class OfficeController {
         String redirect = "redirect:/form/?id=" + fj.getFid();
         officeForm office_form = formRepo.findById(fj.getFid()).get();
         User u = userRepo.findById(fj.getUid()).get();
-        System.out.println("userrr ---" + u.getJob() + "    " + u.getPersonalId());
-        if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
-            office_form.setPoshemza(u.getEmza());
-        } else if (userHasAuthority("OP_SEDABARDAR") && office_form.getSedaemza() == null) {
-            office_form.setSedaemza(u.getEmza());
-        } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
-            office_form.setMdarkhastemza(u.getEmza());
-        } else if (userHasAuthority("OP_TAHIEKONANDEH") && office_form.getTahayeemza() == null) {
-            office_form.setTahayeemza(u.getEmza());
-        } else if (userHasAuthority("OP_TASVIRBARDAR_1") && office_form.getTasviremza() == null) {
-            office_form.setTasviremza(u.getEmza());
-        } else if (userHasAuthority("OP_TASVIRBARDAR_2") && office_form.getTasviremza2() == null) {
-            office_form.setTasviremza2(u.getEmza());
-        } else if (userHasAuthority("OP_TASVIRBARDAR_3") && office_form.getTasviremza3() == null) {
-            office_form.setTasviremza3(u.getEmza());
-        } else if (userHasAuthority("OP_TASVIRBARDAR_4") && office_form.getTasviremza4() == null) {
-            office_form.setTasviremza4(u.getEmza());
-        } else if (userHasAuthority("OP_ANBARDAR") && office_form.getAnbaremza() == null) {
-//            office_form.seta(u.getEmza());
-            office_form.setAnbaremza(u.getEmza());
-        } else if (userHasAuthority("OP_HAMAHANGIE") && office_form.getTahayeemza() == null) {
-            office_form.setTahayeemza(u.getEmza());
-        }
-//        else if (userHasAuthority("OP_ANBARDAR")&& office_form.get() == null) {
-//            office_form.set(u.getEmza());
-//        }
-        else if (userHasAuthority("OP_HAML_NAGHL") && office_form.getHamlonaghlemza() == null) {
-            User us = userRepo.findById(fj.getTid()).get();
-            office_form.setRanande(us.getFullname());
-            office_form.setRanandeid(us.getPersonalId());
-            Car car = carServiceImp.findById(fj.getCar()).get();
-            car.setOfficeForm(office_form);
-            office_form.setHamlonaghlemza(u.getEmza());
-        } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
-            LocalTime time = LocalTime.now();
-            String h = time.getHour() + " : " + time.getMinute();
-            if (fj.getTid().equals(1)) {
-                office_form.setSaatvorod(h);
-                office_form.setVherasatemza(u.getEmza());
-                formRepo.setStatusForOfficeForm(true,office_form.getId());
+
+        if (office_form.getType() == OfficeForm.OFFICE_FORM_ESTEDIO_SIMA) {
+            if (userHasAuthority("OP_TAHIEKONANDEH") && office_form.getTahayeemza() == null) {
+                office_form.setTahayeemza(u.getEmza());
+            } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
+                office_form.setMdarkhastemza(u.getEmza());
+            } else if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
+                office_form.setPoshemza(u.getEmza());
+                formRepo.setStatusForOfficeForm(true, office_form.getId());
+                System.out.println("status ok ");
             } else {
-                office_form.setSaatkhoroj(h);
-                office_form.setKhherasatemza(u.getEmza());
-
-
-                System.out.println("----------------tayyyyyied shod-------------------------");
-
+                System.out.println("----------------emzaa nashod 1-------------------------");
             }
-        } else {
-            System.out.println("----------------emzaa nashod 1-------------------------");
+        } else if (office_form.getType() == OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE) {
+            if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
+                office_form.setPoshemza(u.getEmza());
+            } else if (userHasAuthority("OP_SEDABARDAR") && office_form.getSedaemza() == null) {
+                office_form.setSedaemza(u.getEmza());
+            } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
+                office_form.setMdarkhastemza(u.getEmza());
+            } else if (userHasAuthority("OP_TAHIEKONANDEH") && office_form.getTahayeemza() == null) {
+                office_form.setTahayeemza(u.getEmza());
+            } else if (userHasAuthority("OP_TASVIRBARDAR_1") && office_form.getTasviremza() == null) {
+                office_form.setTasviremza(u.getEmza());
+            } else if (userHasAuthority("OP_TASVIRBARDAR_2") && office_form.getTasviremza2() == null) {
+                office_form.setTasviremza2(u.getEmza());
+            } else if (userHasAuthority("OP_TASVIRBARDAR_3") && office_form.getTasviremza3() == null) {
+                office_form.setTasviremza3(u.getEmza());
+            } else if (userHasAuthority("OP_TASVIRBARDAR_4") && office_form.getTasviremza4() == null) {
+                office_form.setTasviremza4(u.getEmza());
+            } else if (userHasAuthority("OP_ANBARDAR") && office_form.getAnbaremza() == null) {
+//            office_form.seta(u.getEmza());
+                office_form.setAnbaremza(u.getEmza());
+            } else if (userHasAuthority("OP_HAMAHANGIE") && office_form.getTahayeemza() == null) {
+                office_form.setTahayeemza(u.getEmza());
+            }
+            else if (userHasAuthority("OP_HAML_NAGHL") && office_form.getHamlonaghlemza() == null) {
+                User us = userRepo.findById(fj.getTid()).get();
+                office_form.setRanande(us.getFullname());
+                office_form.setRanandeid(us.getPersonalId());
+                Car car = carServiceImp.findById(fj.getCar()).get();
+                car.setOfficeForm(office_form);
+                office_form.setHamlonaghlemza(u.getEmza());
+            } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
+                LocalTime time = LocalTime.now();
+                String h = time.getHour() + " : " + time.getMinute();
+                if (fj.getTid().equals(1)) {
+                    office_form.setSaatvorod(h);
+                    office_form.setVherasatemza(u.getEmza());
+                    formRepo.setStatusForOfficeForm(true, office_form.getId());
+                } else {
+                    office_form.setSaatkhoroj(h);
+                    office_form.setKhherasatemza(u.getEmza());
+                    System.out.println("----------------tayyyyyied shod-------------------------");
+                }
+            } else {
+                System.out.println("----------------emzaa nashod 1-------------------------");
+            }
         }
+
         formRepo.save(office_form);
         return redirect;
     }
@@ -405,7 +417,7 @@ public class OfficeController {
     }
 
     @GetMapping("/office/exports/{id}")
-    public void exportToPdf(HttpServletResponse response,@PathVariable long id) throws DocumentException, IOException{
+    public void exportToPdf(HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
 
         response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -417,7 +429,7 @@ public class OfficeController {
 
         Optional<officeForm> officeForms = formRepo.findById(id);
         //System.out.println("*********************************** : "+officeForms.get());
-        System.out.println("*********************************** : "+officeForms.get().getProgram().getName());
+        System.out.println("*********************************** : " + officeForms.get().getProgram().getName());
         OfficePdfGenerator generator = new OfficePdfGenerator(officeForms.get());
         generator.export(response);
 

@@ -251,6 +251,7 @@
                                             <div id="wrapperfortestnames"></div>
                                         </td>
                                     </th:block>
+                                    <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                                     <td>
                                         <!--                                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')" th:each="t : ${tajhizats}">-->
                                         <!--                                            <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>-->
@@ -264,6 +265,7 @@
                                                     th:text="${t.getName()}"></option>
                                         </select>
                                     </td>
+                                    </th:block>
                             </table>
                         </div>
                         <div class="modal-footer">
