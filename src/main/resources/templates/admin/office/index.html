@@ -47,7 +47,7 @@
                         <td th:if="${form.status ==true}"><span class="badge badge-success">تکمیل شده</span></td>
                         <td>
                             <a th:href="@{form/(id=${form.id})}" class="mdelBtn" id="DeleteUser"><span class="badge bg-info">نمایش</span></a>
-                            <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
+                            <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
                                 <a th:attr="data-target='#modal-warning'+${form.getId() }" href="#myModal" data-toggle="modal" class="MainNavText" id="MainNavHelp">
                                     <span class="badge bg-danger">حذف</span>
                                 </a>

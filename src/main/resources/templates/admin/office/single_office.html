@@ -13,7 +13,7 @@
     <div class="col-12">
         <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
 
-        <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT')">
+        <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-info">
@@ -21,8 +21,8 @@
                             <h3 class="card-title">افزودن عوامل سیما</h3>
                         </div>
                         <div class="card-body">
-                            <th:block
-                                    sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT')">
+                            <th:block th:if="${form.getPoshemza() == null}"
+                                    sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
                                 <div class="form-group">
                                     <td>
                                         <label for="category_form" class="form-control-label">معاونت ها:</label>
@@ -71,20 +71,18 @@
                             <h3 class="card-title">افزودن عوامل</h3>
                         </div>
                         <div class="card-body">
-
                             <div class="form-group">
                                 <form th:action="@{/addForm}" method="post">
                                     <!--                                <input type="hidden" class="form-control" id="form_id" name="id"/>-->
                                     <input type="hidden" name="id" id="fid" th:value="${form.id}">
                                     <div id="wrapperfortestnames"></div>
-
                                 </form>
                             </div>
                         </div>
                         <!-- /.card-body -->
-                        <div class="card-footer">
-                            و چندین رنگ و مدل دیگر
-                        </div>
+<!--                        <div class="card-footer">-->
+<!--                            و چندین رنگ و مدل دیگر-->
+<!--                        </div>-->
                     </div>
                     <!-- /.card -->
                 </div>
@@ -112,8 +110,10 @@
                                value="تایید">
                     </form>
                 </th:block>
-                <span th:if="${form.getAnbaremza() != null}"
-                      class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
+                <th:block th:if="${form.getAnbaremza() != null}" sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                    <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
+                </th:block>
+
             </div>
         </th:block>
 
@@ -197,7 +197,7 @@
                             <td th:text="${userrr.getJob().getName()}"></td>
                             <td th:text="${userrr.getFullname()}"></td>
                             <td>
-                                <th:block
+                                <th:block th:if="${form.getPoshemza() == null}"
                                         sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
                                 <form th:action="@{/admin/officeform/delete-user}" method="post">
                                     <input type="hidden" name="id" id="form_id" th:value="${form.id}">
@@ -213,9 +213,11 @@
                                        id="addTajhizToOfficeAndUser">
                                         <span class="badge bg-warning">افزودن تجهیز به کاربر</span>
                                     </a>
+                                    <span class="badge bg-light" th:each="pfficeForm : ${userrr.getUserDepartmentRoleLinks()}" th:text="${pfficeForm.getTajhizat().getName()}">افزودن تجهیز به کاربر</span>
                                 </th:block>
-                                <span th:if="${form.getAnbaremza() != null}"
-                                      class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
+                                <th:block th:if="${form.getAnbaremza() != null}" sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                                    <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
+                                </th:block>
                             </td>
 
                             <div class="officeModal" id="office_modal_">
@@ -240,11 +242,8 @@
                                                         <input type="hidden" name="users" id="users_"
                                                                th:value="${userrr.id}">
                                                     </div>
-                                                    <label for="tajhizatsss" class="col-form-label">تجهیزات :</label>
-                                                    <select class="selectpicker" id="tajhizatsss"
-                                                            name="tajhizatss" multiple
-                                                            data-live-search="true"
-                                                            title="انتخاب کنید">
+                                                    <label  class="col-form-label">تجهیزات :</label>
+                                                    <select  name="tajhizatss">
                                                         <option th:each="t  : ${form.getTajhizatss()}"
                                                                 th:value="${t.getId()}"
                                                                 th:text="${t.getName()}"></option>
@@ -482,7 +481,10 @@
                             <table border="3">
                                 <tr>
                                     <td>
-                                        <br>خروج اشیا فوق در ساعت [[${form.saatkhoroj}]] از مرکز تایید می شود<br>
+                                        <br>خروج اشیا فوق از مرکز تایید می شود
+                                        <span th:text="${form.getSaatkhoroj()}"
+                                              class="badge bg-info">تایید شد</span>
+                                        <br>
                                         <img th:if="${form.getKhherasatemza()} != null" width="85px"
                                              th:src="*{'data:emza/jpg;base64,'+{form.getKhherasatemza()}}"
                                              class="profile-user-img img-fluid img-circle"
@@ -500,7 +502,10 @@
                                             </form>
                                         </th:block>
                                     </td>
-                                    <td><br>ورود اشیا فوق در ساعت [[${form.saatvorod}]] به مرکز تایید میشود<br>
+                                    <td><br>ورود اشیا فوق در ساعت به مرکز تایید میشود
+                                        <span th:text="${form.getSaatvorod()}"
+                                              class="badge bg-info">تایید شد</span>
+                                        <br>
 
                                         <img th:if="${form.getVherasatemza()} != null" width="85px"
                                              th:src="*{'data:emza/jpg;base64,'+{form.getVherasatemza()}}"

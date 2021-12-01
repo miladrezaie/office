@@ -133,8 +133,12 @@ public class WebController {
 
     @PostMapping("/saveeUser")
     public String saveue(@ModelAttribute @Valid User user, BindingResult bindingResult, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEE");
+        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEE 2 : "+user);
+
         try {
             if (bindingResult.hasErrors()) {
+                System.out.println("ERRRRRRRRRRRRRRRRRRR: "+bindingResult.getAllErrors());
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/members";
@@ -158,7 +162,7 @@ public class WebController {
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید لا.");
+            redirectAttributes.addFlashAttribute("message", "لطفا مجددا تلاش نمایید.");
 //            model.addAttribute("message", "لطفا مجددا تلاش نمایید");
             System.out.println("************" + e);
             return "redirect:/members";
@@ -181,6 +185,7 @@ public class WebController {
         modelAndView.setViewName("admin/panel/login");
         return modelAndView;
     }
+
     @GetMapping("/admin/profile")
     public String profile(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -253,9 +258,14 @@ public class WebController {
 //                bindingResult.rejectValue("personalId", "error.user",
 //                        "هم اکنون کاربری با این شماره کارمندی موجود است");
 //            }
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user);
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getFName());
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getLname());
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getPass());
+
                 userE.setFName(user.getFName());
                 userE.setLname(user.getLname());
-                userE.setPass(bCryptPasswordEncoder.encode(user.getPass()));
+                userE.setPass(user.getPass());
 
                 System.out.println("create user form else");
 

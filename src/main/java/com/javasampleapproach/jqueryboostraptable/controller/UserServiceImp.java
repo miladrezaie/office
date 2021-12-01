@@ -63,5 +63,9 @@ public class UserServiceImp implements UserService {
         return userRepository.findByPersonalId(username);
     }
 
+    @Override
+    public long count() {
+        return userRepository.count();
+    }
 
 }

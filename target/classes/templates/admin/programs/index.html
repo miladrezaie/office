@@ -27,7 +27,9 @@
                         <th>تاریخ شروع</th>
                         <th>تاریخ پایان</th>
                         <th>روز پخش</th>
-                        <th>تنظیمات</th>
+                        <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                            <th>تنظیمات</th>
+                        </th:block>
                     </tr>
                     <tr th:each="program : ${programs}">
                         <td th:text="${program.getId()}">...</td>
@@ -38,45 +40,49 @@
                         <td >
                             <span th:each="dd : ${program.getRozhafteh()}" class="badge bg-info" th:text="${dd.getDisplayName() +' '}"></span></td>
                         <td>
-                        <td>
-                            <a th:href="@{/admin/programs/find/{id}(id=${program.getId()})}"
-                               class="editPrograms"
-                               id="EditPrograms">
-                                <span class="badge bg-warning">ویرایش</span>
-                            </a>
-                            <a href="#" data-toggle="modal"
-                               th:attr="data-target='#modal-warning'+${program.getId() }">
-                                <span class="badge bg-danger">حذف</span>
-                            </a>
-                            <div class="modal fade" th:id="modal-warning+${program.getId()}" tabindex="-1" role="dialog"
-                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel"
-                                                th:utext="${program.getName()}"></h5>
-                                            <button style="display: contents;" type="button" class="close"
-                                                    data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p class="alert alert-danger">
-                                                آیا شما مطمین هستید که میخواهید این برنامه را پاک کنید ؟
-                                            </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                                خیر
-                                            </button>
-                                            <a th:href="@{/admin/programs/delete/{id}(id=${program.getId()})}"
-                                               class="btn btn-danger"
-                                               id="deletePrograms">بله،مطمینم</a>
+                            <td>
+                        <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+
+                        <a th:href="@{/admin/programs/find/{id}(id=${program.getId()})}"
+                                   class="editPrograms"
+                                   id="EditPrograms">
+                                    <span class="badge bg-warning">ویرایش</span>
+                                </a>
+                                <a href="#" data-toggle="modal"
+                                   th:attr="data-target='#modal-warning'+${program.getId() }">
+                                    <span class="badge bg-danger">حذف</span>
+                                </a>
+                                <div class="modal fade" th:id="modal-warning+${program.getId()}" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel"
+                                                    th:utext="${program.getName()}"></h5>
+                                                <button style="display: contents;" type="button" class="close"
+                                                        data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="alert alert-danger">
+                                                    آیا شما مطمین هستید که میخواهید این برنامه را پاک کنید ؟
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    خیر
+                                                </button>
+                                                <a th:href="@{/admin/programs/delete/{id}(id=${program.getId()})}"
+                                                   class="btn btn-danger"
+                                                   id="deletePrograms">بله،مطمینم</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
+                        </th:block>
+                    </td>
+
                     </tr>
                     </tbody>
 

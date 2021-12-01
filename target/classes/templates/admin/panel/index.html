@@ -11,9 +11,9 @@
             <!-- small box -->
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>150</h3>
+                    <h3 th:if="${officeCount != null}" th:text="${officeCount}"></h3>
 
-                    <p>آفیشات جدید</p>
+                    <p>آفیش های جدید</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-bag"></i>
@@ -41,7 +41,7 @@
             <!-- small box -->
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>44</h3>
+                    <h3 th:if="${userCount != null}" th:text="${userCount}"></h3>
 
                     <p>کاربران ثبت شده</p>
                 </div>

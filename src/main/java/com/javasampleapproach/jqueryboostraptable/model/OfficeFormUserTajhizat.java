@@ -28,7 +28,7 @@ public class OfficeFormUserTajhizat implements Serializable {
     private User user;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "officeForms_id")
     private officeForm officeForms;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

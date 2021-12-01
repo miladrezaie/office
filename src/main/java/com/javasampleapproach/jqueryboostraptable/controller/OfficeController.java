@@ -15,6 +15,7 @@ import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
+import com.javasampleapproach.jqueryboostraptable.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,6 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormRepository;
-import com.javasampleapproach.jqueryboostraptable.repository.Roozh;
-import com.javasampleapproach.jqueryboostraptable.repository.TajhizatRepository;
-import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,6 +75,10 @@ public class OfficeController {
     @Autowired
     private CategoryServiceImp categoryServiceImp;
 
+    @Autowired
+    private OfficeFormUserTajhizatRepository officeFormUserTajhizatRepository ;
+
+    private OfficeFormUserTajhizat officeFormUserTajhizat;
 
     @GetMapping("/tajhizats")
     public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
@@ -226,6 +227,11 @@ public class OfficeController {
         return "admin/office/single_office";
     }
 
+
+    public long officeFormCount() {
+        return formRepo.count();
+    }
+
     public String userAuthority(String ahh) {
         for (GrantedAuthority grantedAuthority : Authority.values()) {
             if (ahh.equals(grantedAuthority.getAuthority())) {
@@ -236,7 +242,11 @@ public class OfficeController {
     }
 
     @GetMapping("/panel")
-    public String home() {
+    public String home(Model model) {
+//        System.out.println("User Count : "+userService.count());
+//        System.out.println("User Count : "+officeFormCount());
+        model.addAttribute("userCount", userService.count());
+        model.addAttribute("officeCount", officeFormCount());
         return "admin/panel/index";
     }
 
@@ -496,37 +506,35 @@ public class OfficeController {
 
     @PostMapping("/addTajhizToUser")
     public String addTajhizToUserOfficeForm(@ModelAttribute officeForm f, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getUsers());
-        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getTajhizatss());
+        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getUsers().get(0).getId());
+        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getTajhizatss().get(0).getId());
         System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getId());
+
         long id_form = f.getId();
         try {
+
             officeForm office_form = formRepo.findById(f.getId()).get();
 
-            Iterator<User> itr = f.getUsers().iterator();
+            OfficeFormUserTajhizat officeFormUserTajhizat =new OfficeFormUserTajhizat();
+            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
+//            Set<OfficeFormUserTajhizat> officeFormUserTajhizat1 = (Set<OfficeFormUserTajhizat>) new OfficeFormUserTajhizat();
+            officeFormUserTajhizat.setTajhizat(f.getTajhizatss().get(0));
+            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
 
-            while (itr.hasNext()) {
-                if (office_form.getUsers().contains(itr.next())) {
-                    for (User us : f.getUsers()) {
-                        for (Tajhizat tajhizat : f.getTajhizatss()) {
-                            us.setTajhiz((Set<Tajhizat>) tajhizat);
-                        }
-//                        if (f.getTahayekonande().equals(us)){
-//                            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-//                            redirectAttributes.addFlashAttribute("message", "حذف کاربر تهیه کننده امکان پذیر نیست.");
-//                            return "redirect:/form/?id=" + id_form;
-//                        }
-//                        office_form.getUsers().remove(us);
-                    }
-                }
-            }
-            formRepo.save(office_form);
+            officeFormUserTajhizat.setUser(f.getUsers().get(0));
+            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
+
+            officeFormUserTajhizat.setOfficeForms(office_form);
+            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
+
+            officeFormUserTajhizatRepository.save(officeFormUserTajhizat);
 
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "تجهیز مورد نظر به کاربر مورد نظر اختصاص یافت .");
             return "redirect:/form/?id=" + id_form;
 
         } catch (Exception exception) {
+            System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : "+exception);
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "خطایی در سرور به وجود آمده مجددا تلاش نمایید.");
             return "redirect:/form/?id=" + id_form;

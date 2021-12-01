@@ -136,90 +136,104 @@
                                             تکمیل شده
                                             <span class="badge badge-info right">۲</span>
                                         </p>
-
                                     </a>
                                 </li>
 
                             </ul>
                         </li>
+                        <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                            <li class="nav-item">
+                                <a th:href="@{/admin/programs}" class="nav-link">
+                                    <i class="nav-icon fa fa-tasks"></i>
+                                    <p>
+                                        برنامه ها
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
+                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                            <li class="nav-item">
+                                <a th:href="@{/tajhizats}" class="nav-link">
+                                    <i class="nav-icon fa fa-th"></i>
+                                    <p>
+                                        تجهیزات
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
+                        <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                            <li class="nav-item">
+                                <a th:href="@{/admin/locations}" class="nav-link">
+                                    <i class="nav-icon fa fa-map-marker"></i>
+                                    <p>
+                                        مکان ها
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
+                        <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                            <li class="nav-item">
+                                <a th:href="@{/admin/categories}" class="nav-link">
+                                    <i class="nav-icon fa fa-list-alt"></i>
+                                    <p>
+                                        دسته بندی
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
+                        <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                            <li class="nav-item">
+                                <a th:href="@{/admin/jobs}" class="nav-link">
+                                    <i class="nav-icon fa fa-th"></i>
+                                    <p>
+                                        عنوان شغلی
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
+                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                            <li class="nav-item">
+                                <a th:href="@{/admin/brands}" class="nav-link">
+                                    <i class="nav-icon fa fa-angellist"></i>
+                                    <p>
+                                        برند ها
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
 
-                        <li class="nav-item">
-                            <a th:href="@{/admin/programs}" class="nav-link">
-                                <i class="nav-icon fa fa-tasks"></i>
-                                <p>
-                                    برنامه ها
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/tajhizats}" class="nav-link">
-                                <i class="nav-icon fa fa-th"></i>
-                                <p>
-                                    تجهیزات
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/admin/locations}" class="nav-link">
-                                <i class="nav-icon fa fa-map-marker"></i>
-                                <p>
-                                    مکان ها
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/admin/categories}" class="nav-link">
-                                <i class="nav-icon fa fa-list-alt"></i>
-                                <p>
-                                    دسته بندی
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/admin/jobs}" class="nav-link">
-                                <i class="nav-icon fa fa-th"></i>
-                                <p>
-                                    عنوان شغلی
-                                </p>
-                            </a>
-                        </li>
+                        <th:block sec:authorize="hasAuthority('OP_HAML_NAGHL')">
+                            <li class="nav-item">
+                                <a th:href="@{/admin/cars}" class="nav-link">
+                                    <i class="nav-icon fa fa-car"></i>
+                                    <p>
+                                        وسایل نقیه  سازمان
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
 
-                        <li class="nav-item">
-                            <a th:href="@{/admin/brands}" class="nav-link">
-                                <i class="nav-icon fa fa-angellist"></i>
-                                <p>
-                                    برند ها
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/admin/cars}" class="nav-link">
-                                <i class="nav-icon fa fa-car"></i>
-                                <p>
-                                    وسایل نقیه  سازمان
-                                </p>
-                            </a>
-                        </li>
+                        <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                            <li class="nav-header">کاربران</li>
+                            <li class="nav-item">
+                                <a th:href="@{/admin/roles}" class="nav-link">
+                                    <i class="nav-icon fa fa-diamond"></i>
+                                    <p>
+                                        سطح دسترسی
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/members}" class="nav-link">
+                                    <i class="nav-icon fa fa-user-circle-o"></i>
+                                    <p>
+                                        تعریف کاربر جدید
+                                        <span class="right badge badge-danger">جدید</span>
+                                    </p>
+                                </a>
+                            </li>
+                        </th:block>
 
-
-                        <li class="nav-header">کاربران</li>
-                        <li class="nav-item">
-                            <a th:href="@{/admin/roles}" class="nav-link">
-                                <i class="nav-icon fa fa-diamond"></i>
-                                <p>
-                                    سطح دسترسی
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/members}" class="nav-link">
-                                <i class="nav-icon fa fa-user-circle-o"></i>
-                                <p>
-                                    تعریف کاربر جدید
-                                    <span class="right badge badge-danger">جدید</span>
-                                </p>
-                            </a>
-                        </li>
                         <li class="nav-header">تنظیمات</li>
                         <li class="nav-item">
                             <a href="#" class="nav-link">

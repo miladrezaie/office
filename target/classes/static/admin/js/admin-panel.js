@@ -495,6 +495,7 @@ $(document).ready(function () {
             $(".error").removeClass("error");
             $.get(href, function (user) {
                 console.log("userrrrrrrrrrrrrrrrrrrrrr edit");
+                console.log(user.personalId);
                 $('.userModal #id').val(user.id);
                 $('.userModal #personalId').val(user.personalId);
                 $('.userModal #FName').val(user.fname);
@@ -693,12 +694,12 @@ $(document).ready(function () {
                 console.log(office.tajhizatss);
                 $('.officeModal #users').val('');
                 $('.officeModal #id').val(office.id);
-                var list =[];
-                for (var k =0 ; k<office.tajhizatss.length ; k++){
-                    console.log(office.tajhizatss[k].id);
-                    list[k]=office.tajhizatss[k].id;
-                }
-                $('.officeModal #tajhizatsss').selectpicker('val',list );
+                // var list =[];
+                // for (var k =0 ; k<office.tajhizatss.length ; k++){
+                //     console.log(office.tajhizatss[k].id);
+                //     list[k]=office.tajhizatss[k].id;
+                // }
+                // $('.officeModal #tajhizatsss').selectpicker('val',list );
                 $('.officeModal #officeFrom_').modal('show');
             });
         }

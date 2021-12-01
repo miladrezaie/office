@@ -43,6 +43,7 @@ public class User implements Serializable, UserDetails {
     }
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Nullable
     private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
 
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
