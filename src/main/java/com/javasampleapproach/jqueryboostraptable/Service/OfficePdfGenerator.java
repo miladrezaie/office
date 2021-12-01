@@ -27,7 +27,7 @@ public class OfficePdfGenerator {
         PdfPCell cell = new PdfPCell();
         cell.setPadding(8);
 
-        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/admin/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         Font paraFont = new Font(farsiFont, 8);
 
 
@@ -81,7 +81,7 @@ public class OfficePdfGenerator {
 
     private void writeTableData(PdfPTable table) throws IOException, com.itextpdf.text.DocumentException {
         table.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
-        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/admin/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         Font paraFont = new Font(farsiFont, 6);
         PdfPCell cell = new PdfPCell();
         cell.setPaddingBottom(5);
@@ -102,7 +102,7 @@ public class OfficePdfGenerator {
         document.open();
         document.addTitle("نسخه چاپی آفیش");
 
-        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/admin/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         Font paraFont = new Font(farsiFont, 8);
 
 
@@ -209,7 +209,7 @@ public class OfficePdfGenerator {
     }
 
     public PdfPCell getCell(String text, int alignment) throws IOException, DocumentException {
-        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/admin/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         Font paraFont = new Font(farsiFont, 8);
         PdfPCell cell = new PdfPCell(new Phrase(text, paraFont));
         cell.setPadding(4);

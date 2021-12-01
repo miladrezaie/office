@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>اتوماسیون آفیش - کاربران</title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+                <button type="button" class="btn btn-info float-right newUsers" id="newUsers">
+                    <i class="fa fa-plus"></i>جدید
+                </button>
+            </div>
+
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover tablemy">
+                    <tbody>
+                    <tr>
+                        <th>شماره</th>
+                        <th>شماره کارمندی</th>
+                        <th>نام</th>
+                        <th>نام خانوادگی</th>
+                        <th>شغل</th>
+                        <th>نقش کاربر</th>
+                        <th>تصویر امضا</th>
+                        <th>تنظیمات</th>
+                    </tr>
+                    <tr th:each="user : ${users}">
+                        <td th:utext="${user.id}">...</td>
+                        <td th:utext="${user.personalId}">...</td>
+                        <td th:utext="${user.FName}">...</td>
+                        <td th:utext="${user.Lname}">...</td>
+                        <td th:text="${user.getJob()}">...</td>
+                        <td>
+                            <span class="badge bg-danger" th:text="${user.roles}"></span>
+                        </td>
+                        <td><img width="50px" th:src="*{'data:emza/jpg;base64,'+{user.emza}}" class="img-responsive">
+                        </td>
+                        <td>
+                            <a th:href="@{/members/findOneUser/{id}(id=${user.getId()})}"
+                               class="editUsers"
+                               id="EditUsers">
+                                <span class="badge bg-warning">ویرایش</span>
+                            </a>
+                            <a href="#" data-toggle="modal"
+                               th:attr="data-target='#modal-warning'+${user.getId() }">
+                                <span class="badge bg-danger">حذف</span>
+                            </a>
+                            <a href="#" data-toggle="modal" data-target="#modalRegister"></a>
+                            <div class="modal fade" th:id="modal-warning+${user.getId()}" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"
+                                                th:utext="${user.getFullname()}"></h5>
+                                            <button style="display: contents;" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="alert alert-danger">
+                                                آیا شما مطمین هستید که میخواهید این کاربران را پاک کنید ؟
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                خیر
+                                            </button>
+                                            <a th:href="@{/deleteUser/{id}(id=${user.getId()})}"
+                                               class="btn btn-danger"
+                                               id="deleteUsers">بله،مطمینم</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right" th:if="${users.totalPages>=2}">
+                    <li class="page-item"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0,users.totalPages-1)}"><a class="page-link"
+                                                                                                      th:href="@{/members/(page=${i})}"
+                                                                                                      th:text="${i+1}"
+                                                                                                      th:classappend="${currentPage}==${i}?'active':''">۱</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="userModal" id="user_modal">
+            <form th:action="@{/saveeUser}" method="post" enctype="multipart/form-data" name="userForm" id="userForm">
+                <div id="userFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title" id="exampleModalLabel">کاربران </h5>
+                                <button style="display: contents;" type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" hidden="true">
+                                    <label for="id" class="col-form-label">ID:</label> <input
+                                        type="text" class="form-control form-control-sm btn-space" id="id"
+                                        name="id" value=""/>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-12">
+                                        <label for="personalId" class="form-control-label">شماره کارمندی:</label>
+                                        <input type="text" class="form-control" disabled id="personalId" name="personalId"
+                                               value=""/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label for="FName" class="form-control-label">نام:</label>
+                                        <input type="text" class="form-control" id="FName" name="FName" value=""/>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="Lname" class="form-control-label">نام خانوادگی:</label>
+                                        <input type="text" class="form-control" id="Lname" name="Lname" value=""/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <td>
+                                            <label for="job" class="form-control-label">عنوان شغلی:</label>
+                                            <select id="job" class="selectpicker form-control" title="انتخاب کنید"
+                                                    name="job">
+                                                <option th:each="job : ${jobs}" th:value="${job.getId()}"
+                                                        th:text="${job.getName()}"></option>
+                                            </select>
+                                        </td>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="roles" class="form-control-label">نقش:</label>
+                                        <select id="roles" class="selectpicker form-control" title="انتخاب کنید"
+                                                name="roles">
+                                            <option th:each="role : ${roles}" th:value="${role.getId()}"
+                                                    th:text="${role.getName()}">
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="pass" class="form-control-label">رمز عبور:</label>
+                                    <input type="password" class="form-control" id="pass" name="pass" value=""/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="file" class="form-control-label">تصویر امضا:</label>
+                                    <input type="file" class="custom-file-input" id="file" name="file"/>
+                                    <img id="image_emza" width="100px" class="img-responsive" style="margin-top: 10px">
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+</body>
+</html>

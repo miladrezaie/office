@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <title>اتوماسیون آفیش - نقش ها</title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+                <button type="button" class="btn btn-info float-right newRoles" id="newRoles">
+                    <i class="fa fa-plus"></i>جدید
+                </button>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover tablemy">
+                    <tbody>
+                    <tr>
+                        <th>شماره</th>
+                        <th>نام</th>
+                        <th>توضیحات</th>
+                        <th>تنظیمات</th>
+                    </tr>
+                    <tr th:each="role : ${roles}">
+                        <td th:text="${role.getId()}">...</td>
+                        <td th:text="${role.getName()}">...</td>
+                        <td th:text="${role.getDescription()}">...</td>
+                        <td>
+                            <a th:href="@{/admin/roles/find/{id}(id=${role.getId()})}"
+                               class="editRoles"
+                               id="EditRoles">
+                                <span class="badge bg-warning">ویرایش</span>
+                            </a>
+                            <a href="#" data-toggle="modal"
+                               th:attr="data-target='#modal-warning'+${role.getId() }">
+                                <span class="badge bg-danger">حذف</span>
+                            </a>
+                            <div class="modal fade" th:id="modal-warning+${role.getId()}" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"
+                                                th:utext="${role.getName()}"></h5>
+                                            <button style="display: contents;" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="alert alert-danger">
+                                                آیا شما مطمین هستید که میخواهید این نقش را پاک کنید ؟
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                خیر
+                                            </button>
+                                            <a th:href="@{/admin/roles/delete/{id}(id=${role.getId()})}"
+                                               class="btn btn-danger"
+                                               id="deleteRoles">بله،مطمینم</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right" th:if="${roles.totalPages>=2}">
+                    <li class="page-item"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0,roles.totalPages-1)}"><a class="page-link" th:href="@{/admin/roles/(page=${i})}" th:text="${i+1}" th:classappend="${currentPage}==${i}?'active':''">۱</a></li>
+                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="roleModal" id="role_modal">
+            <form th:action="@{/admin/roles/create}" method="post" name="roleForm" id="roleForm">
+                <div id="roleFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title" id="exampleModalLabel"> نقش </h5>
+                                <button style="display: contents;" type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" hidden="true">
+                                    <label for="id" class="col-form-label">ID:</label>
+                                    <input type="text" class="form-control form-control-sm btn-space" id="id"
+                                        name="id" value=""/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="form-control-label">نام نقش:</label>
+                                    <input type="text" id="name" class="form-control" name="name" value=""/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description" class="form-control-label">توضیحات نقش:</label>
+                                    <input type="text" class="form-control" id="description" name="description" value=""/>
+                                </div>
+                                <div class="form-group">
+                                    <td>
+                                        <label for="authorities" class="form-control-label">سطح دسترسی:</label>
+                                        <select class="selectpicker"id="authorities" name="authorities" multiple title="سطح دسترسی را انتخاب کنید">
+                                            <option th:each="authority  : ${authorities}"
+                                                    th:value="${authority.name()}"
+                                                    th:text="${authority.displayName}"></option>
+                                        </select>
+                                    </td>
+
+                                    <!--                            <label th:if="${#fields.hasErrors('authorities')}" th:errors="*{authorities}"-->
+                                    <!--                                   class="validation-message"></label>-->
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+</body>
+</html>

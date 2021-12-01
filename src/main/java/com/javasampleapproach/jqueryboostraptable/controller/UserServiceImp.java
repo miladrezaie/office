@@ -1,5 +1,6 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
+import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.RoleRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -60,4 +62,6 @@ public class UserServiceImp implements UserService {
     public User findByUsername(String username) {
         return userRepository.findByPersonalId(username);
     }
+
+
 }

@@ -40,16 +40,17 @@ public class ProgramController {
     @GetMapping(value = "/admin/programs")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-
-        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
+//
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        User user = userService.findByUsername(auth.getName());
+//
+//        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("rozhaehafte", RozHafteh.values());
+        System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrr  :  "+RozHafteh.values());
         model.addAttribute("programs", programRepository.findAll(new PageRequest(page,10)));
         model.addAttribute("currentPage", page);
 
-        return "programs/programs";
+        return "admin/programs/index";
     }
 
     @PostMapping(value = "/admin/programs/create")

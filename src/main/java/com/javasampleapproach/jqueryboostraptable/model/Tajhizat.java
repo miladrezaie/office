@@ -6,6 +6,7 @@ import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -21,7 +22,18 @@ public class Tajhizat implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
+	@OneToMany(mappedBy = "tajhizat", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
+
+	public Set<OfficeFormUserTajhizat> getUserDepartmentRoleLinks() {
+		return userDepartmentRoleLinks;
+	}
+
+	public void setUserDepartmentRoleLinks(Set<OfficeFormUserTajhizat> userDepartmentRoleLinks) {
+		this.userDepartmentRoleLinks = userDepartmentRoleLinks;
+	}
+
 	@Column(columnDefinition="nvarchar(60)")
 	@NotBlank(message = "وارد کردن نام تجهیز الزامی است")
 	private String name;
@@ -34,14 +46,6 @@ public class Tajhizat implements Serializable {
 	@NotBlank(message = "وارد کردن شناسه سریال تجهیز الزامی است")
 	private String serial_id;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	@Column(columnDefinition="nvarchar(40)")
 	@NotBlank(message = "وارد کردن نوع الزامی است")
 	private String type;
@@ -53,9 +57,14 @@ public class Tajhizat implements Serializable {
 	private Location location;
 
 	@ManyToOne
+	@JoinColumn(name="user_id")
+	@JsonManagedReference
+	@Nullable
+	private User user;
+
+	@ManyToOne
 	@JoinColumn(name="brand_id")
 	@JsonManagedReference
-//	@JsonIgnore
 	@NotNull(message = "وارد کردن برند الزامی است")
 	private Brand brand;
 
@@ -69,7 +78,6 @@ public class Tajhizat implements Serializable {
 	private List<officeForm> tofficeforme;
 
 	@Column(columnDefinition="LONGBLOB")
-//	@NotNull(message = "وارد کردن تصویر الزامی است")
 	private String img;
 	
 	public Tajhizat() {
@@ -86,6 +94,22 @@ public class Tajhizat implements Serializable {
 		this.img = img;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	@Nullable
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(@Nullable User user) {
+		this.user = user;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Brand getBrand() {
 		return brand;

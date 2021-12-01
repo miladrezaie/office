@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>اتوماسیون آفیش - مکان ها</title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+                <button type="button" class="btn btn-info float-right newLocations" id="newLocations">
+                    <i class="fa fa-plus"></i>جدید
+                </button>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover tablemy">
+                    <tbody>
+                    <tr>
+                        <th>شماره</th>
+                        <th>نام</th>
+                        <th>تنظیمات</th>
+                    </tr>
+                    <tr th:each="location : ${locations}">
+                        <td th:text="${location.getId()}">...</td>
+                        <td th:text="${location.getName()}">...</td>
+                        <td>
+                            <a th:href="@{/admin/locations/find/{id}(id=${location.getId()})}"
+                               class="editLocations"
+                               id="EditLocations">
+                                <span class="badge bg-warning">ویرایش</span>
+                            </a>
+                            <a href="#" data-toggle="modal"
+                               th:attr="data-target='#modal-warning'+${location.getId() }">
+                                <span class="badge bg-danger">حذف</span>
+                            </a>
+                            <a href="#" data-toggle="modal" data-target="#modalRegister"></a>
+                            <div class="modal fade" th:id="modal-warning+${location.getId()}" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"
+                                                th:utext="${location.getName()}"></h5>
+                                            <button style="display: contents;" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="alert alert-danger">
+                                                آیا شما مطمین هستید که میخواهید این مکان را پاک کنید ؟
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                خیر
+                                            </button>
+                                            <a th:href="@{/admin/locations/delete/{id}(id=${location.getId()})}"
+                                               class="btn btn-danger"
+                                               id="deleteLocations">بله،مطمینم</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right" th:if="${locations.totalPages>=2}">
+                    <li class="page-item"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0,locations.totalPages-1)}"><a class="page-link" th:href="@{/admin/locations/(page=${i})}" th:text="${i+1}" th:classappend="${currentPage}==${i}?'active':''">۱</a></li>
+                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="locationModal" id="location_modal">
+            <form th:action="@{/admin/locations/create}" method="post" name="locationForm" id="locationForm">
+                <div id="locationFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title" id="exampleModalLabel">ایجاد مکان جدید</h5>
+                                <button style="display: contents;" type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" hidden="true">
+                                    <label for="id" class="col-form-label">ID:</label> <input
+                                        type="text" class="form-control form-control-sm btn-space" id="id"
+                                        name="id" value=""/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="form-control-label">نام مکان:</label>
+                                    <input type="text" id="name" class="form-control" name="name" value=""/>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+</body>
+</html>

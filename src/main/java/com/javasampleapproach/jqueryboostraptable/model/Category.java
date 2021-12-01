@@ -1,13 +1,15 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,6 +18,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category {
 
     @Id
@@ -27,7 +30,10 @@ public class Category {
     @Size(message = "نام دسته بندی حداقل 3 کاراکتر و حداکثر 30 کاراکتر می تواند باشد",min = 2,max = 30)
     private String name;
 
-    @OneToMany(mappedBy = "job")
-    private Set<User> users;
+
+    @OneToMany(mappedBy = "category")
+    @JsonBackReference
+    private Set<Job> jobs;
+
 
 }

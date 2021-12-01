@@ -2,6 +2,7 @@ package com.javasampleapproach.jqueryboostraptable.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,9 +38,14 @@ public class Job {
 //    @ManyToMany(mappedBy = "jobs",fetch = FetchType.LAZY)
 //    private List<Employee> employees;
 
-
     @OneToMany(mappedBy = "job")
     private Set<User> users;
+
+    @ManyToOne
+    @Nullable
+    @JoinColumn(name = "category_id")
+    @JsonManagedReference
+    private Category category;
 
     @Override
     public String toString() {

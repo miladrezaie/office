@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>اتوماسیون آفیش - دسته بندی ها</title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+                <button type="button" class="btn btn-info float-right newCategories" id="newCategories">
+                    <i class="fa fa-plus"></i>جدید
+                </button>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover tablemy">
+                    <tbody>
+                    <tr>
+                        <th>شماره</th>
+                        <th>نام</th>
+                        <th>تنظیمات</th>
+                    </tr>
+                    <tr th:each="category : ${categories}">
+                        <td th:text="${category.getId()}">...</td>
+                        <td th:text="${category.getName()}">...</td>
+                        <td>
+                            <a th:href="@{/admin/categories/find/{id}(id=${category.getId()})}"
+                               class="editCategories"
+                               id="EditCategories">
+                                <span class="badge bg-warning">ویرایش</span>
+                            </a>
+                            <a href="#" data-toggle="modal"
+                               th:attr="data-target='#modal-warning'+${category.getId() }">
+                                <span class="badge bg-danger">حذف</span>
+                            </a>
+                            <a href="#" data-toggle="modal" data-target="#modalRegister"></a>
+                            <div class="modal fade" th:id="modal-warning+${category.getId()}" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"
+                                                th:utext="${category.getName()}"></h5>
+                                            <button style="display: contents;" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="alert alert-danger">
+                                                آیا شما مطمین هستید که میخواهید این دسته بندی را پاک کنید ؟
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                خیر
+                                            </button>
+                                            <a th:href="@{/admin/categories/delete/{id}(id=${category.getId()})}"
+                                               class="btn btn-danger"
+                                               id="deleteCategories">بله،مطمینم</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right" th:if="${categories.totalPages>=2}">
+                    <li class="page-item"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0,categories.totalPages-1)}"><a class="page-link" th:href="@{/admin/categories/(page=${i})}" th:text="${i+1}" th:classappend="${currentPage}==${i}?'active':''">۱</a></li>
+                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="categoryModal" id="category_modal">
+            <form th:action="@{/admin/categories/create}" method="post" name="categoryForm" id="categoryForm">
+                <div id="categoryFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title" id="exampleModalLabel">دسته بندی </h5>
+                                <button style="display: contents;" type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" hidden="true">
+                                    <label for="id" class="col-form-label">ID:</label> <input
+                                        type="text" class="form-control form-control-sm btn-space" id="id"
+                                        name="id" value=""/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="form-control-label">نام دسته بندی:</label>
+                                    <input type="text" id="name" class="form-control" name="name" value=""/>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+</body>
+</html>

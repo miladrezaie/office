@@ -37,14 +37,10 @@ public class CategoryController {
 //    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-
-        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("categories", categoryRepository.findAll(new PageRequest(page, 10)));
         model.addAttribute("currentPage", page);
 
-        return "categories/categories";
+        return "admin/categories/index";
     }
 
     @PostMapping(value = "/admin/categories/create")

@@ -57,15 +57,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/times", "/user/**").hasAnyAuthority("ADMIN", "USER")
 //                .antMatchers("/Esave", "/members", "/employee").hasAuthority("ADMIN")
                 .anyRequest()
-                .authenticated().and().csrf().disable()
+                .authenticated().and()
+                .csrf().disable()
                 .formLogin().loginPage("/login").failureUrl("/login?error=true")
-                .defaultSuccessUrl("/office")
+                .defaultSuccessUrl("/panel")
                 .usernameParameter("personalId")
                 .passwordParameter("pass")
-                .and().logout()
+                .and()
+                .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login")
-                .and().exceptionHandling()
+                .and()
+                .exceptionHandling()
                 .accessDeniedPage("/access-denied");
     }
 
@@ -77,7 +80,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/console/**");
+                .antMatchers(
+                        "/resources/**",
+                        "/static/**",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/console/**",
+                        "/admin/css/**",
+                        "/admin/js/**",
+                        "/admin/fonts/**"
+                );
     }
 
 

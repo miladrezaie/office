@@ -1,5 +1,6 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -33,6 +34,17 @@ public class User implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    public Set<OfficeFormUserTajhizat> getUserDepartmentRoleLinks() {
+        return userDepartmentRoleLinks;
+    }
+
+    public void setUserDepartmentRoleLinks(Set<OfficeFormUserTajhizat> userDepartmentRoleLinks) {
+        this.userDepartmentRoleLinks = userDepartmentRoleLinks;
+    }
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
+
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
     @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد", min = 8, max = 10)
     @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)",unique = true)
@@ -61,7 +73,6 @@ public class User implements Serializable, UserDetails {
 
     @Column(columnDefinition = "LONGBLOB")
     @JsonIgnore
-//    @NotEmpty(message = "تصویر امضای خود را وارد کنید")
     private String emza;
 
     @Column(columnDefinition = "nvarchar(25)")
@@ -71,24 +82,14 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<officeForm> officeforms;
 
+    @OneToMany(mappedBy="user")
+    @JsonBackReference
+    private Set<Tajhizat> tajhiz;
+
     @ManyToOne
     @Nullable
     @JoinColumn(name = "job_id")
     private Job job;
-
-    @ManyToOne
-    @Nullable
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @Nullable
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(@Nullable Category category) {
-        this.category = category;
-    }
 
     @JoinTable(
             name = "role_user",
@@ -110,6 +111,14 @@ public class User implements Serializable, UserDetails {
 
     public Integer getId() {
         return id;
+    }
+
+    public Set<Tajhizat> getTajhiz() {
+        return tajhiz;
+    }
+
+    public void setTajhiz(Set<Tajhizat> tajhiz) {
+        this.tajhiz = tajhiz;
     }
 
     public String getFullname() {

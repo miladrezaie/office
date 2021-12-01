@@ -40,15 +40,10 @@ public class BrandController {
     @GetMapping(value = "/admin/brands")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-
-        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("brands", brandRepository.findAll(new PageRequest(page, 10)));
         model.addAttribute("currentPage", page);
 
-        return "brands/brands";
+        return "admin/brands/index";
     }
 
     @PostMapping(value = "/admin/brands/create")
@@ -86,6 +81,7 @@ public class BrandController {
             return "redirect:/admin/brands";
         }
     }
+
 
     @GetMapping("/admin/brands/find/{id}")
     @ResponseBody

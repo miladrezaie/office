@@ -61,13 +61,19 @@ public class officeForm implements Serializable {
     @NotNull(message = "وارد کردن مکان برنامه الزامی است")
     private Location location;
 
-    @JsonIgnore
+
     @ManyToMany(fetch = FetchType.LAZY)
     private List<User> users;
 
-    @JsonIgnore
+    @OneToMany(mappedBy = "officeForms", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
+
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Tajhizat> tajhizatss;
+
+    @Lob
+    @Column(name="DESCRIPTION", length=512)
+    private String description;
 
     //taied or laghv office_form
 //    @Column(columnDefinition = "smallint",nullable = false)
@@ -139,15 +145,9 @@ public class officeForm implements Serializable {
     @NotNull(message = "وارد کردن روز خاتمه الزامی است")
     private String date_end;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "program_id", referencedColumnName = "id")
-//    @NotNull(message = "وارد کردن نام برنامه الزامی است")
-//    private Program program;
-
     @ManyToOne
     @Nullable
     @JoinColumn(name = "program_id", referencedColumnName = "id")
     @NotNull(message = "وارد کردن نام برنامه الزامی است")
     private Program program ;
-
 }

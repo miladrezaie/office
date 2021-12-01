@@ -40,16 +40,12 @@ public class LocationController {
 
     @GetMapping( value = "/admin/locations")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("locations", locationRepository.findAll(new PageRequest(page,10)));
         model.addAttribute("currentPage", page);
-        return "locations/locations";
+        return "admin/locations/index";
     }
 
     @PostMapping(value = "/admin/locations/create")
-//    @Transactional
     public String create(@ModelAttribute @Valid Location location , BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
             if (bindingResult.hasErrors()) {

@@ -37,13 +37,13 @@ public class CarController {
     @GetMapping(value = "/admin/cars")
     @Transactional
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
-        model.addAttribute("cars",carService.getAllCars());
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        User user = userService.findByUsername(auth.getName());
+//        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
+////        model.addAttribute("cars",carService.getAllCars());
         model.addAttribute("cars",carRepository.findAll(new PageRequest(page,10)));
         model.addAttribute("currentPage", page);
-        return "cars/cars";
+        return "admin/cars/index";
     }
 
     @PostMapping(value = "/admin/cars/create")

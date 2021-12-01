@@ -1,5 +1,6 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,8 +45,8 @@ public class Car {
     @ManyToOne
     @Nullable
 //    @JoinColumn(name="officeForm_id")
+    @JsonIgnore
     @JoinColumn(name = "officeForm_id", referencedColumnName = "id")
-
     private officeForm officeForm;
 
 

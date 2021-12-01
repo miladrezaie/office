@@ -1,21 +1,17 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
+import com.javasampleapproach.jqueryboostraptable.Service.Impl.CategoryServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.model.Job;
-import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -23,14 +19,16 @@ import java.util.Optional;
 public class JobController {
 
     private final JobServiceImp jobService;
+    private final CategoryServiceImp categoryServiceImp;
 
     private final UserService userService;
 
     private final JobRepository jobRepository;
 
     @Autowired
-    public JobController(JobServiceImp jobService, UserService userService, JobRepository jobRepository) {
+    public JobController(JobServiceImp jobService, CategoryServiceImp categoryServiceImp, UserService userService, JobRepository jobRepository) {
         this.jobService = jobService;
+        this.categoryServiceImp = categoryServiceImp;
         this.userService = userService;
         this.jobRepository = jobRepository;
     }
@@ -38,17 +36,14 @@ public class JobController {
     @GetMapping(value = "/admin/jobs")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("jobs", jobRepository.findAll(new PageRequest(page,10)));
         model.addAttribute("currentPage", page);
-        return "jobs/jobs";
+        model.addAttribute("categories",categoryServiceImp.getAllCategories());
+        return "admin/jobs/index";
     }
 
     @PostMapping(value = "/admin/jobs/create")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-//    @Transactional
     public String create(@ModelAttribute @Valid Job job, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
             if (bindingResult.hasErrors()) {
@@ -65,7 +60,6 @@ public class JobController {
             redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
             return "redirect:/admin/jobs";
         }
-
     }
 
 
@@ -82,9 +76,6 @@ public class JobController {
             redirectAttributes.addFlashAttribute("message", "عنوان شغلی به آفیش خاص مرتبط است.");
             return "redirect:/admin/jobs";
         }
-
-
-
     }
 
     @GetMapping("/admin/jobs/find/{id}")

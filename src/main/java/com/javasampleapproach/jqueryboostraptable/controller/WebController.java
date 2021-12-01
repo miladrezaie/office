@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -59,6 +60,9 @@ public class WebController {
     @Autowired
     private CategoryServiceImp categoryServiceImp;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @GetMapping("/employee")
     public String viewEmployee(Model model, @RequestParam(defaultValue = "0") int page) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -91,16 +95,15 @@ public class WebController {
         List<Category> categories = categoryServiceImp.getAllCategories();
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         if (keyword != null) {
-            model.addAttribute("members", userRepo.search(keyword));
+            model.addAttribute("users", userRepo.search(keyword));
         } else {
-//            model.addAttribute("members", userRepo.findAll());
             model.addAttribute("jobs", jobs);
             model.addAttribute("roles", roles);
-            model.addAttribute("members", userRepo.findAll(new PageRequest(page, 10)));
+            model.addAttribute("users", userRepo.findAll(new PageRequest(page, 10)));
             model.addAttribute("currentPage", page);
             model.addAttribute("categories", categories);
         }
-        return "membersPage";
+        return "admin/users/index";
     }
 
     @GetMapping("/Scanner")
@@ -166,7 +169,7 @@ public class WebController {
     public ModelAndView login() {
         System.out.println("************************* login method start");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
+        modelAndView.setViewName("admin/auth/login");
         System.out.println("************************* login method end");
 
         return modelAndView;
@@ -175,14 +178,19 @@ public class WebController {
     @RequestMapping(value = {"/SetRole"}, method = RequestMethod.GET)
     public ModelAndView SetRole(Integer uid, Integer rid) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
+        modelAndView.setViewName("admin/panel/login");
         return modelAndView;
+    }
+    @GetMapping("/admin/profile")
+    public String profile(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByUsername(auth.getName());
+        model.addAttribute("user",  user);
+        return "admin/auth/user-profile";
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model, User user) {
-        System.out.println("register Form ********************");
-
         List<Job> jobs = jobServiceImp.getAllJobs();
         model.addAttribute("jobs", jobs);
         model.addAttribute("user", user);
@@ -228,6 +236,40 @@ public class WebController {
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         redirectAttributes.addFlashAttribute("message", "کاربر مورد نظر با موفیت حذف گردید .");
         return "redirect:/members";
+    }
+
+    @PostMapping("/admin/profile/user")
+    public String editProfile(@ModelAttribute @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        User userE = userRepo.findByPersonalId(user.getPersonalId());
+
+        try {
+            if (bindingResult.hasErrors()) {
+                System.out.println("********************** + "+bindingResult.getAllErrors());
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/profile";
+            } else {
+//            if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
+//                bindingResult.rejectValue("personalId", "error.user",
+//                        "هم اکنون کاربری با این شماره کارمندی موجود است");
+//            }
+                userE.setFName(user.getFName());
+                userE.setLname(user.getLname());
+                userE.setPass(bCryptPasswordEncoder.encode(user.getPass()));
+
+                System.out.println("create user form else");
+
+                userService.save(userE);
+            }
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
+            return "redirect:/admin/profile";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/profile";
+
+        }
     }
 
     @GetMapping("/members/findOneUser/{id}")

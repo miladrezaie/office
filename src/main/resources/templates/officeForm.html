@@ -21,7 +21,6 @@
     <script th:src="@{/js/persian-datepicker.min.js}"></script>
 
 
-
 </head>
 
 <style>
@@ -85,11 +84,13 @@
                     <a th:href="${form.id}" class="btn btn-primary feBtn" id="OpenForm">اضافه کردن</a>
                 </th:block>
                 <a th:href="@{form/(id=${form.id})}" class="btn btn-default mdelBtn" id="DeleteUser">نمایش</a>
+
                 <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
                     <button type="button" class="btn btn-danger" data-toggle="modal"
                             th:attr="data-target='#modal-warning'+${form.getId() }">
                         حذف
                     </button>
+
                 </th:block>
                 <input sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')"
                        th:if="${form.getMdarkhastemza() != null}" type="submit" class="btn btn-success" value="تایید شد"
@@ -177,10 +178,10 @@
                                 <div class="input-group input-group-sm">
                                     <label for="date_begin" class="form-control-label">از تاریخ :</label>
                                     <input type="text" id="date_begin" name="date_begin"
-                                           class="pwt-datepicker-input-element normal-example">
+                                           class="pwt-datepicker-input-element office-date">
                                     <label for="date_end" class="form-control-label">تا تاریخ : </label>
                                     <input type="text" id="date_end" name="date_end"
-                                           class="pwt-datepicker-input-element normal-example">
+                                           class="pwt-datepicker-input-element office-date">
                                 </div>
                             </div>
 
@@ -252,19 +253,19 @@
                                         </td>
                                     </th:block>
                                     <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
-                                    <td>
-                                        <!--                                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')" th:each="t : ${tajhizats}">-->
-                                        <!--                                            <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>-->
-                                        <!--                                            <label th:text="${t.name}"></label><br>-->
-                                        <!--                                        </th:block>-->
-                                        <label for="tajhizatss" class="form-control-label">تجهیزات:</label>
-                                        <select class="selectpicker" id="tajhizatss" name="tajhizatss" multiple
-                                                data-live-search="true"
-                                                title="انتخاب کنید">
-                                            <option th:each="t  : ${tajhizats}" th:value="${t.getId()}"
-                                                    th:text="${t.getName()}"></option>
-                                        </select>
-                                    </td>
+                                        <td>
+                                            <!--                                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')" th:each="t : ${tajhizats}">-->
+                                            <!--                                            <input type="checkbox" name="Tajhizats" th:value="${t.id}"/>-->
+                                            <!--                                            <label th:text="${t.name}"></label><br>-->
+                                            <!--                                        </th:block>-->
+                                            <label for="tajhizatss" class="form-control-label">تجهیزات:</label>
+                                            <select class="selectpicker" id="tajhizatss" name="tajhizatss" multiple
+                                                    data-live-search="true"
+                                                    title="انتخاب کنید">
+                                                <option th:each="t  : ${tajhizats}" th:value="${t.getId()}"
+                                                        th:text="${t.getName()}"></option>
+                                            </select>
+                                        </td>
                                     </th:block>
                             </table>
                         </div>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ورود به اتوماسیون آفیش</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/admin/css/font-awesome.min.css}"/>
+    <!-- Ionicons -->
+    <link rel="stylesheet" th:href="@{/admin/css/ionicons.min.css}"/>
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/admin/css/adminlte.min.css}"/>
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/admin/css/blue.css}"/>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" th:href="@{/admin/css/css.css}"/>
+
+    <!-- bootstrap rtl -->
+    <link rel="stylesheet" th:href="@{/admin/css/bootstrap-rtl.min.css}">
+    <!-- template rtl version -->
+    <link rel="stylesheet" th:href="@{/admin/css/custom-style.css}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="../../index2.html"><b>ورود به اتوماسیون آفیش</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">فرم زیر را تکمیل کنید و ورود بزنید</p>
+
+            <form th:action="@{/login}"  method="post" >
+                <div class="input-group mb-3">
+                    <input dir="rtl" type="text" id="personalId" name="personalId" placeholder="شماره پرسنلی"
+                           class="form-control"/>
+                    <div class="input-group-append">
+                        <span class="fa fa-id-card input-group-text"></span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input dir="rtl" type="password" placeholder="رمز عبور"
+                           id="pass" name="pass" class="form-control"/>
+                    <div class="input-group-append">
+                        <span class="fa fa-lock input-group-text"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="social-auth-links text-center mb-3">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">ورود</button>
+                    </div>
+                </div>
+            </form>
+            <br>
+            <br>
+            <br>
+
+            <!-- /.social-auth-links -->
+
+            <p class="mb-0">
+                <a th:href="@{/registration}" class="text-center">ثبت نام</a>
+            </p>
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script th:src="@{/admin/js/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/js/bootstrap.bundle.min.js}"></script>
+
+
+</body>
+</html>

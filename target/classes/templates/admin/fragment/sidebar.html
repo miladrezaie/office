@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/xhtml"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="sidebar">
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+        <a href="admin/index3.html" class="brand-link">
+            <img th:src="@{/admin/css/AdminLTELogo.png}" alt="AdminLTE Logo"
+                 class="brand-image img-circle elevation-3"
+                 style="opacity: .8">
+            <span class="brand-text font-weight-light">پنل مدیریت</span>
+        </a>
+
+        <!-- Sidebar -->
+        <div class="sidebar" style="direction: ltr">
+            <div style="direction: rtl">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <!--                    <div class="image">-->
+                    <!--                        <img href="https://www.gravatar.com/avatar/52f0fbcbedee04a121cba8dad1174462?s=200&d=mm&r=g"-->
+                    <!--                             class="img-circle elevation-2" alt="User Image">-->
+                    <!--                    </div>-->
+                    <div class="info">
+                        <a href="#" class="d-block"><span sec:authorize="isAuthenticated()">خوش آمدید <span sec:authentication="name"></span></span></a>
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+                             with font-awesome or any other icon font library -->
+                        <li class="nav-item has-treeview menu-open">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fa fa-dashboard"></i>
+                                <p>
+                                    داشبوردها
+                                    <i class="right fa fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="admin/./index.html" class="nav-link active">
+                                        <i class="fa fa-circle-o nav-icon"></i>
+                                        <p>داشبورد اول</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="admin/./index2.html" class="nav-link">
+                                        <i class="fa fa-circle-o nav-icon"></i>
+                                        <p>داشبورد دوم</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="admin/./index3.html" class="nav-link">
+                                        <i class="fa fa-circle-o nav-icon"></i>
+                                        <p>داشبورد سوم</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fa fa-pie-chart"></i>
+                                <p>
+                                    آفیش ها
+                                    <i class="right fa fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="pages/charts/chartjs.html" class="nav-link">
+                                        <i class="fa fa-circle-o nav-icon"></i>
+                                        <p>تاییده شده</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="pages/charts/flot.html" class="nav-link">
+                                        <i class="fa fa-circle-o nav-icon"></i>
+                                        <p>تایید نشده</p>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    آفیش ها
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    برنامه ها
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    تجهیزات
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    مکان ها
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    دسته بندی
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    عنوان شغلی
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    برند ها
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    وسایل نقیه  سازمان
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-header">کاربران</li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    سطح دسترسی
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="admin/pages/widgets.html" class="nav-link">
+                                <i class="nav-icon fa fa-th"></i>
+                                <p>
+                                    تعریف کاربر جدید
+                                    <span class="right badge badge-danger">جدید</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-header">تنظیمات</li>
+                        <li class="nav-item">
+                            <a href="admin/profile" class="nav-link">
+                                <i class="nav-icon fa fa-file"></i>
+                                <p>مستندات</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+        </div>
+        <!-- /.sidebar -->
+    </aside>
+</div>
+</body>
+</html>

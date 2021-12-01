@@ -161,8 +161,7 @@
                          th:src="*{'data:emza/jpg;base64,'+{form.getMdarkhastemza()}}" class="img-responsive"
                          style="direction: ltr;">
                     <br>
-                    <th:block
-                            sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                    <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
                         <form th:action="@{/saveEmza}" method="post">
                             <input type="hidden" name="uid" th:value="${user.id}">
                             <input type="hidden" name="fid" th:value="${form.id}">

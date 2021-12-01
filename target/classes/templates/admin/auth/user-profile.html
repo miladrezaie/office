@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>اتوماسیون آفیش - ناحیه کاربری</title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+
+    <div class="col-md-3">
+        <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+
+        <!-- Profile Image -->
+        <div class="card card-primary card-outline">
+            <div class="card-body box-profile">
+                <div class="text-center">
+                    <img class="profile-user-img img-fluid img-circle"
+                         th:src="@{/admin/img/user-icon.jpg}"
+                         alt="User profile picture">
+                </div>
+                <h3 class="profile-username text-center" th:text="${user.getFullname()}"></h3>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+        <!-- About Me Box -->
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">درباره من</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <strong><i class="fa fa-map-marker mr-1"></i> شماره پرسنلی  </strong>
+                <p class="text-muted">[[${user.getPersonalId()}]]</p>
+                <hr>
+                <strong><i class="fa fa-book mr-1"></i>فعالیت </strong>
+                <p class="text-muted">
+                    [[${user.getJob().name}]]
+                </p>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                    <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">تنظیمات</a></li>
+                </ul>
+            </div><!-- /.card-header -->
+            <div class="card-body">
+                <div class="tab-content">
+
+                    <div class="active tab-pane" id="settings" style="background-color: white; color: black;">
+                        <form class="form-horizontal" method="post" th:action="@{/admin/profile/user}" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="personalId" class="col-sm-2 control-label">شماره پرسنلی </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="personalId" readonly="readonly" th:value="${user.getPersonalId()}" id="personalId" placeholder="شماره پرسنلی">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="FName" class="col-sm-2 control-label">نام </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="FName" th:value="${user.getFName()}" id="FName" placeholder="نام">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Lname" class="col-sm-2 control-label">نام خانوادگی</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="Lname" th:value="${user.getLname()}" id="Lname" placeholder="نام خانوادگی">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pass" class="form-control-label">رمز عبور:</label>
+                                <input type="password" class="form-control" th:name="pass" id="pass" name="pass" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <label for="pass" class="form-control-label">تکرار رمز عبور:</label>
+                                <input type="password" class="form-control" th:name="pass" id="pass_" name="pass" value=""/>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-danger">اعمال تغییرات</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div><!-- /.card-body -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+    </div>
+
+</div>
+</body>
+</html>

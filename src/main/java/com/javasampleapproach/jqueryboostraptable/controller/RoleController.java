@@ -52,7 +52,7 @@ public class RoleController {
         model.addAttribute("authorities", Authority.values());
         model.addAttribute("roles", roleRepository.findAll(new PageRequest(page,10)));
         model.addAttribute("currentPage", page);
-        return "roles/roles";
+        return "admin/roles/index";
     }
 
     @PostMapping(value = "/admin/roles/create")

@@ -24,6 +24,7 @@ public interface OfficeFormRepository extends JpaRepository<officeForm, Long> {
 	//List<officeForm> findByUsers(Set<User> users);
 	
 	List<officeForm> findByStatusIsFalse();
+	List<officeForm> findByStatusIsTrue();
 
 	@Modifying
 	@Query("update officeForm ear set ear.status = :status where ear.id = :id")

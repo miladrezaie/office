@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <title>اتوماسیون آفیش - برنامه ها</title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+                <button type="button" class="btn btn-info float-right newPrograms" id="newPrograms">
+                    <i class="fa fa-plus"></i>جدید
+                </button>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover tablemy">
+                    <tbody>
+                    <tr>
+                        <th>شماره</th>
+                        <th>نام</th>
+                        <th>زمان</th>
+                        <th>تاریخ شروع</th>
+                        <th>تاریخ پایان</th>
+                        <th>روز پخش</th>
+                        <th>تنظیمات</th>
+                    </tr>
+                    <tr th:each="program : ${programs}">
+                        <td th:text="${program.getId()}">...</td>
+                        <td th:text="${program.getName()}">...</td>
+                        <td th:text="${program.getSaat_zabt() +' - ' +program.getSaat_zabt_end()}">...</td>
+                        <td th:text="${program.getDate_begin()}">...</td>
+                        <td th:text="${program.getDate_end()}">...</td>
+                        <td >
+                            <span th:each="dd : ${program.getRozhafteh()}" class="badge bg-info" th:text="${dd.getDisplayName() +' '}"></span></td>
+                        <td>
+                        <td>
+                            <a th:href="@{/admin/programs/find/{id}(id=${program.getId()})}"
+                               class="editPrograms"
+                               id="EditPrograms">
+                                <span class="badge bg-warning">ویرایش</span>
+                            </a>
+                            <a href="#" data-toggle="modal"
+                               th:attr="data-target='#modal-warning'+${program.getId() }">
+                                <span class="badge bg-danger">حذف</span>
+                            </a>
+                            <div class="modal fade" th:id="modal-warning+${program.getId()}" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"
+                                                th:utext="${program.getName()}"></h5>
+                                            <button style="display: contents;" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="alert alert-danger">
+                                                آیا شما مطمین هستید که میخواهید این برنامه را پاک کنید ؟
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                خیر
+                                            </button>
+                                            <a th:href="@{/admin/programs/delete/{id}(id=${program.getId()})}"
+                                               class="btn btn-danger"
+                                               id="deletePrograms">بله،مطمینم</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right" th:if="${programs.totalPages>=2}">
+                    <li class="page-item"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0,programs.totalPages-1)}"><a class="page-link" th:href="@{/admin/programs/(page=${i})}" th:text="${i+1}" th:classappend="${currentPage}==${i}?'active':''">۱</a></li>
+                    <li class="page-item"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="programModal" id="program_modal">
+            <form th:action="@{/admin/programs/create}" method="post" name="programForm" id="programForm">
+                <div id="programFrom" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title" id="exampleModalLabel"> برنامه </h5>
+                                <button style="display: contents;" type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" hidden="true">
+                                    <label for="id" class="col-form-label">ID:</label>
+                                    <input type="text" class="form-control form-control-sm btn-space" id="id"
+                                        name="id" value=""/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="form-control-label">نام برنامه:</label>
+                                    <input type="text" id="name" class="form-control" name="name" value=""/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="saat_zabt" class="form-control-label">از ساعت :</label><i class="fa fa-calendar"></i>
+                                    <input class="program-date-time" type="text" id="saat_zabt" name="saat_zabt" value=""/>
+                                    <span>مانند : 10:00</span><br>
+                                    <label for="saat_zabt_end" class="form-control-label">تا ساعت :</label><i class="fa fa-calendar"></i>
+                                    <input class="program-date-time" type="text" id="saat_zabt_end" name="saat_zabt_end" value=""/>
+                                    <span>مانند : 10:00</span><br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rozhafteh" class="form-control-label"> روز های پخش:</label>
+
+                                    <select class="selectpicker form-control" id="rozhafteh" name="rozhafteh" multiple
+                                            title="انتخاب کنید">
+                                        <option th:each="roz :${rozhaehafte}" th:value="${roz.name()}"
+                                                th:text="${roz.getDisplayName()}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-inline form-group">
+                                    <div class="input-group input-group-sm">
+                                        <label for="date_begin" class="form-control-label">از تاریخ :</label>
+                                        <input type="text" id="date_begin" name="date_begin"
+                                               class="form-control pwt-datepicker-input-element program-date">
+                                        <label for="date_end" class="form-control-label">تا تاریخ : </label>
+                                        <input type="text" id="date_end" name="date_end"
+                                               class="form-control pwt-datepicker-input-element program-date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <input type="submit" class="btn btn-success" id="saveeditbutton" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+</body>
+</html>
