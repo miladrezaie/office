@@ -17,7 +17,6 @@ public class SpringBootJQueryBootstrapTableApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringBootJQueryBootstrapTableApplication.class, args);
-
     }
 
 }

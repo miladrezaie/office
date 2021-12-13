@@ -1,38 +1,45 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 
 @Entity
 @Table(name = "officeFormUserTajhizats")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class OfficeFormUserTajhizat implements Serializable {
+public class OfficeFormUserTajhizat {
 
-    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    private OfficeFormUserTajhizatId id = new OfficeFormUserTajhizatId();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "officeForms_id")
+    @MapsId("officeFormsId")
+    @JsonManagedReference
     private officeForm officeForms;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tajhiz_id")
+    @MapsId("tajhizId")
+    @JsonManagedReference
     private Tajhizat tajhizat;
+
+    public OfficeFormUserTajhizat(User user, officeForm officeForms, Tajhizat tajhizat) {
+        this.id = new OfficeFormUserTajhizatId(user.getId(), officeForms.getId(), tajhizat.getId());
+        this.user = user;
+        this.officeForms = officeForms;
+        this.tajhizat = tajhizat;
+    }
 
 }

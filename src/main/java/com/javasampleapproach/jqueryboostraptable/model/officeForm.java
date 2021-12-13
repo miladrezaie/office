@@ -65,10 +65,10 @@ public class officeForm implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<User> users;
 
-
-    @OneToMany(mappedBy = "officeForms", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @OneToMany(mappedBy = "officeForms", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "officeForms", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
-
 
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Tajhizat> tajhizatss;

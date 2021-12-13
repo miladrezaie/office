@@ -2,6 +2,7 @@ package com.javasampleapproach.jqueryboostraptable.Service;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import com.javasampleapproach.jqueryboostraptable.model.OfficeFormUserTajhizat;
 import com.javasampleapproach.jqueryboostraptable.model.Tajhizat;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.model.officeForm;
@@ -52,22 +53,22 @@ public class OfficePdfGenerator {
         table.addCell(cell);
 
 
-        cell.setPhrase(new Phrase("عوامل : ", paraFont));
+        cell.setPhrase(new Phrase("عوامل  ", paraFont));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("نام و نام خانوادگی : ", paraFont));
+        cell.setPhrase(new Phrase("نام و نام خانوادگی  ", paraFont));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("تجهیزات همراه : ", paraFont));
+        cell.setPhrase(new Phrase("تجهیزات همراه  ", paraFont));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("امضا : ", paraFont));
+        cell.setPhrase(new Phrase("امضا  ", paraFont));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
@@ -100,7 +101,7 @@ public class OfficePdfGenerator {
         writer.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
 
         document.open();
-        document.addTitle("نسخه چاپی آفیش");
+        document.addTitle("تحویل تجهیزات آفیش");
 
         BaseFont farsiFont = BaseFont.createFont("D:/project/office/src/main/resources/static/admin/fonts/Vazir.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         Font paraFont = new Font(farsiFont, 8);
@@ -140,29 +141,36 @@ public class OfficePdfGenerator {
         PdfPCell cell3_3 = new PdfPCell(new Phrase("تجهیزات همراه ", paraFont));
         cell3_3.setPadding(8);
         cell3_3.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        PdfPCell cell4_4 = new PdfPCell(new Phrase("امضا  ", paraFont));
+        PdfPCell cell4_4 = new PdfPCell(new Phrase("...  ", paraFont));
         cell4_4.setPadding(8);
         cell4_4.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 
 
-
         PdfPTable nestedTableUserAvamel = new PdfPTable(1);
         nestedTableUserAvamel.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
-        for (User user : officeForms.getUsers()) {
-            nestedTableUserAvamel.addCell(getCell(user.getJob().getName(), PdfPCell.ALIGN_CENTER));
-        }
 
         PdfPTable nestedTableUser = new PdfPTable(1);
         nestedTableUser.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
-        for (User user : officeForms.getUsers()) {
-            nestedTableUser.addCell(getCell(user.getFullname(), PdfPCell.ALIGN_CENTER));
-        }
-
         PdfPTable nestedTableTajhizat = new PdfPTable(1);
         nestedTableTajhizat.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
-        for (Tajhizat tajhizat : officeForms.getTajhizatss()) {
-            nestedTableTajhizat.addCell(getCell(tajhizat.getName(), PdfPCell.ALIGN_CENTER));
+
+
+
+
+        for (User user : officeForms.getUsers()) {
+            nestedTableUserAvamel.addCell(getCell(user.getJob().getName(), PdfPCell.ALIGN_CENTER));
+            nestedTableUser.addCell(getCell(user.getFullname(), PdfPCell.ALIGN_CENTER));
+            if (!user.getUserDepartmentRoleLinks().isEmpty()) {
+                for (OfficeFormUserTajhizat pfficeForm : user.getUserDepartmentRoleLinks()) {
+                    nestedTableTajhizat.addCell(getCell(pfficeForm.getTajhizat().getName(), PdfPCell.ALIGN_CENTER));
+                }
+            } else {
+                nestedTableTajhizat.addCell(getCell("....", PdfPCell.ALIGN_CENTER));
+            }
+
         }
+
+
         cell1_1.addElement(nestedTableUserAvamel);
         cell2_2.addElement(nestedTableUser);
         cell3_3.addElement(nestedTableTajhizat);
@@ -173,24 +181,24 @@ public class OfficePdfGenerator {
         table_1.addCell(cell4_4);
 
 
-        addEmptyLine(new Paragraph(), 1);
-        PdfPTable emzaTable = new PdfPTable(2);
-        emzaTable.setWidthPercentage(100f);
-        emzaTable.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
-        emzaTable.setWidths(new float[]{4.0f, 4.0f});
-
-        PdfPCell cellEmza = new PdfPCell();
-        cellEmza.setPhrase(new Phrase("امضای تصویر بردار : ", paraFont));
-        cellEmza.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellEmza.setBorder(Rectangle.NO_BORDER);
-        cellEmza.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        emzaTable.addCell(cellEmza);
-
-        cellEmza.setPhrase(new Phrase("امضای صدابردار : ", paraFont));
-        cellEmza.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cellEmza.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cellEmza.setBorder(Rectangle.NO_BORDER);
-        emzaTable.addCell(cellEmza);
+//        addEmptyLine(new Paragraph(), 1);
+//        PdfPTable emzaTable = new PdfPTable(2);
+//        emzaTable.setWidthPercentage(100f);
+//        emzaTable.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
+//        emzaTable.setWidths(new float[]{4.0f, 4.0f});
+//
+//        PdfPCell cellEmza = new PdfPCell();
+//        cellEmza.setPhrase(new Phrase("امضای تصویر بردار : ", paraFont));
+//        cellEmza.setHorizontalAlignment(Element.ALIGN_CENTER);
+//        cellEmza.setBorder(Rectangle.NO_BORDER);
+//        cellEmza.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//        emzaTable.addCell(cellEmza);
+//
+//        cellEmza.setPhrase(new Phrase("امضای صدابردار : ", paraFont));
+//        cellEmza.setHorizontalAlignment(Element.ALIGN_CENTER);
+//        cellEmza.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//        cellEmza.setBorder(Rectangle.NO_BORDER);
+//        emzaTable.addCell(cellEmza);
 
         writeTableHeader(table);
         writeTableData(table);
@@ -198,7 +206,7 @@ public class OfficePdfGenerator {
         document.add(tableHeader);
         document.add(table);
         document.add(table_1);
-        document.add(emzaTable);
+//        document.add(emzaTable);
         document.close();
     }
 

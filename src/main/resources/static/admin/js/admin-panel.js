@@ -692,14 +692,19 @@ $(document).ready(function () {
             $('.officeModal #saveeditbutton_').prop("value", "افزودن");
             $.get(href, function (office) {
                 console.log(office.tajhizatss);
+                // console.log(office.users.userDepartmentRoleLinks);
                 $('.officeModal #users').val('');
                 $('.officeModal #id').val(office.id);
-                // var list =[];
-                // for (var k =0 ; k<office.tajhizatss.length ; k++){
-                //     console.log(office.tajhizatss[k].id);
-                //     list[k]=office.tajhizatss[k].id;
-                // }
-                // $('.officeModal #tajhizatsss').selectpicker('val',list );
+                var list =[];
+                for (var k =0 ; k<office.userDepartmentRoleLinks.length ; k++) {
+                    console.log(office.userDepartmentRoleLinks[k].id);
+                    list[k] = office.userDepartmentRoleLinks[k].id;
+                    for (var j = 0; j < office.userDepartmentRoleLinks.length; j++) {
+                        // console.log(office.tajhizat[k].id);
+                        console.log("TTTTTTT");
+                    }
+                }
+                $('.officeModal #tajhizatsss').selectpicker('val',list );
                 $('.officeModal #officeFrom_').modal('show');
             });
         }

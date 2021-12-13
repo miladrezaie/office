@@ -1,5 +1,6 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.lang.Nullable;
@@ -23,7 +24,9 @@ public class Tajhizat implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@OneToMany(mappedBy = "tajhizat", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//	@ManyToMany(mappedBy = "tajhizats", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToMany(mappedBy = "tajhizat", cascade = CascadeType.ALL)
+	@JsonBackReference
 	private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
 
 	public Set<OfficeFormUserTajhizat> getUserDepartmentRoleLinks() {

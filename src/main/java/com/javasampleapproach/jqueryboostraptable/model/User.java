@@ -34,16 +34,9 @@ public class User implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    public Set<OfficeFormUserTajhizat> getUserDepartmentRoleLinks() {
-        return userDepartmentRoleLinks;
-    }
-
-    public void setUserDepartmentRoleLinks(Set<OfficeFormUserTajhizat> userDepartmentRoleLinks) {
-        this.userDepartmentRoleLinks = userDepartmentRoleLinks;
-    }
-
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Nullable
+    @JsonBackReference
     private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
 
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
@@ -101,6 +94,14 @@ public class User implements Serializable, UserDetails {
 //    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
+
+    public Set<OfficeFormUserTajhizat> getUserDepartmentRoleLinks() {
+        return userDepartmentRoleLinks;
+    }
+
+    public void setUserDepartmentRoleLinks(Set<OfficeFormUserTajhizat> userDepartmentRoleLinks) {
+        this.userDepartmentRoleLinks = userDepartmentRoleLinks;
+    }
 
     public List<officeForm> getOfficeforms() {
         return officeforms;

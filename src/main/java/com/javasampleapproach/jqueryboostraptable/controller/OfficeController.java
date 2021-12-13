@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.itextpdf.text.DocumentException;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.*;
+import com.javasampleapproach.jqueryboostraptable.Service.OfficeFormUserTajhizatService;
 import com.javasampleapproach.jqueryboostraptable.Service.OfficePdfGenerator;
 import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
@@ -76,9 +77,10 @@ public class OfficeController {
     private CategoryServiceImp categoryServiceImp;
 
     @Autowired
-    private OfficeFormUserTajhizatRepository officeFormUserTajhizatRepository ;
+    private OfficeFormUserTajhizatRepository officeFormUserTajhizatRepository;
 
-    private OfficeFormUserTajhizat officeFormUserTajhizat;
+    @Autowired
+    private OfficeFormUserTajhizatServiceImp officeFormUserTajhizatw;
 
     @GetMapping("/tajhizats")
     public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
@@ -506,41 +508,46 @@ public class OfficeController {
 
     @PostMapping("/addTajhizToUser")
     public String addTajhizToUserOfficeForm(@ModelAttribute officeForm f, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getUsers().get(0).getId());
-        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getTajhizatss().get(0).getId());
-        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getId());
-
-        long id_form = f.getId();
+//        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getUsers().get(0).getId());
+//        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getTajhizatss().get(0).getId());
+//        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getId());
+        Long id_form = f.getId();
         try {
-
             officeForm office_form = formRepo.findById(f.getId()).get();
-
-            OfficeFormUserTajhizat officeFormUserTajhizat =new OfficeFormUserTajhizat();
-            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
-//            Set<OfficeFormUserTajhizat> officeFormUserTajhizat1 = (Set<OfficeFormUserTajhizat>) new OfficeFormUserTajhizat();
-            officeFormUserTajhizat.setTajhizat(f.getTajhizatss().get(0));
-            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
-
+            OfficeFormUserTajhizat officeFormUserTajhizat = new OfficeFormUserTajhizat();
             officeFormUserTajhizat.setUser(f.getUsers().get(0));
-            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
-
             officeFormUserTajhizat.setOfficeForms(office_form);
-            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt : "+officeFormUserTajhizat);
-
-            officeFormUserTajhizatRepository.save(officeFormUserTajhizat);
-
+            officeFormUserTajhizat.setTajhizat(f.getTajhizatss().get(0));
+            officeFormUserTajhizatw.saveOfficeFormUserTajhizat(officeFormUserTajhizat);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "تجهیز مورد نظر به کاربر مورد نظر اختصاص یافت .");
             return "redirect:/form/?id=" + id_form;
-
         } catch (Exception exception) {
-            System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : "+exception);
+//            System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + exception.toString());
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            redirectAttributes.addFlashAttribute("message", "خطایی در سرور به وجود آمده مجددا تلاش نمایید.");
+            redirectAttributes.addFlashAttribute("message", "تجهیز تکراری وارد کردید لطفا دقت کنید");
             return "redirect:/form/?id=" + id_form;
         }
     }
 
+    @GetMapping(value = "/deleteTajhizToUser/{tajhiz_id}/{user_id}/{officeForms_id}")
+    public String deletet(@PathVariable Long tajhiz_id, @PathVariable int user_id, @PathVariable Long officeForms_id, RedirectAttributes redirectAttributes) {
+        Long id_form = officeForms_id;
+
+        try {
+            OfficeFormUserTajhizatId id = new OfficeFormUserTajhizatId(user_id, officeForms_id, tajhiz_id);
+            officeFormUserTajhizatRepository.deleteOfficeFormUserTajhizatById(id);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عنوان شغلی مورنظر با موفقیت حذف گردید.");
+            return "redirect:/form/?id=" + id_form;
+
+        } catch (Exception exception) {
+            System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + exception.toString());
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تجهیز تکراری وارد کردید لطفا دقت کنید");
+            return "redirect:/form/?id=" + id_form;
+        }
+    }
 
     @GetMapping("/admin/office/find/{id}")
     @ResponseBody

@@ -13,7 +13,8 @@
     <div class="col-12">
         <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
 
-        <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+        <th:block
+                sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-info">
@@ -22,7 +23,7 @@
                         </div>
                         <div class="card-body">
                             <th:block th:if="${form.getPoshemza() == null}"
-                                    sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                                      sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
                                 <div class="form-group">
                                     <td>
                                         <label for="category_form" class="form-control-label">معاونت ها:</label>
@@ -80,9 +81,9 @@
                             </div>
                         </div>
                         <!-- /.card-body -->
-<!--                        <div class="card-footer">-->
-<!--                            و چندین رنگ و مدل دیگر-->
-<!--                        </div>-->
+                        <!--                        <div class="card-footer">-->
+                        <!--                            و چندین رنگ و مدل دیگر-->
+                        <!--                        </div>-->
                     </div>
                     <!-- /.card -->
                 </div>
@@ -110,7 +111,8 @@
                                value="تایید">
                     </form>
                 </th:block>
-                <th:block th:if="${form.getAnbaremza() != null}" sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                <th:block th:if="${form.getAnbaremza() != null}"
+                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                     <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
                 </th:block>
 
@@ -187,7 +189,7 @@
                             <th>شماره</th>
                             <th>کد فعالیت</th>
                             <th>نام و نام خانوادگی</th>
-                            <th>تجهیزات</th>
+                            <th>تجهیزات تحویلی</th>
                             <th>تایید عوامل</th>
                         </tr>
                         </thead>
@@ -198,24 +200,28 @@
                             <td th:text="${userrr.getFullname()}"></td>
                             <td>
                                 <th:block th:if="${form.getPoshemza() == null}"
-                                        sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
-                                <form th:action="@{/admin/officeform/delete-user}" method="post">
-                                    <input type="hidden" name="id" id="form_id" th:value="${form.id}">
-                                    <input type="hidden" name="users" id="users" th:value="${userrr.id}">
-                                    <input type="submit" class="btn btn-sm btn-danger" value="حذف"/>
-                                </form>
+                                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                                    <form th:action="@{/admin/officeform/delete-user}" method="post">
+                                        <input type="hidden" name="id" id="form_id" th:value="${form.id}">
+                                        <input type="hidden" name="users" id="users" th:value="${userrr.id}">
+                                        <input type="submit" class="btn btn-sm btn-danger" value="حذف"/>
+                                    </form>
                                 </th:block>
                                 <th:block th:if="${form.getAnbaremza() == null}"
-                                        sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                                     <a th:attr="data-target='#modal-warning'+${userrr.getId() }"
                                        th:href="@{/admin/office/find/{id}(id=${form.id})}" data-toggle="modal"
                                        class="addTajhizToOfficeAndUser"
                                        id="addTajhizToOfficeAndUser">
                                         <span class="badge bg-warning">افزودن تجهیز به کاربر</span>
                                     </a>
-                                    <span class="badge bg-light" th:each="pfficeForm : ${userrr.getUserDepartmentRoleLinks()}" th:text="${pfficeForm.getTajhizat().getName()}">افزودن تجهیز به کاربر</span>
+                                    <span class="badge bg-info"
+                                          th:each="pfficeForm : ${userrr.getUserDepartmentRoleLinks()}">
+                                        <span th:text="${pfficeForm.getTajhizat().getName()}"></span>
+                                        <a class="badge bg-danger" th:href="${'/deleteTajhizToUser/'+{pfficeForm.id.getTajhizId()}+'/'+{pfficeForm.id.getUserId()}+'/'+{pfficeForm.id.getOfficeFormsId()}}">حذف</a></span>
                                 </th:block>
-                                <th:block th:if="${form.getAnbaremza() != null}" sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                                <th:block th:if="${form.getAnbaremza() != null}"
+                                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                                     <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
                                 </th:block>
                             </td>
@@ -242,12 +248,17 @@
                                                         <input type="hidden" name="users" id="users_"
                                                                th:value="${userrr.id}">
                                                     </div>
-                                                    <label  class="col-form-label">تجهیزات :</label>
-                                                    <select  name="tajhizatss">
+
+                                                    <label class="col-form-label">تجهیزات :</label>
+
+                                                    <select th:class="select" data-mdb-visible-options="3"
+                                                            th:id="tajhizatsss" th:name="tajhizatss">
+                                                        <option value="">انتخاب کنید</option>
                                                         <option th:each="t  : ${form.getTajhizatss()}"
                                                                 th:value="${t.getId()}"
                                                                 th:text="${t.getName()}"></option>
                                                     </select>
+
                                                 </div>
                                                 <div class="modal-footer border-top-0 d-flex justify-content-center">
                                                     <input type="submit" class="btn btn-success"
@@ -351,7 +362,8 @@
             <!-- this row will not appear when printing -->
             <div class="row no-print">
                 <div class="col-12">
-                    <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2" style="margin-right: 5px;">
+                    <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"
+                       style="margin-right: 5px;">
                         <i class="fa fa-download"></i>pdf
                     </a>
                 </div>
