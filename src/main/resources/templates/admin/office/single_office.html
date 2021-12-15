@@ -215,17 +215,19 @@
                                        id="addTajhizToOfficeAndUser">
                                         <span class="badge bg-warning">افزودن تجهیز به کاربر</span>
                                     </a>
-                                    <span class="badge bg-info"
-                                          th:each="pfficeForm : ${userrr.getUserDepartmentRoleLinks()}">
-                                        <span th:text="${pfficeForm.getTajhizat().getName()}"></span>
-                                        <a class="badge bg-danger" th:href="${'/deleteTajhizToUser/'+{pfficeForm.id.getTajhizId()}+'/'+{pfficeForm.id.getUserId()}+'/'+{pfficeForm.id.getOfficeFormsId()}}">حذف</a></span>
+
+                                    <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}" >
+                                        <span class="badge bg-info" th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" th:text="${pfficeForm.getTajhizat().getName()}">
+                                        </span>
+                                            <a th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" class="badge bg-danger" th:href="${'/deleteTajhizToUser/'+{pfficeForm.getTajhizat().getId()}+'/'+{pfficeForm.getUser().getId()}+'/'+{pfficeForm.getOfficeForms().getId()}}">حذف</a>
+                                    </span>
+
                                 </th:block>
                                 <th:block th:if="${form.getAnbaremza() != null}"
                                           sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                                     <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
                                 </th:block>
                             </td>
-
                             <div class="officeModal" id="office_modal_">
                                 <form th:action="@{/addTajhizToUser}" method="post" name="officeForm_" id="officeForm_">
                                     <div th:id="modal-warning+${userrr.getId()}" class="modal fade" tabindex="-1"
@@ -494,7 +496,7 @@
                                 <tr>
                                     <td>
                                         <br>خروج اشیا فوق از مرکز تایید می شود
-                                        <span th:text="${form.getSaatkhoroj()}"
+                                        <span dir="ltr" th:text="${form.getSaatkhoroj()}"
                                               class="badge bg-info">تایید شد</span>
                                         <br>
                                         <img th:if="${form.getKhherasatemza()} != null" width="85px"
@@ -515,7 +517,7 @@
                                         </th:block>
                                     </td>
                                     <td><br>ورود اشیا فوق در ساعت به مرکز تایید میشود
-                                        <span th:text="${form.getSaatvorod()}"
+                                        <span dir="ltr" th:text="${form.getSaatvorod()}"
                                               class="badge bg-info">تایید شد</span>
                                         <br>
 

@@ -160,8 +160,8 @@ public class OfficePdfGenerator {
         for (User user : officeForms.getUsers()) {
             nestedTableUserAvamel.addCell(getCell(user.getJob().getName(), PdfPCell.ALIGN_CENTER));
             nestedTableUser.addCell(getCell(user.getFullname(), PdfPCell.ALIGN_CENTER));
-            if (!user.getUserDepartmentRoleLinks().isEmpty()) {
-                for (OfficeFormUserTajhizat pfficeForm : user.getUserDepartmentRoleLinks()) {
+            if (!user.getOfficeFormUserTajhizats().isEmpty()) {
+                for (OfficeFormUserTajhizat pfficeForm : user.getOfficeFormUserTajhizats()) {
                     nestedTableTajhizat.addCell(getCell(pfficeForm.getTajhizat().getName(), PdfPCell.ALIGN_CENTER));
                 }
             } else {

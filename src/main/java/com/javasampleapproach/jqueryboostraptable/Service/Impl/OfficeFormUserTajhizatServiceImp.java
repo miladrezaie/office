@@ -2,6 +2,9 @@ package com.javasampleapproach.jqueryboostraptable.Service.Impl;
 
 import com.javasampleapproach.jqueryboostraptable.Service.OfficeFormUserTajhizatService;
 import com.javasampleapproach.jqueryboostraptable.model.OfficeFormUserTajhizat;
+import com.javasampleapproach.jqueryboostraptable.model.Tajhizat;
+import com.javasampleapproach.jqueryboostraptable.model.User;
+import com.javasampleapproach.jqueryboostraptable.model.officeForm;
 import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormUserTajhizatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,5 +44,10 @@ public class OfficeFormUserTajhizatServiceImp implements OfficeFormUserTajhizatS
 
     public Optional<OfficeFormUserTajhizat> findByIdOfficeFormUserTajhizat(Long id) {
         return officeFormUserTajhizatRepository.findById(id);
+    }
+
+
+    public Integer uuuu(int user){
+        return officeFormUserTajhizatRepository.findById_UserIdAndId_OfficeFormsId(user);
     }
 }

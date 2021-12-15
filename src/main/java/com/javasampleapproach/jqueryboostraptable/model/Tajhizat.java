@@ -27,14 +27,15 @@ public class Tajhizat implements Serializable {
 //	@ManyToMany(mappedBy = "tajhizats", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@OneToMany(mappedBy = "tajhizat", cascade = CascadeType.ALL)
 	@JsonBackReference
-	private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
+//	@JsonIgnore
+	private Set<OfficeFormUserTajhizat> officeFormUserTajhizats;
 
-	public Set<OfficeFormUserTajhizat> getUserDepartmentRoleLinks() {
-		return userDepartmentRoleLinks;
+	public Set<OfficeFormUserTajhizat> getOfficeFormUserTajhizats() {
+		return officeFormUserTajhizats;
 	}
 
-	public void setUserDepartmentRoleLinks(Set<OfficeFormUserTajhizat> userDepartmentRoleLinks) {
-		this.userDepartmentRoleLinks = userDepartmentRoleLinks;
+	public void setOfficeFormUserTajhizats(Set<OfficeFormUserTajhizat> officeFormUserTajhizats) {
+		this.officeFormUserTajhizats = officeFormUserTajhizats;
 	}
 
 	@Column(columnDefinition="nvarchar(60)")
@@ -59,11 +60,11 @@ public class Tajhizat implements Serializable {
 	@NotNull(message = "وارد کردن مکان قرار گیری تجهیز الزامی است")
 	private Location location;
 
-	@ManyToOne
-	@JoinColumn(name="user_id")
-	@JsonManagedReference
-	@Nullable
-	private User user;
+//	@ManyToOne
+//	@JoinColumn(name="user_id")
+////	@JsonManagedReference
+//	@Nullable
+//	private User user;
 
 	@ManyToOne
 	@JoinColumn(name="brand_id")
@@ -101,14 +102,14 @@ public class Tajhizat implements Serializable {
 		return id;
 	}
 
-	@Nullable
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(@Nullable User user) {
-		this.user = user;
-	}
+//	@Nullable
+//	public User getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(@Nullable User user) {
+//		this.user = user;
+//	}
 
 	public void setId(Long id) {
 		this.id = id;

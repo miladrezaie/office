@@ -5,9 +5,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
+import com.github.mfathi91.time.PersianDate;
 import com.itextpdf.text.DocumentException;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.*;
 import com.javasampleapproach.jqueryboostraptable.Service.OfficeFormUserTajhizatService;
@@ -220,6 +222,24 @@ public class OfficeController {
         Set<User> usersWithJob = findU(user.getJob().getId());
         model.addAttribute("userJob", usersWithJob);
         model.addAttribute("form", formRepo.findById((long) id).get());
+
+        List<User> user3=formRepo.findById((long) id).get().getUsers();
+
+
+        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + user3);
+
+        for (User use : user3 ) {
+            System.out.println("tttttttttttttt : " + use.getOfficeFormUserTajhizats());
+            for (Iterator<OfficeFormUserTajhizat> iterator = use.getOfficeFormUserTajhizats().iterator(); iterator.hasNext(); ) {
+                OfficeFormUserTajhizat ff = iterator.next();
+                if (ff.getOfficeForms().getId()==formRepo.findById((long) id).get().getId()){
+                    System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + ff.getTajhizat().getName());
+                }
+//            }
+            }
+
+        }
+
         model.addAttribute("userss", userRepo.findAll());
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
         model.addAttribute("user", user);
@@ -230,23 +250,13 @@ public class OfficeController {
     }
 
 
+
     public long officeFormCount() {
         return formRepo.count();
     }
 
-    public String userAuthority(String ahh) {
-        for (GrantedAuthority grantedAuthority : Authority.values()) {
-            if (ahh.equals(grantedAuthority.getAuthority())) {
-                return "ai :" + grantedAuthority.getAuthority();
-            }
-        }
-        return "s";
-    }
-
     @GetMapping("/panel")
     public String home(Model model) {
-//        System.out.println("User Count : "+userService.count());
-//        System.out.println("User Count : "+officeFormCount());
         model.addAttribute("userCount", userService.count());
         model.addAttribute("officeCount", officeFormCount());
         return "admin/panel/index";

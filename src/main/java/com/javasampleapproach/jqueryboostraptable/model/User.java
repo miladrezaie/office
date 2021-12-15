@@ -37,7 +37,7 @@ public class User implements Serializable, UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Nullable
     @JsonBackReference
-    private Set<OfficeFormUserTajhizat> userDepartmentRoleLinks;
+    private Set<OfficeFormUserTajhizat> officeFormUserTajhizats;
 
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
     @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد", min = 8, max = 10)
@@ -76,9 +76,9 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<officeForm> officeforms;
 
-    @OneToMany(mappedBy="user")
-    @JsonBackReference
-    private Set<Tajhizat> tajhiz;
+//    @OneToMany(mappedBy="user")
+////    @JsonBackReference
+//    private Set<Tajhizat> tajhiz;
 
     @ManyToOne
     @Nullable
@@ -95,12 +95,13 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
-    public Set<OfficeFormUserTajhizat> getUserDepartmentRoleLinks() {
-        return userDepartmentRoleLinks;
+    @Nullable
+    public Set<OfficeFormUserTajhizat> getOfficeFormUserTajhizats() {
+        return officeFormUserTajhizats;
     }
 
-    public void setUserDepartmentRoleLinks(Set<OfficeFormUserTajhizat> userDepartmentRoleLinks) {
-        this.userDepartmentRoleLinks = userDepartmentRoleLinks;
+    public void setOfficeFormUserTajhizats(@Nullable Set<OfficeFormUserTajhizat> officeFormUserTajhizats) {
+        this.officeFormUserTajhizats = officeFormUserTajhizats;
     }
 
     public List<officeForm> getOfficeforms() {
@@ -115,13 +116,13 @@ public class User implements Serializable, UserDetails {
         return id;
     }
 
-    public Set<Tajhizat> getTajhiz() {
-        return tajhiz;
-    }
-
-    public void setTajhiz(Set<Tajhizat> tajhiz) {
-        this.tajhiz = tajhiz;
-    }
+//    public Set<Tajhizat> getTajhiz() {
+//        return tajhiz;
+//    }
+//
+//    public void setTajhiz(Set<Tajhizat> tajhiz) {
+//        this.tajhiz = tajhiz;
+//    }
 
     public String getFullname() {
         return fullname;
