@@ -6,18 +6,23 @@ import com.javasampleapproach.jqueryboostraptable.model.OfficeFormUserTajhizat;
 import com.javasampleapproach.jqueryboostraptable.model.Tajhizat;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.model.officeForm;
+import com.javasampleapproach.jqueryboostraptable.repository.OfficeFormRepository;
 import javafx.scene.control.Cell;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import javax.servlet.http.HttpServletResponse;
 
 
 import java.io.IOException;
+import java.util.Iterator;
 
 
 public class OfficePdfGenerator {
 
     private officeForm officeForms;
+    @Autowired
+    private OfficeFormRepository formRepo;
 
     public OfficePdfGenerator(officeForm officeForms) {
         this.officeForms = officeForms;
@@ -155,15 +160,22 @@ public class OfficePdfGenerator {
         nestedTableTajhizat.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
 
 
-
-
         for (User user : officeForms.getUsers()) {
             nestedTableUserAvamel.addCell(getCell(user.getJob().getName(), PdfPCell.ALIGN_CENTER));
             nestedTableUser.addCell(getCell(user.getFullname(), PdfPCell.ALIGN_CENTER));
+
             if (!user.getOfficeFormUserTajhizats().isEmpty()) {
-                for (OfficeFormUserTajhizat pfficeForm : user.getOfficeFormUserTajhizats()) {
-                    nestedTableTajhizat.addCell(getCell(pfficeForm.getTajhizat().getName(), PdfPCell.ALIGN_CENTER));
+                for (Iterator<OfficeFormUserTajhizat> iterator = user.getOfficeFormUserTajhizats().iterator(); iterator.hasNext(); ) {
+                    OfficeFormUserTajhizat ff = iterator.next();
+                    if (ff.getOfficeForms().getId() == officeForms.getId()) {
+                        nestedTableTajhizat.addCell(getCell(ff.getTajhizat().getName(), PdfPCell.ALIGN_CENTER));
+
+                        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + ff.getTajhizat().getName());
+                    }
                 }
+
+//                for (OfficeFormUserTajhizat pfficeForm : user.getOfficeFormUserTajhizats()) {
+//                }
             } else {
                 nestedTableTajhizat.addCell(getCell("....", PdfPCell.ALIGN_CENTER));
             }

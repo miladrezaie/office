@@ -1,28 +1,32 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
+
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 
 
-import com.github.mfathi91.time.PersianDate;
+
 import com.itextpdf.text.DocumentException;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.*;
-import com.javasampleapproach.jqueryboostraptable.Service.OfficeFormUserTajhizatService;
+
 import com.javasampleapproach.jqueryboostraptable.Service.OfficePdfGenerator;
-import com.javasampleapproach.jqueryboostraptable.enums.Authority;
+
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
 import com.javasampleapproach.jqueryboostraptable.repository.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+
 import org.springframework.util.StringUtils;
 
 import org.springframework.validation.BindingResult;
@@ -40,7 +44,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.persistence.EntityManager;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -84,6 +89,9 @@ public class OfficeController {
     @Autowired
     private OfficeFormUserTajhizatServiceImp officeFormUserTajhizatw;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @GetMapping("/tajhizats")
     public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
 
@@ -119,16 +127,15 @@ public class OfficeController {
     }
 
     @GetMapping("/office")
-    public String viewoffice(Model model) {
+    public String viewoffice(Model model,@PageableDefault(size = 10) Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         List<User> us = new ArrayList<>();
         List<officeForm> office_form = new ArrayList<>();
-
         us.add(userRepo.findByPersonalId(user.getPersonalId()));
-
-        for (officeForm oo : formRepo.findByStatusIsFalse()) {
-            if (userHasAuthority("OP_TAHIEKONANDEH")) {
+        Page<officeForm> ll  = formRepo.findByStatusIsFalse(pageable);
+        for (officeForm oo : ll.getContent()) {
+            if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
                 office_form.add(oo);
 //                    model.addAttribute("forms", oo);
             } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
@@ -145,36 +152,37 @@ public class OfficeController {
                 office_form.add(oo);
             } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
                 office_form.add(oo);
-            } else if (userHasAuthority("OP_HAMAHANGIE")) {
-                office_form.add(oo);
             }
         }
-        model.addAttribute("forms", office_form);
-
+        model.addAttribute("officeforms", office_form);
+        model.addAttribute("page", ll);
+        model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
         model.addAttribute("user", user);
 
         if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
+            model.addAttribute("officeTypes", OfficeForm.values());
+            model.addAttribute("programs", programServiceImp.getAllPrograms());
+            model.addAttribute("rozhaehafte", RozHafteh.values());
+            model.addAttribute("locations", locationServiceImp.getAllLocations());
             model.addAttribute("tahie", user.getFullname());
         }
-        model.addAttribute("officeTypes", OfficeForm.values());
-        model.addAttribute("programs", programServiceImp.getAllPrograms());
-        model.addAttribute("rozhaehafte", RozHafteh.values());
-        model.addAttribute("locations", locationServiceImp.getAllLocations());
+
         return "admin/office/index";
     }
 
     @GetMapping("/officeTrue")
-    public String viewofficeTrue(Model model) {
+    public String viewofficeTrue(Model model ,@PageableDefault(size = 10) Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         List<User> us = new ArrayList<>();
         List<officeForm> office_form = new ArrayList<>();
-
         us.add(userRepo.findByPersonalId(user.getPersonalId()));
 
-        for (officeForm oo : formRepo.findByStatusIsTrue()) {
+        Page<officeForm> ll  = formRepo.findByStatusIsTrue(pageable);
+
+        for (officeForm oo : ll.getContent()) {
             System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$1");
-            if (userHasAuthority("OP_TAHIEKONANDEH")) {
+            if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE") ) {
                 office_form.add(oo);
 //                    model.addAttribute("forms", oo);
             } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
@@ -191,21 +199,23 @@ public class OfficeController {
                 office_form.add(oo);
             } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
                 office_form.add(oo);
-            } else if (userHasAuthority("OP_HAMAHANGIE")) {
-                office_form.add(oo);
             }
         }
-        model.addAttribute("forms", office_form);
+        model.addAttribute("officeforms", office_form);
+        model.addAttribute("page", ll);
+//        model.addAttribute("currentPage", page);
+        model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
 
         model.addAttribute("user", user);
 
         if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
             model.addAttribute("tahie", user.getFullname());
+            model.addAttribute("officeTypes", OfficeForm.values());
+            model.addAttribute("programs", programServiceImp.getAllPrograms());
+            model.addAttribute("rozhaehafte", RozHafteh.values());
+            model.addAttribute("locations", locationServiceImp.getAllLocations());
         }
-        model.addAttribute("officeTypes", OfficeForm.values());
-        model.addAttribute("programs", programServiceImp.getAllPrograms());
-        model.addAttribute("rozhaehafte", RozHafteh.values());
-        model.addAttribute("locations", locationServiceImp.getAllLocations());
+
 //        model.addAttribute("users", userRepo.findAll());
 //        model.addAttribute("jobs", jobServiceImp.getAllJobs());
 //        model.addAttribute("tajhizats", tRepo.findAll());
@@ -217,28 +227,22 @@ public class OfficeController {
     public String viewform(Model model, int id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
-//        System.out.println("authority : " +user.getAuthorities().contains(Authority.OP_HAML_NAGHL));
-//        System.out.println("user Authority : "+userAuthority("OP_HAML_NAGHL"));
+
         Set<User> usersWithJob = findU(user.getJob().getId());
         model.addAttribute("userJob", usersWithJob);
         model.addAttribute("form", formRepo.findById((long) id).get());
 
-        List<User> user3=formRepo.findById((long) id).get().getUsers();
-
-
-        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + user3);
-
-        for (User use : user3 ) {
-            System.out.println("tttttttttttttt : " + use.getOfficeFormUserTajhizats());
-            for (Iterator<OfficeFormUserTajhizat> iterator = use.getOfficeFormUserTajhizats().iterator(); iterator.hasNext(); ) {
-                OfficeFormUserTajhizat ff = iterator.next();
-                if (ff.getOfficeForms().getId()==formRepo.findById((long) id).get().getId()){
-                    System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + ff.getTajhizat().getName());
-                }
+//        List<User> user3=formRepo.findById((long) id).get().getUsers();
+//        for (User use : user3 ) {
+//            System.out.println("tttttttttttttt : " + use.getOfficeFormUserTajhizats());
+//            for (Iterator<OfficeFormUserTajhizat> iterator = use.getOfficeFormUserTajhizats().iterator(); iterator.hasNext(); ) {
+//                OfficeFormUserTajhizat ff = iterator.next();
+//                if (ff.getOfficeForms().getId()==formRepo.findById((long) id).get().getId()){
+//                    System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + ff.getTajhizat().getName());
+//                }
+////            }
 //            }
-            }
-
-        }
+//        }
 
         model.addAttribute("userss", userRepo.findAll());
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
@@ -248,8 +252,6 @@ public class OfficeController {
         model.addAttribute("categories", categoryServiceImp.getAllCategories());
         return "admin/office/single_office";
     }
-
-
 
     public long officeFormCount() {
         return formRepo.count();
@@ -402,7 +404,7 @@ public class OfficeController {
 
     public static boolean userHasAuthority(String authority) {
         List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        System.out.println("authority : " + authorities);
+//        System.out.println("authority : " + authorities);
         for (GrantedAuthority grantedAuthority : authorities) {
             if (authority.equals(grantedAuthority.getAuthority())) {
                 return true;

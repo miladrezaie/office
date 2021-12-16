@@ -207,7 +207,7 @@
                                         <input type="submit" class="btn btn-sm btn-danger" value="حذف"/>
                                     </form>
                                 </th:block>
-                                <th:block th:if="${form.getAnbaremza() == null}"
+                                <th:block th:if="${form.getAnbaremza() == null }"
                                           sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
                                     <a th:attr="data-target='#modal-warning'+${userrr.getId() }"
                                        th:href="@{/admin/office/find/{id}(id=${form.id})}" data-toggle="modal"
@@ -216,17 +216,11 @@
                                         <span class="badge bg-warning">افزودن تجهیز به کاربر</span>
                                     </a>
 
-
-
                                     <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}" >
                                         <span class="badge bg-info" th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" th:text="${pfficeForm.getTajhizat().getName()}">
-
                                         </span>
                                             <a th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" class="badge bg-danger" th:href="${'/deleteTajhizToUser/'+{pfficeForm.getTajhizat().getId()}+'/'+{pfficeForm.getUser().getId()}+'/'+{pfficeForm.getOfficeForms().getId()}}">حذف</a>
-
                                     </span>
-
-
 
                                 </th:block>
                                 <th:block th:if="${form.getAnbaremza() != null}"
@@ -404,8 +398,8 @@
                                                 <select class="selectpicker" id="tajhizatss" name="tajhizatss" multiple
                                                         data-live-search="true"
                                                         title="انتخاب کنید">
-                                                    <option th:each="t  : ${tajhizats}" th:value="${t.getId()}"
-                                                            th:text="${t.getName()}"></option>
+                                                    <option style="font-size: 12px;" dir="rtl" th:each="t  : ${tajhizats}" th:value="${t.getId()}"
+                                                            th:text="${t.getName()+'-----'+t.getAmvalid()}"></option>
                                                 </select>
                                             </td>
                                         </th:block>

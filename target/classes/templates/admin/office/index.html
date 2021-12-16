@@ -28,7 +28,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
-                <table class="table table-hover">
+                <table class="table table-hover ">
                     <tbody>
                     <tr>
                         <th>شماره</th>
@@ -38,7 +38,7 @@
                         <th>تکمیل آفیش</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="form : ${forms}">
+                    <tr th:each="form : ${officeforms}" th:attr="class=${form.getType()==enumField ? 'bg-light-gradient' : ''}" >
                         <td th:utext="${form.id}"></td>
                         <td th:utext="${form.program.getName()}"></td>
                         <td th:utext="${form.getUsers().get(0).getFullname()}"></td>
@@ -82,6 +82,24 @@
                 </table>
             </div>
             <!-- /.card-body -->
+
+            <div class="card-footer clearfix" >
+                <div class="pagination-div">
+                    <span th:if="${page.hasPrevious()}">
+                        <a th:href="@{/officeTrue(page=${page.number-1},size=${page.size})}" th:if="${page.size>=1}">قبلی</a>
+                    </span>
+                                    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+                                        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+                                        <span th:unless="${page.number == i}">
+                             <a th:href="@{/officeTrue(page=${i},size=${page.size})}">[[${i}+1]]</a>
+                        </span>
+                                    </th:block>
+                                    <span th:if="${page.hasNext()}">
+                        <a th:href="@{/officeTrue(page=${page.number+1},size=${page.size})}">بعدی</a>
+                    </span>
+                </div>
+
+            </div>
         </div>
         <!-- /.card -->
     </div>
