@@ -1,7 +1,6 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
 
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import java.util.*;
-
 
 
 import com.itextpdf.text.DocumentException;
@@ -52,7 +50,6 @@ import javax.validation.Valid;
 @Service
 @Controller
 public class OfficeController {
-
     @Autowired
     private TajhizatRepository tRepo;
 
@@ -90,7 +87,7 @@ public class OfficeController {
     private OfficeFormUserTajhizatServiceImp officeFormUserTajhizatw;
 
     @Autowired
-    private EntityManager entityManager;
+    private UserCancelOfficeDescriptionImp userCancelOfficeDescriptionImp;
 
     @GetMapping("/tajhizats")
     public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
@@ -115,6 +112,7 @@ public class OfficeController {
     @GetMapping(value = "/admin/officeform/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+//            carServiceImp.findById()
             formRepo.deleteById(id);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "آفیش مود نظر با موفقیت حذف گردید.");
@@ -127,36 +125,76 @@ public class OfficeController {
     }
 
     @GetMapping("/office")
-    public String viewoffice(Model model,@PageableDefault(size = 10) Pageable pageable) {
+    public String viewoffice(Model model, @PageableDefault(size = 10) Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
-        List<User> us = new ArrayList<>();
+//        List<User> us = new ArrayList<>();
         List<officeForm> office_form = new ArrayList<>();
-        us.add(userRepo.findByPersonalId(user.getPersonalId()));
-        Page<officeForm> ll  = formRepo.findByStatusIsFalse(pageable);
+//        us.add(userRepo.findByPersonalId(user.getPersonalId()));
+        Page<officeForm> ll = formRepo.findByStatusIsFalse(pageable);
         for (officeForm oo : ll.getContent()) {
-            if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
-                office_form.add(oo);
-//                    model.addAttribute("forms", oo);
-            } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
-                office_form.add(oo);
-            } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
-                office_form.add(oo);
-            } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
-                office_form.add(oo);
-            } else if (oo.getAnbaremza() != null && oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
-                office_form.add(oo);
-            } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
-                office_form.add(oo);
-            } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
-                office_form.add(oo);
-            } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
-                office_form.add(oo);
+            if (oo.getType() == OfficeForm.OFFICE_FORM_ESTEDIO_SIMA){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                    office_form.add(oo);
+                }
+            }else if (oo.getType() == OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
+                    office_form.add(oo);
+                } else if (oo.getAnbaremza() != null && oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
+                    office_form.add(oo);
+                } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
+                    office_form.add(oo);
+                }
+            }else if (oo.getType() == OfficeForm.OFFICE_FORM_VAHED_SAIAR){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_UP_LINK")) {
+                    office_form.add(oo);
+                }else if (oo.getUplinkemza() !=null && userHasAuthority("OP_TASISAT")){
+                    office_form.add(oo);
+                } else if (oo.getTasisatemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
+                    office_form.add(oo);
+                } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
+                    office_form.add(oo);
+                }
+            }else if (oo.getType() == OfficeForm.OFFICE_FORM_ERTEBATAT){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_UP_LINK")) {
+                    office_form.add(oo);
+                }
             }
         }
         model.addAttribute("officeforms", office_form);
         model.addAttribute("page", ll);
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
+        model.addAttribute("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
+        model.addAttribute("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
+        model.addAttribute("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
         model.addAttribute("user", user);
 
         if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
@@ -166,47 +204,95 @@ public class OfficeController {
             model.addAttribute("locations", locationServiceImp.getAllLocations());
             model.addAttribute("tahie", user.getFullname());
         }
-
         return "admin/office/index";
     }
 
+    @GetMapping("/office-print/{id}")
+    public String printOffice(Model model, @PathVariable Long id) {
+        model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
+        model.addAttribute("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
+        model.addAttribute("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
+        model.addAttribute("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
+        model.addAttribute("form", formRepo.findById((long) id).get());
+        return "admin/office/office-print";
+    }
+
     @GetMapping("/officeTrue")
-    public String viewofficeTrue(Model model ,@PageableDefault(size = 10) Pageable pageable) {
+    public String viewofficeTrue(Model model, @PageableDefault(size = 10) Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
-        List<User> us = new ArrayList<>();
+//        List<User> us = new ArrayList<>();
         List<officeForm> office_form = new ArrayList<>();
-        us.add(userRepo.findByPersonalId(user.getPersonalId()));
+//        us.add(userRepo.findByPersonalId(user.getPersonalId()));
 
-        Page<officeForm> ll  = formRepo.findByStatusIsTrue(pageable);
+        Page<officeForm> ll = formRepo.findByStatusIsTrue(pageable);
 
         for (officeForm oo : ll.getContent()) {
-            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$1");
-            if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE") ) {
-                office_form.add(oo);
-//                    model.addAttribute("forms", oo);
-            } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
-                office_form.add(oo);
-            } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
-                office_form.add(oo);
-            } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
-                office_form.add(oo);
-            } else if (oo.getAnbaremza() != null && oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
-                office_form.add(oo);
-            } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
-                office_form.add(oo);
-            } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
-                office_form.add(oo);
-            } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
-                office_form.add(oo);
+            if (oo.getType() == OfficeForm.OFFICE_FORM_ESTEDIO_SIMA){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                    office_form.add(oo);
+                }
+            }else if (oo.getType() == OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
+                    office_form.add(oo);
+                } else if (oo.getAnbaremza() != null && oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
+                    office_form.add(oo);
+                } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
+                    office_form.add(oo);
+                }
+            }else if (oo.getType() == OfficeForm.OFFICE_FORM_VAHED_SAIAR){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_UP_LINK")) {
+                    office_form.add(oo);
+                }else if (oo.getUplinkemza() !=null && userHasAuthority("OP_TASISAT")){
+                    office_form.add(oo);
+                } else if (oo.getTasisatemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
+                    office_form.add(oo);
+                } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
+                    office_form.add(oo);
+                } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASVIRBARDAR_1")) {
+                    office_form.add(oo);
+                }
+            }else if (oo.getType() == OfficeForm.OFFICE_FORM_ERTEBATAT){
+                if (userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) {
+                    office_form.add(oo);
+                } else if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    office_form.add(oo);
+                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_UP_LINK")) {
+                    office_form.add(oo);
+                }
             }
         }
         model.addAttribute("officeforms", office_form);
         model.addAttribute("page", ll);
-//        model.addAttribute("currentPage", page);
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
 
         model.addAttribute("user", user);
+        model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
+        model.addAttribute("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
+        model.addAttribute("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
+        model.addAttribute("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
 
         if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
             model.addAttribute("tahie", user.getFullname());
@@ -215,11 +301,6 @@ public class OfficeController {
             model.addAttribute("rozhaehafte", RozHafteh.values());
             model.addAttribute("locations", locationServiceImp.getAllLocations());
         }
-
-//        model.addAttribute("users", userRepo.findAll());
-//        model.addAttribute("jobs", jobServiceImp.getAllJobs());
-//        model.addAttribute("tajhizats", tRepo.findAll());
-//        model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         return "admin/office/index";
     }
 
@@ -246,6 +327,9 @@ public class OfficeController {
 
         model.addAttribute("userss", userRepo.findAll());
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
+        model.addAttribute("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
+        model.addAttribute("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
+        model.addAttribute("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
         model.addAttribute("user", user);
         model.addAttribute("cars", carServiceImp.getAllCars());
         model.addAttribute("tajhizats", tRepo.findAll());
@@ -355,19 +439,16 @@ public class OfficeController {
             redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
             return "redirect:/tajhizats";
         }
-
     }
 
     @PostMapping("/saveForm")
     public String saveForm(@ModelAttribute @Valid officeForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
-
             if (bindingResult.hasErrors()) {
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/office";
             }
-
             Roozh jCal = new Roozh();
             int myear = LocalDate.now().getYear();
             int mmonth = LocalDate.now().getMonthValue();
@@ -420,7 +501,7 @@ public class OfficeController {
         User u = userRepo.findById(fj.getUid()).get();
 
         if (office_form.getType() == OfficeForm.OFFICE_FORM_ESTEDIO_SIMA) {
-            if (userHasAuthority("OP_TAHIEKONANDEH") && office_form.getTahayeemza() == null) {
+            if ((userHasAuthority("OP_TAHIEKONANDEH") || userHasAuthority("OP_HAMAHANGIE")) && office_form.getTahayeemza() == null) {
                 office_form.setTahayeemza(u.getEmza());
             } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
                 office_form.setMdarkhastemza(u.getEmza());
@@ -429,36 +510,25 @@ public class OfficeController {
                 formRepo.setStatusForOfficeForm(true, office_form.getId());
                 System.out.println("status ok ");
             } else {
-                System.out.println("----------------emzaa nashod 1-------------------------");
+                System.out.println("----------------emzaa nashod OFFICE_FORM_ESTEDIO_SIMA-------------------------");
             }
         } else if (office_form.getType() == OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE) {
-            if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
-                office_form.setPoshemza(u.getEmza());
-            } else if (userHasAuthority("OP_SEDABARDAR") && office_form.getSedaemza() == null) {
-                office_form.setSedaemza(u.getEmza());
+            if ((userHasAuthority("OP_TAHIEKONANDEH") ||userHasAuthority("OP_HAMAHANGIE")) && office_form.getTahayeemza() == null) {
+                office_form.setTahayeemza(u.getEmza());
             } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
                 office_form.setMdarkhastemza(u.getEmza());
-            } else if (userHasAuthority("OP_TAHIEKONANDEH") && office_form.getTahayeemza() == null) {
-                office_form.setTahayeemza(u.getEmza());
-            } else if (userHasAuthority("OP_TASVIRBARDAR_1") && office_form.getTasviremza() == null) {
-                office_form.setTasviremza(u.getEmza());
-            } else if (userHasAuthority("OP_TASVIRBARDAR_2") && office_form.getTasviremza2() == null) {
-                office_form.setTasviremza2(u.getEmza());
-            } else if (userHasAuthority("OP_TASVIRBARDAR_3") && office_form.getTasviremza3() == null) {
-                office_form.setTasviremza3(u.getEmza());
-            } else if (userHasAuthority("OP_TASVIRBARDAR_4") && office_form.getTasviremza4() == null) {
-                office_form.setTasviremza4(u.getEmza());
-            } else if (userHasAuthority("OP_ANBARDAR") && office_form.getAnbaremza() == null) {
-//            office_form.seta(u.getEmza());
+            } else if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
+                office_form.setPoshemza(u.getEmza());
+            }  else if (userHasAuthority("OP_ANBARDAR") && office_form.getAnbaremza() == null) {
                 office_form.setAnbaremza(u.getEmza());
-            } else if (userHasAuthority("OP_HAMAHANGIE") && office_form.getTahayeemza() == null) {
-                office_form.setTahayeemza(u.getEmza());
             } else if (userHasAuthority("OP_HAML_NAGHL") && office_form.getHamlonaghlemza() == null) {
                 User us = userRepo.findById(fj.getTid()).get();
                 office_form.setRanande(us.getFullname());
                 office_form.setRanandeid(us.getPersonalId());
                 Car car = carServiceImp.findById(fj.getCar()).get();
-                car.setOfficeForm(office_form);
+                office_form.setCar(car);
+//                of
+//                car.setOfficeForm(office_form);
                 office_form.setHamlonaghlemza(u.getEmza());
             } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
                 LocalTime time = LocalTime.now();
@@ -472,11 +542,67 @@ public class OfficeController {
                     office_form.setKhherasatemza(u.getEmza());
                     System.out.println("----------------tayyyyyied shod-------------------------");
                 }
+            }
+            else if (userHasAuthority("OP_SEDABARDAR") && office_form.getSedaemza() == null) {
+                office_form.setSedaemza(u.getEmza());
+            }  else if (userHasAuthority("OP_TASVIRBARDAR_1") && office_form.getTasviremza() == null) {
+                office_form.setTasviremza(u.getEmza());
+            } else if (userHasAuthority("OP_TASVIRBARDAR_2") && office_form.getTasviremza2() == null) {
+                office_form.setTasviremza2(u.getEmza());
+            } else if (userHasAuthority("OP_TASVIRBARDAR_3") && office_form.getTasviremza3() == null) {
+                office_form.setTasviremza3(u.getEmza());
+            } else if (userHasAuthority("OP_TASVIRBARDAR_4") && office_form.getTasviremza4() == null) {
+                office_form.setTasviremza4(u.getEmza());
             } else {
-                System.out.println("----------------emzaa nashod 1-------------------------");
+                System.out.println("----------------emzaa nashod OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE-------------------------");
+            }
+        }else if (office_form.getType() == OfficeForm.OFFICE_FORM_VAHED_SAIAR){
+            if ((userHasAuthority("OP_TAHIEKONANDEH") ||userHasAuthority("OP_HAMAHANGIE")) && office_form.getTahayeemza() == null) {
+                office_form.setTahayeemza(u.getEmza());
+            } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
+                office_form.setMdarkhastemza(u.getEmza());
+            } else if (userHasAuthority("OP_MODIR_POSHTIBANIT") && office_form.getPoshemza() == null) {
+                office_form.setPoshemza(u.getEmza());
+            }  else if (userHasAuthority("OP_UP_LINK") && office_form.getUplinkemza() == null) {
+                office_form.setUplinkemza(u.getEmza());
+            } else if (userHasAuthority("OP_TASISAT") && office_form.getTasisatemza() == null) {
+                office_form.setTasisatemza(u.getEmza());
+            }else if (userHasAuthority("OP_HAML_NAGHL") && office_form.getHamlonaghlemza() == null) {
+                User us = userRepo.findById(fj.getTid()).get();
+                office_form.setRanande(us.getFullname());
+                office_form.setRanandeid(us.getPersonalId());
+                Car car = carServiceImp.findById(fj.getCar()).get();
+                office_form.setCar(car);
+//                car.setOfficeForm(office_form);
+                office_form.setHamlonaghlemza(u.getEmza());
+            } else if (userHasAuthority("OP_HERASAT") && office_form.getVherasatemza() == null) {
+                LocalTime time = LocalTime.now();
+                String h = time.getHour() + " : " + time.getMinute();
+                if (fj.getTid().equals(1)) {
+                    office_form.setSaatvorod(h);
+                    office_form.setVherasatemza(u.getEmza());
+                    formRepo.setStatusForOfficeForm(true, office_form.getId());
+                } else {
+                    office_form.setSaatkhoroj(h);
+                    office_form.setKhherasatemza(u.getEmza());
+                    System.out.println("----------------tayyyyyied shod-------------------------");
+                }
+            }
+            else {
+                System.out.println("----------------emzaa nashod OFFICE_FORM_VAHED_SAIAR-------------------------");
+            }
+        }else if (office_form.getType() == OfficeForm.OFFICE_FORM_ERTEBATAT){
+            if ((userHasAuthority("OP_TAHIEKONANDEH") ||userHasAuthority("OP_HAMAHANGIE")) && office_form.getTahayeemza() == null) {
+                office_form.setTahayeemza(u.getEmza());
+            } else if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH") && office_form.getMdarkhastemza() == null) {
+                office_form.setMdarkhastemza(u.getEmza());
+            }  else if (userHasAuthority("OP_UP_LINK") && office_form.getUplinkemza() == null) {
+                office_form.setUplinkemza(u.getEmza());
+                formRepo.setStatusForOfficeForm(true, office_form.getId());
+            }else {
+                System.out.println("----------------emzaa nashod OFFICE_FORM_ERTEBATAT-------------------------");
             }
         }
-
         formRepo.save(office_form);
 
         return redirect;
@@ -517,7 +643,6 @@ public class OfficeController {
 
     }
 
-
     @PostMapping("/addTajhizToUser")
     public String addTajhizToUserOfficeForm(@ModelAttribute officeForm f, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 //        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT : " + f.getUsers().get(0).getId());
@@ -538,6 +663,33 @@ public class OfficeController {
 //            System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + exception.toString());
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "تجهیز تکراری وارد کردید لطفا دقت کنید");
+            return "redirect:/form/?id=" + id_form;
+        }
+    }
+
+
+    @PostMapping("/laghv")
+    public String cancelOfficeForm(@ModelAttribute officeForm f, String description, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByUsername(auth.getName());
+        Long id_form = f.getId();
+        try {
+            officeForm office_form = formRepo.findById(f.getId()).get();
+            office_form.setStatus(true);
+            formRepo.save(office_form);
+            UserCancelOfficeDescription userCancelOfficeDescription = new UserCancelOfficeDescription();
+            userCancelOfficeDescription.setUser(user);
+            userCancelOfficeDescription.setOfficeForms(office_form);
+            userCancelOfficeDescription.setDescription(description);
+            userCancelOfficeDescriptionImp.saveUserCancelOfficeDescription(userCancelOfficeDescription);
+
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "آفیش مورد نظر لغو گردید .");
+            return "redirect:/form/?id=" + id_form;
+        } catch (Exception exception) {
+            System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + exception);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "خطایی در سمت سرور به وجود آمده مجددا تلاش نمایید");
             return "redirect:/form/?id=" + id_form;
         }
     }
@@ -602,4 +754,5 @@ public class OfficeController {
         generator.export(response);
 
     }
+
 }

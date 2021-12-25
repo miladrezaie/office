@@ -12,7 +12,6 @@
 <div class="row" layout:fragment="main_content">
     <div class="col-12">
         <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
-
         <th:block
                 sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
             <div class="row">
@@ -45,7 +44,7 @@
                             <td class="text-center">تهیه کننده :
                                 <img th:if="${form.getTahayeemza()} != null" width="85px"
                                      th:src="*{'data:emza/jpg;base64,'+{form.getTahayeemza()}}"
-                                     class="profile-user-img img-fluid img-circle"
+                                     class="img-fluid "
                                      style="direction: ltr;">
 
                                 <th:block th:if="${form.getTahayeemza() == null}"
@@ -90,19 +89,20 @@
                 <!-- /.col (right) -->
             </div>
         </th:block>
-
         <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
             <div class="bg-light table_office">
                 <h5><i class="fa fa-info"></i> تجهیزات :</h5>
                 <th:block sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')">
-                    <a th:if="${form.getAnbaremza() == null}" th:href="@{/admin/office/find/{id}(id=${form.getId()})}"
+                    <a th:if="${form.getAnbaremza() == null && form.getType()==enumField}"
+                       th:href="@{/admin/office/find/{id}(id=${form.getId()})}"
                        class="editOffices"
                        id="EditOffices">
                         <span class="badge bg-warning">افزودن تجهیزات</span>
                     </a>
                 </th:block>
 
-                <th:block th:if="${form.getAnbaremza() == null}" sec:authorize="hasAuthority('OP_ANBARDAR')">
+                <th:block th:if="${form.getAnbaremza() == null && form.getType()==enumField}"
+                          sec:authorize="hasAuthority('OP_ANBARDAR')">
                     <form th:action="@{/saveEmza}" method="post">
                         <input type="hidden" name="uid" th:value="${user.id}">
                         <input type="hidden" name="fid" th:value="${form.id}">
@@ -118,7 +118,6 @@
 
             </div>
         </th:block>
-
         <!-- Main content -->
         <div class="invoice p-3 mb-3" style="font-size: 15px;">
             <!-- title row -->
@@ -170,7 +169,7 @@
                     </address>
                 </div>
                 <!-- /.col -->
-                <div class="col-sm-4 invoice-col">
+                <div class="col-sm-4 invoice-col ">
                     <address>
                         <strong>ساعت آفیش :</strong><br>
                         [[${form.saat_zabt}]] - [[${form.saat_zabt_end}]]<br>
@@ -184,48 +183,124 @@
             <div class="row">
                 <div class="col-9 table-responsive">
                     <table class="table table_office">
+                        <div class="officeModal" id="officeFrom_laghv">
+                            <form th:action="@{/laghv}" method="post" name="officeFrom_laghv" id="officeFrom_laghv">
+                                <div th:id="modal-warning+${form.getId()}" class="modal fade" tabindex="-1"
+                                     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header border-bottom-0">
+                                                <h5 class="modal-title" id="exampleModalLabel__"
+                                                    th:text="${form.getProgram().getName()}"></h5>
+                                                <button style="display: contents;" type="button" class="close"
+                                                        data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group" type="hidden">
+                                                    <input type="hidden" name="id" id="form___id"
+                                                           th:value="${form.getId()}">
+                                                    <input type="hidden" name="user" id="user___id"
+                                                           th:value="${user.getId()}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="description" class="form-control-label">دلیل لغو آفیش
+                                                        *</label>
+                                                    <textarea name="description" id="description" cols="60" rows="5"
+                                                              required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                                <input type="submit" class="btn btn-success"
+                                                       id="laghv_"
+                                                       value="لغو"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <a th:if="${form.getStatus()==false}" th:attr="data-target='#modal-warning'+${form.getId() }"
+                           th:href="@{/admin/office/find/{id}(id=${form.id})}" data-toggle="modal"
+                           class="laghvOffice"
+                           id="laghvOffice">
+                            <span class="badge bg-warning">لغو آفیش</span>
+                        </a>
                         <thead>
                         <tr>
                             <th>شماره</th>
                             <th>کد فعالیت</th>
                             <th>نام و نام خانوادگی</th>
-                            <th>تجهیزات تحویلی</th>
+                            <th>تجهیزات تحویلی - شماره اموال</th>
                             <th>تایید عوامل</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="userrr : ${form.getUsers()}">
-                            <td th:text="${userrr.getId()}"></td>
+<!--                        <tr th:text="تهیه کننده"></tr>-->
+<!--                        <tr th:text="دستیار تهیه"></tr>-->
+<!--                        <tr th:text="کارگردان"></tr>-->
+<!--                        <tr th:text="منشی صحنه"></tr>-->
+<!--                        <tr th:text="مدیر صحنه"></tr>-->
+<!--                        <tr th:text="دکوراتور"></tr>-->
+<!--                        <tr th:text="مجری"></tr>-->
+<!--                        <tr th:text="گریمور"></tr>-->
+<!--                        <tr th:text="نورپرداز"></tr>-->
+<!--                        <tr th:text="صدابردار"></tr>-->
+<!--                        <tr th:text="دستیار تهیه"></tr>-->
+<!--                        <tr th:text="تصویر بردار"></tr>-->
+<!--                        <tr th:text="تصویر بردار"></tr>-->
+<!--                        <tr th:text="تصویر بردار"></tr>-->
+<!--                        <tr th:text="دستیار تصویر"></tr>-->
+<!--                        <tr th:text="دستیار تصویر"></tr>-->
+<!--                        <tr th:text="مسعول فنی"></tr>-->
+<!--                        <tr th:text="امپکس"></tr>-->
+                        <tr th:each="userrr , state: ${form.getUsers()}">
+                            <td class="persianumber" th:text="${state.count}"></td>
                             <td th:text="${userrr.getJob().getName()}"></td>
                             <td th:text="${userrr.getFullname()}"></td>
                             <td>
-                                <th:block th:if="${form.getPoshemza() == null}"
-                                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+<!--                                th:if="${form.getPoshemza() == null}"-->
+                                <th:block th:if="${form.getStatus()==false}" sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_MODEIR_VAHED_DARKHST_KONANDEH','OP_TAHIEKONANDEH')">
                                     <form th:action="@{/admin/officeform/delete-user}" method="post">
                                         <input type="hidden" name="id" id="form_id" th:value="${form.id}">
                                         <input type="hidden" name="users" id="users" th:value="${userrr.id}">
                                         <input type="submit" class="btn btn-sm btn-danger" value="حذف"/>
                                     </form>
                                 </th:block>
-                                <th:block th:if="${form.getAnbaremza() == null }"
-                                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
-                                    <a th:attr="data-target='#modal-warning'+${userrr.getId() }"
-                                       th:href="@{/admin/office/find/{id}(id=${form.id})}" data-toggle="modal"
-                                       class="addTajhizToOfficeAndUser"
-                                       id="addTajhizToOfficeAndUser">
-                                        <span class="badge bg-warning">افزودن تجهیز به کاربر</span>
-                                    </a>
+                                <th:block th:if="${form.getAnbaremza() == null }">
+                                    <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                                        <a th:if="${form.getType()==enumField}"
+                                           th:attr="data-target='#modal-warning'+${userrr.getId() }"
+                                           th:href="@{/admin/office/find/{id}(id=${form.id})}" data-toggle="modal"
+                                           class="addTajhizToOfficeAndUser"
+                                           id="addTajhizToOfficeAndUser">
+                                            <span class="badge bg-warning">افزودن تجهیز به کاربر</span>
+                                        </a>
+                                    </th:block>
 
-                                    <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}" >
-                                        <span class="badge bg-info" th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" th:text="${pfficeForm.getTajhizat().getName()}">
+                                    <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}">
+                                        <span class="badge bg-info"
+                                              th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}"
+                                              th:text="${pfficeForm.getTajhizat().getName()}">
                                         </span>
-                                            <a th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" class="badge bg-danger" th:href="${'/deleteTajhizToUser/'+{pfficeForm.getTajhizat().getId()}+'/'+{pfficeForm.getUser().getId()}+'/'+{pfficeForm.getOfficeForms().getId()}}">حذف</a>
-                                    </span>
+                                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                                            <a th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}"
+                                               class="badge bg-danger"
+                                               th:href="${'/deleteTajhizToUser/'+{pfficeForm.getTajhizat().getId()}+'/'+{pfficeForm.getUser().getId()}+'/'+{pfficeForm.getOfficeForms().getId()}}">حذف</a>
+                                        </th:block>
 
+                                    </span>
                                 </th:block>
-                                <th:block th:if="${form.getAnbaremza() != null}"
-                                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
-                                    <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
+                                <th:block th:if="${form.getAnbaremza() != null}">
+<!--                                    <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>-->
+                                    <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}">
+                                        <span th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" class="badge bg-info">
+                                            <strong>[[${pfficeForm.getTajhizat().getName()}]]</strong><br>
+                                        <span class="persianumber">([[${pfficeForm.getTajhizat().getAmvalid()}]])</span>
+                                        </span>
+                                    </span>
                                 </th:block>
                             </td>
                             <div class="officeModal" id="office_modal_">
@@ -277,7 +352,7 @@
                     </table>
                 </div>
                 <div class="col-3 table-responsive">
-                    <table class="table ">
+                    <table class="table">
                         <thead>
                         <tr>
                             <th>امضا و تایید مدیر</th>
@@ -286,9 +361,10 @@
                         <tbody>
                         <tr>
                             <td class="text-center">مدیر واحد درخواست کننده :
+
                                 <img th:if="${form.getMdarkhastemza()} != null" width="85px"
                                      th:src="*{'data:emza/jpg;base64,'+{form.getMdarkhastemza()}}"
-                                     class="profile-user-img img-fluid img-circle"
+                                     class="img-fluid "
                                      style="direction: ltr;">
 
                                 <th:block th:if="${form.getMdarkhastemza() == null}"
@@ -301,15 +377,17 @@
                                                value="تایید">
                                     </form>
                                 </th:block>
+
                                 <span th:if="${form.getMdarkhastemza() != null}"
                                       class="badge bg-success">تایید شد</span>
+
                             </td>
                         </tr>
-                        <tr>
+                        <tr th:if="${form.getType()!=ertebatat}">
                             <td class="text-center"> مدیر واحد پشتیبانی فنی :
                                 <img th:if="${form.getPoshemza()} != null" width="85px"
                                      th:src="*{'data:emza/jpg;base64,'+{form.getPoshemza()}}"
-                                     class="profile-user-img img-fluid img-circle"
+                                     class="img-fluid "
                                      style="direction: ltr;">
                                 <th:block th:if="${form.getPoshemza() == null}"
                                           sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')">
@@ -324,6 +402,46 @@
                                 <span th:if="${form.getPoshemza() != null}" class="badge bg-success">تایید شد</span>
                             </td>
                         </tr>
+                        <tr th:if="${(form.getType() == ertebatat || form.getType() == sayar)} " >
+                            <td class="text-center"> مدیر واحدارتباطات :
+                                <img th:if="${form.getUplinkemza()} != null" width="85px"
+                                     th:src="*{'data:emza/jpg;base64,'+{form.getUplinkemza()}}"
+                                     class="img-fluid "
+                                     style="direction: ltr;">
+                                <th:block th:if="${form.getUplinkemza() == null}"
+                                          sec:authorize="hasAuthority('OP_UP_LINK')">
+                                    <form th:action="@{/saveEmza}" method="post">
+                                        <input type="hidden" name="uid" th:value="${user.id}">
+                                        <input type="hidden" name="fid" th:value="${form.id}">
+                                        <input th:if="${form.getUplinkemza() == null}" type="submit"
+                                               class="btn btn-warning"
+                                               value="تایید">
+                                    </form>
+                                </th:block>
+                                <span th:if="${form.getUplinkemza() != null}" class="badge bg-success">تایید شد</span>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${form.getType() == sayar} " >
+                            <td class="text-center"> مدیر واحد تاسیسات :
+                                <img th:if="${form.getTasisatemza()} != null" width="85px"
+                                     th:src="*{'data:emza/jpg;base64,'+{form.getTasisatemza()}}"
+                                     class="img-fluid "
+                                     style="direction: ltr;">
+                                <th:block th:if="${form.getTasisatemza() == null}"
+                                          sec:authorize="hasAuthority('OP_TASISAT')">
+                                    <form th:action="@{/saveEmza}" method="post">
+                                        <input type="hidden" name="uid" th:value="${user.id}">
+                                        <input type="hidden" name="fid" th:value="${form.id}">
+                                        <input th:if="${form.getTasisatemza() == null}" type="submit"
+                                               class="btn btn-warning"
+                                               value="تایید">
+                                    </form>
+                                </th:block>
+                                <span th:if="${form.getTasisatemza() != null}" class="badge bg-success">تایید شد</span>
+                            </td>
+                        </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -333,43 +451,48 @@
 
             <div class="row">
                 <!-- accepted payments column -->
-                <div class="col-6">
+                <div class="col-12">
                     <p class="lead">توضیحات :</p>
 
                     <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;"
                        th:text="${form.getDescription()}">
                     </p>
                 </div>
-                <div class="col-6">
-                    <p class="lead">تجهیزات همراه</p>
+<!--                <div class="col-6">-->
+<!--                    <p class="lead">تجهیزات همراه</p>-->
 
-                    <div class="table-responsive">
-                        <table class="table">
-                            <tbody>
-                            <tr>
-                                <th>نام تجهیز</th>
-                                <th>شماره اموال</th>
-                            </tr>
-                            <tr th:each="tajhiz : ${form.getTajhizatss()}">
-                                <td th:text="${tajhiz.getName()}"></td>
-                                <td th:text="${tajhiz.getAmvalid()}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<!--                    <div class="table-responsive">-->
+<!--                        <table class="table">-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <th>نام تجهیز</th>-->
+<!--                                <th>شماره اموال</th>-->
+<!--                            </tr>-->
+<!--                            <tr th:each="tajhiz : ${form.getTajhizatss()}">-->
+<!--                                <td th:text="${tajhiz.getName()}"></td>-->
+<!--                                <td class="persianumber" th:text="${tajhiz.getAmvalid()}"></td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
             <!-- /.row -->
 
             <!-- this row will not appear when printing -->
             <div class="row no-print">
                 <div class="col-12">
-                    <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"
+<!--                    <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"-->
+<!--                       style="margin-right: 5px;">-->
+<!--                        <i class="fa fa-download"></i>pdf-->
+<!--                    </a>-->
+                    <a th:href="@{/office-print/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"
                        style="margin-right: 5px;">
-                        <i class="fa fa-download"></i>pdf
+                        <i class="fa fa-download"></i>پرینت
                     </a>
                 </div>
             </div>
+
         </div>
 
         <div class="officeModal" id="office_modal">
@@ -398,7 +521,8 @@
                                                 <select class="selectpicker" id="tajhizatss" name="tajhizatss" multiple
                                                         data-live-search="true"
                                                         title="انتخاب کنید">
-                                                    <option style="font-size: 12px;" dir="rtl" th:each="t  : ${tajhizats}" th:value="${t.getId()}"
+                                                    <option style="font-size: 12px;" dir="rtl"
+                                                            th:each="t  : ${tajhizats}" th:value="${t.getId()}"
                                                             th:text="${t.getName()+'-----'+t.getAmvalid()}"></option>
                                                 </select>
                                             </td>
@@ -418,7 +542,7 @@
     </div><!-- /.col -->
 
     <th:block sec:authorize="hasAnyAuthority('OP_HAML_NAGHL','OP_HERASAT')">
-        <div class="col-12" th:if="${form.getType()==enumField}">
+        <div class="col-12" th:if="${(form.getType()==enumField) || (form.getType() == sayar)}">
             <div class="card">
                 <div class="card-header d-flex p-0">
                     <h3 class="card-title p-3">حمل و نقل</h3>
@@ -429,12 +553,12 @@
                             <table style="direction: rtl;" class="table " border="1">
                                 <tr>
                                     <td>خودروی شماره..
-                                        <button th:if="${!form.getCar().isEmpty()}"
-                                                th:text="${form.getCar().get(0).getName()}"></button>
+                                        <button th:if="${form.getCar()!=null}"
+                                                th:text="${form.getCar().getName()}"></button>
                                         ..به رانندگی آقای..
                                         <button>[[${form.ranande}]]</button>
                                         ..شماره کارمندی..
-                                        <button>[[${form.ranandeid}]]</button>
+                                        <button class="persianumber">[[${form.ranandeid}]]</button>
                                         ..میتواند جهت آفیش فوق از محوطه خارج شود.
                                         <th:block sec:authorize="hasAuthority('OP_HAML_NAGHL')">
                                             <form th:action="@{/saveEmza}" method="post">
@@ -466,7 +590,7 @@
                                         مدیر حمل و نقل<br>
                                         <img th:if="${form.getHamlonaghlemza()} != null" width="85px"
                                              th:src="*{'data:emza/jpg;base64,'+{form.getHamlonaghlemza()}}"
-                                             class="profile-user-img img-fluid img-circle"
+                                             class="img-fluid "
                                              style="direction: ltr;">
                                         <span th:if="${form.getTahayeemza() != null}"
                                               class="badge bg-success">تایید شد</span>
@@ -484,7 +608,7 @@
     </th:block>
 
     <th:block sec:authorize="hasAuthority('OP_HERASAT')">
-        <div class="col-12" th:if="${form.getType()==enumField}">
+        <div class="col-12" th:if="${form.getType()==enumField || form.getType() == sayar}">
             <div class="card">
                 <div class="card-header d-flex p-0">
                     <h3 class="card-title p-3">حراست</h3>
@@ -497,11 +621,11 @@
                                     <td>
                                         <br>خروج اشیا فوق از مرکز تایید می شود
                                         <span dir="ltr" th:text="${form.getSaatkhoroj()}"
-                                              class="badge bg-info">تایید شد</span>
+                                              class="persianumber badge bg-info">تایید شد</span>
                                         <br>
                                         <img th:if="${form.getKhherasatemza()} != null" width="85px"
                                              th:src="*{'data:emza/jpg;base64,'+{form.getKhherasatemza()}}"
-                                             class="profile-user-img img-fluid img-circle"
+                                             class="img-fluid "
                                              style="direction: ltr;">
                                         <span th:if="${form.getKhherasatemza() != null}"
                                               class="badge bg-success">تایید شد</span>
@@ -518,12 +642,12 @@
                                     </td>
                                     <td><br>ورود اشیا فوق در ساعت به مرکز تایید میشود
                                         <span dir="ltr" th:text="${form.getSaatvorod()}"
-                                              class="badge bg-info">تایید شد</span>
+                                              class="persianumber badge bg-info">تایید شد</span>
                                         <br>
 
                                         <img th:if="${form.getVherasatemza()} != null" width="85px"
                                              th:src="*{'data:emza/jpg;base64,'+{form.getVherasatemza()}}"
-                                             class="profile-user-img img-fluid img-circle"
+                                             class="img-fluid "
                                              style="direction: ltr;">
                                         <span th:if="${form.getVherasatemza() != null}"
                                               class="badge bg-success">تایید شد</span>
@@ -550,7 +674,5 @@
     </th:block>
 
 </div>
-
-
 </body>
 </html>

@@ -17,19 +17,19 @@ public class OfficeFormUserTajhizat {
     @EmbeddedId
     private OfficeFormUserTajhizatId id = new OfficeFormUserTajhizatId();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.DETACH)
     @JsonManagedReference
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.DETACH)
     @JoinColumn(name = "officeForms_id")
     @MapsId("officeFormsId")
     @JsonManagedReference
     private officeForm officeForms;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.DETACH)
     @JoinColumn(name = "tajhiz_id")
     @MapsId("tajhizId")
     @JsonManagedReference

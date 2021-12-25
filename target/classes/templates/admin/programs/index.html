@@ -31,8 +31,8 @@
                             <th>تنظیمات</th>
                         </th:block>
                     </tr>
-                    <tr th:each="program : ${programs}">
-                        <td th:text="${program.getId()}">...</td>
+                    <tr th:each="program,state : ${programs}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${program.getName()}">...</td>
                         <td th:text="${program.getSaat_zabt() +' - ' +program.getSaat_zabt_end()}">...</td>
                         <td th:text="${program.getDate_begin()}">...</td>

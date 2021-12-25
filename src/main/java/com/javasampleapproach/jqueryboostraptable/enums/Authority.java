@@ -24,7 +24,9 @@ public enum Authority implements GrantedAuthority {
     OP_TASISAT("تاسیسات"),
     OP_HAML_NAGHL("حمل و نقل"),
     OP_MODEIR_VAHED_DARKHST_KONANDEH("مدیر واحد درخواست کننده تولید"),
-    OP_RANANDEH("راننده");
+    OP_RANANDEH("راننده"),
+    OP_user("کاربر عادی"),
+    OP_UP_LINK("ارتباطات زمینی و ماهواره ای");
 
 
 

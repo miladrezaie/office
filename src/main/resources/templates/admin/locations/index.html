@@ -26,8 +26,8 @@
                         <th>نام</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="location : ${locations}">
-                        <td th:text="${location.getId()}">...</td>
+                    <tr th:each="location,state : ${locations}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${location.getName()}">...</td>
                         <td>
                             <a th:href="@{/admin/locations/find/{id}(id=${location.getId()})}"

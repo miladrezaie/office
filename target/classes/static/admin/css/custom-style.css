@@ -64,7 +64,18 @@ body {
     font-family: 'Vazir', sans-serif !important;
     /*font-size: 14px;*/
 }
-
+.office-hot-pink{
+    background-color: #FFAEBC;
+}
+.office-tiffany-Blue{
+    background-color: #A0E7E5;
+}
+.office-mint{
+    background-color: #B4F8C8;
+}
+.office-yellow{
+    background-color: #FBE7C6;
+}
 
 .ltr {
     direction:ltr;

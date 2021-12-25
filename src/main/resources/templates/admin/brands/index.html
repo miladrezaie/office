@@ -27,8 +27,8 @@
                         <th>نام</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="brand : ${brands}">
-                        <td th:text="${brand.getId()}">...</td>
+                    <tr th:each="brand,state : ${brands}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${brand.getName()}">...</td>
                         <td>
                             <a th:href="@{/admin/brands/find/{id}(id=${brand.getId()})}"
@@ -36,10 +36,12 @@
                                id="EditBrands">
                                 <span class="badge bg-warning">ویرایش</span>
                             </a>
-                            <a href="#" data-toggle="modal"
-                               th:attr="data-target='#modal-warning'+${brand.getId() }">
-                                <span class="badge bg-danger">حذف</span>
-                            </a>
+                            <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                                <a href="#" data-toggle="modal"
+                                   th:attr="data-target='#modal-warning'+${brand.getId() }">
+                                    <span class="badge bg-danger">حذف</span>
+                                </a>
+                            </th:block>
                             <a href="#" data-toggle="modal" data-target="#modalRegister"></a>
                             <div class="modal fade" th:id="modal-warning+${brand.getId()}" tabindex="-1" role="dialog"
                                  aria-labelledby="exampleModalLabel" aria-hidden="true">

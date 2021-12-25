@@ -37,11 +37,11 @@
                         <th>تصویر امضا</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="user : ${users}">
-                        <td th:utext="${user.id}">...</td>
+                    <tr th:each="user,state : ${users}">
+                        <td class="persianumber" th:utext="${state.count}">...</td>
                         <td th:utext="${user.personalId}">...</td>
                         <td th:utext="${user.FName}">...</td>
-                        <td th:utext="${user.Lname}">...</td>
+                        <td th:utext="${user.getLname()}">...</td>
                         <td th:text="${user.getJob()}">...</td>
                         <td>
                             <span class="badge bg-danger" th:text="${user.roles}"></span>
@@ -127,7 +127,7 @@
                                 <div class="row">
                                     <div class="form-group col-sm-12">
                                         <label for="personalId" class="form-control-label">شماره کارمندی:</label>
-                                        <input type="text" class="form-control" readonly id="personalId" name="personalId"
+                                        <input type="text" class="form-control" id="personalId" name="personalId"
                                                value=""/>
                                     </div>
                                 </div>
@@ -169,7 +169,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="file" class="form-control-label">تصویر امضا:</label>
-                                    <input type="file" class="custom-file-input" id="file" name="file"/>
+                                    <input type="file" id="file" name="file"/>
                                     <img id="image_emza" width="100px" class="img-responsive" style="margin-top: 10px">
                                 </div>
                             </div>

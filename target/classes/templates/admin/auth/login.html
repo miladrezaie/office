@@ -28,11 +28,8 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-
-
-            <img th:src="@{/admin/img/Logo2.png}" alt="logo qazvin.irib.ir" class="mb-5">
-
-            <b>ورود به اتوماسیون آفیش</b>
+        <img th:src="@{/admin/img/Logo2.png}" alt="logo qazvin.irib.ir" class="mb-5">
+        <b>ورود به اتوماسیون آفیش</b>
     </div>
     <!-- /.login-logo -->
     <div class="card">
@@ -41,7 +38,7 @@
 
             <form th:action="@{/login}"  method="post" >
                 <div class="input-group mb-3">
-                    <input dir="rtl" type="text" id="personalId" name="personalId" placeholder="شماره پرسنلی"
+                    <input dir="rtl" type="text" id="personalId" name="personalId" placeholder="نام کاربری"
                            class="form-control"/>
                     <div class="input-group-append">
                         <span class="fa fa-id-card input-group-text"></span>
@@ -55,11 +52,13 @@
                     </div>
                 </div>
                 <div align="center" th:if="${param.error}">
-                    <p style="font-size: 17px; color: #FF1C19;">شماره پرسنلی یا رمز عبور اشتباه می باشد .</p>
+                    <p style="font-size: 17px; color: #FF1C19;">نام کاربری یا رمز عبور اشتباه می باشد .</p>
                 </div>
-                <div class="row">
-                    <div class="social-auth-links text-center mb-3">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">ورود</button>
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="social-auth-links text-center mb-3">
+                            <button type="submit" class="btn btn-block btn-primary">ورود</button>
+                        </div>
                     </div>
                 </div>
             </form>

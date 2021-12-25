@@ -4,14 +4,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="admin/_layout">
 <body>
-<div class="container-fluid" layout:fragment="main_content">
+<div class="container-fluid"  layout:fragment="main_content">
     <!-- Small boxes (Stat box) -->
+
+
     <div class="row" >
+
         <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3 th:if="${officeCount != null}" th:text="${officeCount}"></h3>
+                    <h3 class="persianumber" th:if="${officeCount != null}" th:text="${officeCount}"></h3>
 
                     <p>آفیش های جدید</p>
                 </div>
@@ -26,7 +29,7 @@
             <!-- small box -->
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>53<sup style="font-size: 20px">%</sup></h3>
+                    <h3 class="persianumber" >53<sup style="font-size: 20px">%</sup></h3>
 
                     <p>افزایش آفیش</p>
                 </div>
@@ -41,7 +44,7 @@
             <!-- small box -->
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3 th:if="${userCount != null}" th:text="${userCount}"></h3>
+                    <h3 class="persianumber" th:if="${userCount != null}" th:text="${userCount}"></h3>
                     <p>کاربران ثبت شده</p>
                 </div>
                 <div class="icon">
@@ -55,7 +58,7 @@
             <!-- small box -->
             <div class="small-box bg-danger">
                 <div class="inner">
-                    <h3>65</h3>
+                    <h3 class="persianumber" >65</h3>
                     <p>بازدید جدید</p>
                 </div>
                 <div class="icon">

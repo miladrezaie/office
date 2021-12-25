@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--  <title>پنل مدیریت | صورتحساب</title>-->
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 4 -->
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/admin/css/font-awesome.min.css}"/>
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/admin/css/adminlte.min.css}"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.3.0/paper.css">
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- bootstrap rtl -->
+    <link rel="stylesheet" th:href="@{/admin/css/bootstrap-rtl.min.css}">
+
+    <!-- template rtl version -->
+    <link rel="stylesheet" th:href="@{/admin/css/custom-style.css}">
+    <style>
+        @page {
+            size: A5 ;
+
+
+        }
+
+        body.A5 .sheet {
+
+            width: 220mm;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="A5" onload="window.print();">
+<section class="sheet padding-10mm">
+    <div class="wrapper">
+        <!-- Main content -->
+        <!-- Main content -->
+        <div class="invoice ">
+            <!-- title row -->
+            <div class="invoice p-3 mb-3" style="font-size: 15px;">
+                <!-- title row -->
+                <div class="row">
+                    <div class="col-12 ">
+                        <h4 class="text-center text-bold ">
+                            [[${form.getType().getDisplayName()}]]
+                        </h4>
+                        <img th:src="@{/admin/img/Qazvin.png}" alt="logo qazvin.irib.ir" class="mb-5 float-left" style="width: 75px; margin-right: .8rem;
+                            margin-left: .5rem;
+                            margin-top: -3px;">
+                        <img src="/admin/img/IRIB_Logo2.png" alt="Admin Panel Logo" class="brand-image float-right"
+                             style="max-height: 75px;">
+                        <br>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- info row -->
+                <div class="row invoice-info">
+                    <div class="col-sm-4 invoice-col">
+                        <address>
+                            <small style="font-size: 18px;"><strong>نام برنامه &nbsp;:</strong>&nbsp;
+                                [[${form.getProgram().getName()}]] &nbsp;</small>
+                        </address>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-4 invoice-col">
+                        <address>
+
+                        </address>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-4 invoice-col">
+                        <address>
+                            <small style="font-size: 18px;"><strong>از تاریخ </strong>&nbsp; [[${form.getDate_begin()}]]
+                                &nbsp;</small>
+                            <small style="font-size: 18px;"><br><strong> تا تاریخ </strong>&nbsp;
+                                [[${form.getDate_end()}]]
+                                &nbsp;</small>
+                        </address>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="row invoice-info">
+                    <div class="col-sm-4 invoice-col">
+                        <address>
+                            <small style="font-size: 18px;"><strong>مکان :</strong>
+                                [[${form.location.getName()}]]</small>
+                        </address>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-4 invoice-col">
+                        <address>
+
+                        </address>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-4 invoice-col">
+                        <address class="persianumber">
+                            <small style="font-size: 18px;"><strong>ساعت آفیش :</strong>
+                                [[${form.saat_zabt}]] - [[${form.saat_zabt_end}]]</small>
+                        </address>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+                <!-- Table row -->
+                <div class="row">
+                    <div class="col-9 table-responsive">
+                        <table class="table table_office">
+                            <thead>
+                            <tr>
+                                <th>شماره</th>
+                                <th>کد فعالیت</th>
+                                <th>نام و نام خانوادگی</th>
+                                <th>تجهیزات تحویلی</th>
+                                <th>تایید عوامل</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr style="font-size: 13px;" th:each="userrr , state: ${form.getUsers()}">
+                                <td class="persianumber" th:text="${state.count}"></td>
+                                <td th:text="${userrr.getJob().getName()}"></td>
+                                <td th:text="${userrr.getFullname()}"></td>
+                                <td>
+                                    <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}">
+<!--                                        <span class="text-center badge bg-info"-->
+<!--                                              th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}"-->
+<!--                                              th:text="${pfficeForm.getTajhizat().getName()}">-->
+<!--                                        </span>-->
+                                        <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}">
+                                            <span th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" class="badge bg-info">
+                                                <strong>[[${pfficeForm.getTajhizat().getName()}]]</strong><br>
+                                                <span class="persianumber">([[${pfficeForm.getTajhizat().getAmvalid()}]])</span>
+                                            </span>
+                                        </span>
+                                    </span>
+
+                                </td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-3 table-responsive">
+                        <table class="table ">
+                            <thead>
+                            <tr class="text-center">
+                                <th>امضا مدیر</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="text-center">
+                                <td>
+                                    <p class="text-right">واحد درخواست کننده</p>
+                                    <img th:if="${form.getMdarkhastemza()} != null" width="75px"
+                                         th:src="*{'data:emza/jpg;base64,'+{form.getMdarkhastemza()}}"
+                                         class="img-fluid "
+                                    >
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td>
+                                    <p class="text-right">واحد پشتیبانی فنی</p>
+                                    <img th:if="${form.getPoshemza()} != null" width="75px"
+                                         th:src="*{'data:emza/jpg;base64,'+{form.getPoshemza()}}"
+                                         class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="text-right">توضیحات :</p>
+
+                                    <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;"
+                                       th:text="${form.getDescription()}">
+                                    </p>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!--                <div class="row">-->
+                <!--                    &lt;!&ndash; accepted payments column &ndash;&gt;-->
+                <!--                    <div class="col-12">-->
+                <!--                        <p class="lead">توضیحات :</p>-->
+
+                <!--                        <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;"-->
+                <!--                           th:text="${form.getDescription()}">-->
+                <!--                        </p>-->
+                <!--                    </div>-->
+
+                <!--                </div>-->
+                <!-- /.row -->
+                <th:block th:if="${form.getType()==enumField}"
+                          sec:authorize="hasAnyAuthority('OP_HAML_NAGHL','OP_HERASAT')" >
+                    <div class="row">
+                        <div class="col-12 border-top">
+                            <div class="info-box ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text">
+                                        خودروی شماره..
+                                        <button th:if="${form.getCar()!=null}"
+                                                th:text="${form.getCar().getName()}"></button>
+                                        ..به رانندگی آقای..
+                                        <button>[[${form.ranande}]]</button>
+                                        ..شماره کارمندی..
+                                        <button class="persianumber">[[${form.ranandeid}]]</button>
+                                        .. <br>میتواند جهت آفیش فوق از محوطه خارج شود.
+                                        <span class="info-box-icon float-left">
+                            <img th:if="${form.getHamlonaghlemza()} != null" width="65px"
+                                 th:src="*{'data:emza/jpg;base64,'+{form.getHamlonaghlemza()}}"
+                                 class="img-fluid "
+                                 style="direction: rtl;"></span>
+                                    </span>
+
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </div>
+                        <!--                        <div class="col-6 border-top">-->
+                        <!--                            -->
+                        <!--                        </div>-->
+
+                    </div>
+
+                    <div class="row">
+                        <th:block th:if="${form.getType()==enumField}" sec:authorize="hasAuthority('OP_HERASAT')">
+                            <div class="col-6 border-top">
+                                <div class="info-box ">
+
+                                    <div class="info-box-content text-center">
+                                        <span >
+                                            خروج اشیا فوق از مرکز تایید می شود
+                                            <span dir="ltr" th:text="${form.getSaatkhoroj()}"
+                                                  class="persianumber badge bg-info">تایید شد</span>
+                                        </span>
+                                        <span >
+                            <img th:if="${form.getKhherasatemza()} != null" width="75px"
+                                 th:src="*{'data:emza/jpg;base64,'+{form.getKhherasatemza()}}"
+                                 class=" img-fluid "
+                                 ></span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </div>
+                            <div class="col-6 border-top">
+                                <div class="info-box ">
+
+                                    <div class="info-box-content text-center">
+                                        <span >
+                                            ورود اشیا فوق در ساعت به مرکز تایید میشود
+                                                            <span dir="ltr" th:text="${form.getSaatvorod()}"
+                                                                  class="persianumber badge bg-info">تایید شد</span>
+                                        </span>
+                                        <span >
+                                            <img th:if="${form.getVherasatemza()} != null" width="75px"
+                                                 th:src="*{'data:emza/jpg;base64,'+{form.getVherasatemza()}}"
+                                                 class=" img-fluid "
+                                                 >
+                                        </span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </div>
+                        </th:block>
+
+                    </div>
+
+
+                </th:block>
+
+
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /.content -->
+
+    </div>
+</section>
+
+<!-- ./wrapper -->
+<script th:src="@{/admin/js/jquery.min.js}"></script>
+
+<script th:src="@{/admin/js/persianNumber.js}"></script>
+<!--<script>-->
+<!--    var farsiNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];-->
+<!--    $('.translate').text(function(i, v) {-->
+<!--        var chars = v.split('');-->
+<!--        for (var i = 0; i < chars.length; i++) {-->
+<!--            if (/\d/.test(chars[i])) {-->
+<!--                chars[i] = farsiNumbers[chars[i]];-->
+<!--            }-->
+<!--        }-->
+<!--        return chars.join('');-->
+<!--    })-->
+<!--</script>-->
+<script>
+    $(document).ready(function () {
+        $('.persianumber').persiaNumber();
+    });
+
+</script>
+</body>
+</html>

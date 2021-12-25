@@ -39,6 +39,18 @@ public class User implements Serializable, UserDetails {
     @JsonBackReference
     private Set<OfficeFormUserTajhizat> officeFormUserTajhizats;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<UserCancelOfficeDescription> userCancelOfficeDescriptions;
+
+    public Set<UserCancelOfficeDescription> getUserCancelOfficeDescriptions() {
+        return userCancelOfficeDescriptions;
+    }
+
+    public void setUserCancelOfficeDescriptions(Set<UserCancelOfficeDescription> userCancelOfficeDescriptions) {
+        this.userCancelOfficeDescriptions = userCancelOfficeDescriptions;
+    }
+
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
     @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد", min = 8, max = 10)
     @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)",unique = true)
@@ -73,7 +85,7 @@ public class User implements Serializable, UserDetails {
     private String fullname;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    @ManyToMany(fetch=FetchType.LAZY,mappedBy = "users",cascade = CascadeType.DETACH)
     private List<officeForm> officeforms;
 
 //    @OneToMany(mappedBy="user")
@@ -104,6 +116,8 @@ public class User implements Serializable, UserDetails {
         this.officeFormUserTajhizats = officeFormUserTajhizats;
     }
 
+
+
     public List<officeForm> getOfficeforms() {
         return officeforms;
     }
@@ -115,14 +129,6 @@ public class User implements Serializable, UserDetails {
     public Integer getId() {
         return id;
     }
-
-//    public Set<Tajhizat> getTajhiz() {
-//        return tajhiz;
-//    }
-//
-//    public void setTajhiz(Set<Tajhizat> tajhiz) {
-//        this.tajhiz = tajhiz;
-//    }
 
     public String getFullname() {
         return fullname;

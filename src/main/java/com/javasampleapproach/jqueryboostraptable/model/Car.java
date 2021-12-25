@@ -1,6 +1,8 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +14,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -42,12 +46,18 @@ public class Car {
     @NotBlank(message = "لطفا نوع خوردو را وارد کنید به عنوان مثال : ون ، اتوبوس ، سواری و ..")
     private String type;
 
-    @ManyToOne
-    @Nullable
-//    @JoinColumn(name="officeForm_id")
-    @JsonIgnore
-    @JoinColumn(name = "officeForm_id", referencedColumnName = "id")
-    private officeForm officeForm;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @Nullable
+//    @JsonManagedReference
+//    @JoinColumn(name = "officeForm_id",nullable = true)
+//    private officeForm officeForm;
 
+    @OneToMany(mappedBy = "car",fetch = FetchType.EAGER,orphanRemoval = false)
+    @Nullable
+    private Set<officeForm> officeForm;
+//    private Set<User> users;
+//    @JsonIgnore
+//    @ManyToMany(fetch=FetchType.LAZY,mappedBy = "car",cascade = CascadeType.DETACH)
+//    private List<officeForm> officeforms;
 
 }

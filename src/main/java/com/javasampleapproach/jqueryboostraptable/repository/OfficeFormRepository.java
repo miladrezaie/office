@@ -26,13 +26,13 @@ public interface OfficeFormRepository extends JpaRepository<officeForm, Long> {
 	
 //	List<officeForm> findByStatusIsFalse();
 
-	@Query(value = "SELECT *  FROM `office_form` a where a.status =true order by a.id asc",
+	@Query(value = "SELECT *  FROM `office_form` a where a.status =true order by a.id desc",
 			countQuery = "SELECT count(*) FROM `office_form` a where a.status =true",
 			nativeQuery = true)
 	Page<officeForm> findByStatusIsTrue(Pageable pageable);
 
 
-	@Query(value = "SELECT *  FROM `office_form` a where a.status =false order by a.id asc",
+	@Query(value = "SELECT *  FROM `office_form` a where a.status =false order by a.id desc",
 			countQuery = "SELECT count(*) FROM `office_form` a where a.status =false",
 			nativeQuery = true)
 	Page<officeForm> findByStatusIsFalse(Pageable pageable);
@@ -41,6 +41,6 @@ public interface OfficeFormRepository extends JpaRepository<officeForm, Long> {
 	@Query("update officeForm ear set ear.status = :status where ear.id = :id")
 	int setStatusForOfficeForm(Boolean status,Long id);
 
-	List<officeForm> findAllByStatusTrue();
+//	List<officeForm> findAllByStatusTrue();
 	
 }

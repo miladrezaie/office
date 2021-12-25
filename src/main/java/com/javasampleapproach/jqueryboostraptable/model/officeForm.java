@@ -46,8 +46,15 @@ public class officeForm implements Serializable {
     @NotNull(message = "وارد کردن نام تهیه کننده الزامی است")
     private String tahayekonande;
 
-    @OneToMany(mappedBy="officeForm",cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Car> car;
+//    @OneToMany(mappedBy="officeForm",fetch = FetchType.EAGER,orphanRemoval = false)
+//    @JsonBackReference
+//    @ManyToMany( fetch=FetchType.LAZY)
+//    private List<Car> car;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+//    @Nullable
+    @JoinColumn(name = "car_id",nullable = true)
+    private Car car;
 
     //az no sima or zabtie
     @NotNull(message = "وارد کردن نوع برنامه الزامی است")
@@ -61,14 +68,20 @@ public class officeForm implements Serializable {
     @NotNull(message = "وارد کردن مکان برنامه الزامی است")
     private Location location;
 
+
+
 //    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany( fetch=FetchType.LAZY)
     private List<User> users;
 
 //    @OneToMany(mappedBy = "officeForms", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @OneToMany(mappedBy = "officeForms", cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<OfficeFormUserTajhizat> officeFormUserTajhizats;
+
+    @OneToMany(mappedBy = "officeForms", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<UserCancelOfficeDescription> userCancelOfficeDescriptions;
 
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Tajhizat> tajhizatss;
@@ -77,7 +90,7 @@ public class officeForm implements Serializable {
     @Column(name="DESCRIPTION", length=512)
     private String description;
 
-    //taied or laghv office_form
+    //status 1 complate status 0 incomplate
 //    @Column(columnDefinition = "smallint",nullable = false)
     @Column(columnDefinition="tinyint(1) default 0")
     private Boolean status ;
@@ -138,6 +151,12 @@ public class officeForm implements Serializable {
 
     @Column(columnDefinition = "nvarchar(25)")
     private String saatkhoroj;
+
+    @Column(columnDefinition = "LONGBLOB")
+    private String tasisatemza;
+
+    @Column(columnDefinition = "LONGBLOB")
+    private String uplinkemza;
 
     @Column(columnDefinition = "nvarchar(50)")
     @NotNull(message = "وارد کردن روز شروع الزامی است")

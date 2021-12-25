@@ -241,8 +241,7 @@ $(document).ready(function () {
             $("label.error").hide();
             $(".error").removeClass("error");
             $.get(href, function (job) {
-                // console.log("ssssssssssss : "+job.category.id);
-                console.log("ssssssssssss : "+job.category);
+
                 $('.jobModal #id').val(job.id);
                 $('.jobModal #name').val(job.name);
                 $('.jobModal #category').selectpicker("val",job.category.id);
@@ -316,9 +315,6 @@ $(document).ready(function () {
                 $('.programModal #name').val('');
                 $('.programModal #saat_zabt').val('');
                 $('.programModal #saat_zabt_end').val('');
-                // $('.programModal #rozhafteh').val('');
-                // $('.programModal #date_begin').val('');
-                // $('.programModal #date_end').val('');
                 $('.programModal #rozhafteh').selectpicker('val', '');
 
                 $('.programModal #id').val('');
@@ -485,7 +481,6 @@ $(document).ready(function () {
     });
     $('.newUsers, .tablemy .editUsers').on('click', function (event) {
         event.preventDefault();
-        console.log("userrrrrrrrrrrrrrrrrrrrrr");
 
         var href = $(this).attr('href');
         var text = $(this).attr('id');
@@ -494,8 +489,7 @@ $(document).ready(function () {
             $("label.error").hide();
             $(".error").removeClass("error");
             $.get(href, function (user) {
-                console.log("userrrrrrrrrrrrrrrrrrrrrr edit");
-                console.log(user.personalId);
+
                 $('.userModal #id').val(user.id);
                 $('.userModal #personalId').val(user.personalId);
                 $('.userModal #FName').val(user.fname);
@@ -646,9 +640,7 @@ $(document).ready(function () {
              $('.fmyForm #fexampleModal').modal();
          }
     });
-
-
-    $('.table_office .newOffices,.table_office .editOffices,.table_office .addTajhizToOfficeAndUser').on('click', function (event) {
+    $('.table_office .newOffices,.table_office .editOffices,.table_office .addTajhizToOfficeAndUser,.table_office .laghvOffice').on('click', function (event) {
         event.preventDefault();
         var href = $(this).attr('href');
         var text = $(this).attr('id');
@@ -708,12 +700,27 @@ $(document).ready(function () {
                 $('.officeModal #officeFrom_').modal('show');
             });
         }
+        else if (text == 'laghvOffice') {
+            console.log("laghvOffice");
+            $("label.error").hide();
+            $(".error").removeClass("error");
+            // $('.officeModal #laghv_').prop("value", "لغو");
+            $.get(href, function (office) {
+                $('.officeModal #user').val('');
+                $('.officeModal #id').val(office.id);
+
+                // $('.officeModal #tajhizatsss').selectpicker('val',list );
+
+                $('.officeModal #officeFrom_laghv').modal('show');
+            });
+        }
     });
 
     $(".office-date").persianDatepicker({
         observer: true,
         format: 'YYYY/MM/DD',
         autoClose: true,
+        disableBeforeToday:false,
     });
     $(".office-date-time").persianDatepicker({
         observer: true,

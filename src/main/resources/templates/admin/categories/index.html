@@ -26,8 +26,8 @@
                         <th>نام</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="category : ${categories}">
-                        <td th:text="${category.getId()}">...</td>
+                    <tr th:each="category,state : ${categories}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${category.getName()}">...</td>
                         <td>
                             <a th:href="@{/admin/categories/find/{id}(id=${category.getId()})}"

@@ -30,8 +30,8 @@
                         <th>نوع</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="car : ${cars}">
-                        <td th:text="${car.getId()}">...</td>
+                    <tr th:each="car,state : ${cars}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${car.getName()}">...</td>
                         <td th:text="${car.getColor()}">...</td>
                         <td th:text="${car.getPlak_number()}">...</td>
@@ -42,39 +42,41 @@
                                id="EditCar">
                                 <span class="badge bg-warning">ویرایش</span>
                             </a>
-                            <a href="#" data-toggle="modal"
-                               th:attr="data-target='#modal-warning'+${car.getId() }">
-                                <span class="badge bg-danger">حذف</span>
-                            </a>
+                            <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                                <a href="#" data-toggle="modal"
+                                   th:attr="data-target='#modal-warning'+${car.getId() }">
+                                    <span class="badge bg-danger">حذف</span>
+                                </a>
+                            </th:block>
                             <a href="#" data-toggle="modal" data-target="#modalRegister"></a>
-                                <div class="modal fade" th:id="modal-warning+${car.getId()}" tabindex="-1" role="dialog"
-                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel"
-                                                    th:utext="${car.getName()}"></h5>
-                                                <button style="display: contents;" type="button" class="close"
-                                                        data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p class="alert alert-danger">
-                                                    آیا شما مطمین هستید که میخواهید این وسیله نقلیه را پاک کنید ؟
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                                    بستن
-                                                </button>
-                                                <a th:href="@{/admin/cars/delete/{id}(id=${car.getId()})}"
-                                                   class="btn btn-danger"
-                                                   id="deleteCar">بله،مطمینم</a>
-                                            </div>
+                            <div class="modal fade" th:id="modal-warning+${car.getId()}" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"
+                                                th:utext="${car.getName()}"></h5>
+                                            <button style="display: contents;" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="alert alert-danger">
+                                                آیا شما مطمین هستید که میخواهید این وسیله نقلیه را پاک کنید ؟
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                بستن
+                                            </button>
+                                            <a th:href="@{/admin/cars/delete/{id}(id=${car.getId()})}"
+                                               class="btn btn-danger"
+                                               id="deleteCar">بله،مطمینم</a>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -86,7 +88,11 @@
             <div class="card-footer clearfix">
                 <ul class="pagination pagination-sm m-0 float-right" th:if="${cars.totalPages>=2}">
                     <li class="page-item"><a class="page-link" href="#">«</a></li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0,cars.totalPages-1)}"><a class="page-link" th:href="@{/admin/cars/(page=${i})}" th:text="${i+1}" th:classappend="${currentPage}==${i}?'active':''">۱</a></li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0,cars.totalPages-1)}"><a class="page-link"
+                                                                                                     th:href="@{/admin/cars/(page=${i})}"
+                                                                                                     th:text="${i+1}"
+                                                                                                     th:classappend="${currentPage}==${i}?'active':''">۱</a>
+                    </li>
                     <li class="page-item"><a class="page-link" href="#">»</a></li>
                 </ul>
             </div>

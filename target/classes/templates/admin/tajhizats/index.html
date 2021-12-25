@@ -33,8 +33,8 @@
                         <th>تصویر</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="tajhiz : ${tajhizats}">
-                        <td th:text="${tajhiz.id}">...</td>
+                    <tr th:each="tajhiz,state : ${tajhizats}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${tajhiz.amvalid}">...</td>
                         <td th:text="${tajhiz.serial_id}">...</td>
                         <td th:text="${tajhiz.name}">...</td>
@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="file" class="form-control-label">تصویر:</label>
-                                    <input type="file" class="custom-file-input" id="file" name="file"/>
+                                    <input type="file" id="file" name="file"/>
                                     <img id="image" width="100px" class="img-responsive" style="margin-top: 10px">
 
                                 </div>

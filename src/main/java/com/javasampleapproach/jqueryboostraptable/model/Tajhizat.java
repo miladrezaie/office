@@ -60,12 +60,6 @@ public class Tajhizat implements Serializable {
 	@NotNull(message = "وارد کردن مکان قرار گیری تجهیز الزامی است")
 	private Location location;
 
-//	@ManyToOne
-//	@JoinColumn(name="user_id")
-////	@JsonManagedReference
-//	@Nullable
-//	private User user;
-
 	@ManyToOne
 	@JoinColumn(name="brand_id")
 	@JsonManagedReference
@@ -77,7 +71,6 @@ public class Tajhizat implements Serializable {
 	private String model;
 
 	@JsonIgnore
-//	@JsonManagedReference
 	@ManyToMany(fetch=FetchType.LAZY,mappedBy = "tajhizatss",cascade = CascadeType.DETACH)
 	private List<officeForm> tofficeforme;
 
@@ -101,15 +94,6 @@ public class Tajhizat implements Serializable {
 	public Long getId() {
 		return id;
 	}
-
-//	@Nullable
-//	public User getUser() {
-//		return user;
-//	}
-//
-//	public void setUser(@Nullable User user) {
-//		this.user = user;
-//	}
 
 	public void setId(Long id) {
 		this.id = id;

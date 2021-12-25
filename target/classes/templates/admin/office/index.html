@@ -35,16 +35,19 @@
                         <th>نام برنامه</th>
                         <th>نام تهیه کننده</th>
                         <th>محل آفیش</th>
+                        <th>نوع آفیش</th>
                         <th>تکمیل آفیش</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="form : ${officeforms}" th:attr="class=${form.getType()==enumField ? 'bg-light-gradient' : ''}" >
-                        <td th:utext="${form.id}"></td>
-                        <td th:utext="${form.program.getName()}"></td>
+                    <tr th:each="form , state : ${officeforms}">
+                        <td class="persianumber" th:utext="${state.count}"></td>
+                        <td th:utext="${form.program.getName()}"> </td>
                         <td th:utext="${form.getUsers().get(0).getFullname()}"></td>
                         <td th:utext="${form.location.getName()}"></td>
-                        <td th:if="${form.status ==false}"><span class="badge badge-warning">در روند انجام</span></td>
-                        <td th:if="${form.status ==true}"><span class="badge badge-success">تکمیل شده</span></td>
+                        <td th:utext="${form.getType().getDisplayName()}"></td>
+                        <td th:if="${form.getStatus() ==false}"><span class="badge badge-warning">در روند تکمیل</span></td>
+                        <td th:if="${form.getUserCancelOfficeDescriptions().isEmpty()==false}"><span class="badge badge-danger" >لغو شده</span></td>
+                        <td th:if="${form.getStatus() ==true && form.getUserCancelOfficeDescriptions().isEmpty()==true}"><span class="badge badge-success" >تکمیل شده</span></td>
                         <td>
                             <a th:href="@{form/(id=${form.id})}" class="mdelBtn" id="DeleteUser"><span class="badge bg-info">نمایش</span></a>
                             <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">

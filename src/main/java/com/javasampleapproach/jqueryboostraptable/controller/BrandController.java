@@ -7,6 +7,7 @@ import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,12 +41,14 @@ public class BrandController {
     @GetMapping(value = "/admin/brands")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-        model.addAttribute("brands", brandRepository.findAll(new PageRequest(page, 10)));
+        model.addAttribute("brands", brandRepository.findAll(new PageRequest(page,10)));
         model.addAttribute("currentPage", page);
 
         return "admin/brands/index";
     }
-
+//    private Sort sortByIdDesc() {
+//        return new Sort(Sort.Direction.DESC, "id");
+//    }
     @PostMapping(value = "/admin/brands/create")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String create(@ModelAttribute @Valid Brand brand, BindingResult bindingResult, RedirectAttributes redirectAttributes) {

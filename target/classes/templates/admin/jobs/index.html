@@ -27,8 +27,8 @@
                         <th>نام</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="job : ${jobs}">
-                        <td th:text="${job.getId()}">...</td>
+                    <tr th:each="job,state : ${jobs}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${job.getName()}">...</td>
                         <td>
                             <a th:href="@{/admin/jobs/find/{id}(id=${job.getId()})}"

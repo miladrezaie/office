@@ -5,12 +5,16 @@ import com.javasampleapproach.jqueryboostraptable.model.Brand;
 import com.javasampleapproach.jqueryboostraptable.model.Location;
 import com.javasampleapproach.jqueryboostraptable.repository.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Repository
 public class BrandServiceImp implements BrandService {
     private final BrandRepository brandRepository;
 
@@ -20,6 +24,7 @@ public class BrandServiceImp implements BrandService {
     }
 
     public List<Brand> getAllBrands() {
+//        return brandRepository.findAll();
         return brandRepository.findAll();
     }
 
@@ -42,5 +47,9 @@ public class BrandServiceImp implements BrandService {
 
     public Optional<Brand> findByIdBrand(Long id) {
         return brandRepository.findById(id);
+    }
+
+    private Sort sortByIdDesc() {
+        return new Sort(Sort.Direction.DESC, "id");
     }
 }

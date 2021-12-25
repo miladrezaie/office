@@ -115,14 +115,15 @@ public class OfficePdfGenerator {
         PdfPTable tableHeader = new PdfPTable(1);
         tableHeader.setWidthPercentage(100f);
         tableHeader.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
+
         PdfPCell cell1 = new PdfPCell();
         cell1.setPadding(10);
+
         cell1.setPhrase(new Phrase(officeForms.getType().getDisplayName(), paraFont));
         cell1.setVerticalAlignment(Element.ALIGN_CENTER);
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell1.setBorder(Rectangle.NO_BORDER);
 
-        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         tableHeader.addCell(cell1);
 
 
@@ -131,44 +132,68 @@ public class OfficePdfGenerator {
         table.setWidths(new float[]{4.0f, 4.0f, 4.0f, 4.0f});
 
 
-        PdfPTable table_1 = new PdfPTable(4);
-        table_1.setWidthPercentage(100f);
-        table_1.setWidths(new float[]{4.0f, 4.0f, 4.0f, 4.0f});
-        table_1.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
+//        PdfPTable table_1 = new PdfPTable(4);
+
+//        cell1_1.setBorder(Rectangle.NO_BORDER);
+
+//        table_1.setWidthPercentage(100f);
+//        table_1.setWidths(new float[]{4.0f, 4.0f, 4.0f, 4.0f});
+//        table_1.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
 
 
-        PdfPCell cell1_1 = new PdfPCell(new Phrase("عوامل  ", paraFont));
-        cell1_1.setPadding(8);
-        cell1_1.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        PdfPCell cell2_2 = new PdfPCell(new Phrase("نام و نام خانوادگی ", paraFont));
-        cell2_2.setPadding(8);
-        cell2_2.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        PdfPCell cell3_3 = new PdfPCell(new Phrase("تجهیزات همراه ", paraFont));
-        cell3_3.setPadding(8);
-        cell3_3.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        PdfPCell cell4_4 = new PdfPCell(new Phrase("...  ", paraFont));
-        cell4_4.setPadding(8);
-        cell4_4.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+//        PdfPCell cell1_1 = new PdfPCell(new Phrase("عوامل  ", paraFont));
+//        cell1_1.setPadding(8);
+//        cell1_1.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+//        PdfPCell cell2_2 = new PdfPCell(new Phrase("نام و نام خانوادگی ", paraFont));
+//        cell2_2.setPadding(8);
+//        cell2_2.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+//        PdfPCell cell3_3 = new PdfPCell(new Phrase("تجهیزات همراه ", paraFont));
+//        cell3_3.setPadding(8);
+//        cell3_3.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+//        PdfPCell cell4_4 = new PdfPCell(new Phrase("...  ", paraFont));
+//        cell4_4.setPadding(8);
+//        cell4_4.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 
 
-        PdfPTable nestedTableUserAvamel = new PdfPTable(1);
+        PdfPTable nestedTableUserAvamel = new PdfPTable(4);
+        nestedTableUserAvamel.setWidthPercentage(100f);
         nestedTableUserAvamel.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
-
-        PdfPTable nestedTableUser = new PdfPTable(1);
-        nestedTableUser.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
-        PdfPTable nestedTableTajhizat = new PdfPTable(1);
-        nestedTableTajhizat.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
+        PdfPCell cell1_1 = new PdfPCell();
+        cell1_1.setPadding(10);
+        cell1_1.setVerticalAlignment(Element.ALIGN_CENTER);
+        cell1_1.setHorizontalAlignment(Element.ALIGN_CENTER);
+//        PdfPTable nestedTableUser = new PdfPTable(1);
+//        nestedTableUser.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
+//        PdfPTable nestedTableTajhizat = new PdfPTable(1);
+//        nestedTableTajhizat.setRunDirection(PdfWriter.RUN_DIRECTION_RTL);
 
 
         for (User user : officeForms.getUsers()) {
-            nestedTableUserAvamel.addCell(getCell(user.getJob().getName(), PdfPCell.ALIGN_CENTER));
-            nestedTableUser.addCell(getCell(user.getFullname(), PdfPCell.ALIGN_CENTER));
+            cell1_1.setPhrase(new Phrase(user.getJob().getName(), paraFont));
+            nestedTableUserAvamel.addCell(cell1_1);
+
+            cell1_1.setPhrase(new Phrase(user.getFullname(), paraFont));
+            nestedTableUserAvamel.addCell(cell1_1);
+
+//            nestedTableUserAvamel.addCell(getCell(user.getJob().getName(), PdfPCell.ALIGN_CENTER));
+//            nestedTableUserAvamel.addCell(getCell(user.getFullname(), PdfPCell.ALIGN_CENTER));
 
             if (!user.getOfficeFormUserTajhizats().isEmpty()) {
                 for (Iterator<OfficeFormUserTajhizat> iterator = user.getOfficeFormUserTajhizats().iterator(); iterator.hasNext(); ) {
                     OfficeFormUserTajhizat ff = iterator.next();
                     if (ff.getOfficeForms().getId() == officeForms.getId()) {
-                        nestedTableTajhizat.addCell(getCell(ff.getTajhizat().getName(), PdfPCell.ALIGN_CENTER));
+
+
+                        cell1_1.setPhrase(new Phrase(ff.getTajhizat().getName(), paraFont));
+
+                        nestedTableUserAvamel.addCell(cell1_1);
+                        cell1_1.setPhrase(new Phrase(" ", paraFont));
+                        nestedTableUserAvamel.addCell(cell1_1);
+
+//                        nestedTableUserAvamel.addCell(getCell(ff.getTajhizat().getName(), PdfPCell.ALIGN_CENTER));
+
+//                        nestedTableUserAvamel.addCell(getCell(" ", PdfPCell.ALIGN_CENTER));
+
 
                         System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + ff.getTajhizat().getName());
                     }
@@ -177,20 +202,27 @@ public class OfficePdfGenerator {
 //                for (OfficeFormUserTajhizat pfficeForm : user.getOfficeFormUserTajhizats()) {
 //                }
             } else {
-                nestedTableTajhizat.addCell(getCell("....", PdfPCell.ALIGN_CENTER));
+                cell1_1.setPhrase(new Phrase("....", paraFont));
+                nestedTableUserAvamel.addCell(cell1_1);
+
+                cell1_1.setPhrase(new Phrase(" ", paraFont));
+                nestedTableUserAvamel.addCell(cell1_1);
+
+//                nestedTableUserAvamel.addCell(getCell("....", PdfPCell.ALIGN_CENTER));
+//                nestedTableUserAvamel.addCell(getCell(" ", PdfPCell.ALIGN_CENTER));
             }
 
         }
+//        nestedTableUserAvamel.addCell(cell1_1);
 
+//        cell1_1.addElement(nestedTableUserAvamel);
+//        cell2_2.addElement(nestedTableUser);
+//        cell3_3.addElement(nestedTableTajhizat);
 
-        cell1_1.addElement(nestedTableUserAvamel);
-        cell2_2.addElement(nestedTableUser);
-        cell3_3.addElement(nestedTableTajhizat);
-
-        table_1.addCell(cell1_1);
-        table_1.addCell(cell2_2);
-        table_1.addCell(cell3_3);
-        table_1.addCell(cell4_4);
+//        table_1.addCell(nestedTableUserAvamel);
+//        table_1.addCell(cell2_2);
+//        table_1.addCell(cell3_3);
+//        table_1.addCell(cell4_4);
 
 
 //        addEmptyLine(new Paragraph(), 1);
@@ -217,7 +249,8 @@ public class OfficePdfGenerator {
 
         document.add(tableHeader);
         document.add(table);
-        document.add(table_1);
+        document.add(nestedTableUserAvamel);
+//        document.add(table_1);
 //        document.add(emzaTable);
         document.close();
     }

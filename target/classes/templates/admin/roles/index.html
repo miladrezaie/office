@@ -26,8 +26,8 @@
                         <th>توضیحات</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="role : ${roles}">
-                        <td th:text="${role.getId()}">...</td>
+                    <tr th:each="role,state : ${roles}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${role.getName()}">...</td>
                         <td th:text="${role.getDescription()}">...</td>
                         <td>
