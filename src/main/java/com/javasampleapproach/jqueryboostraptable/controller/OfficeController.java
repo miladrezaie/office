@@ -350,18 +350,15 @@ public class OfficeController {
         model.addAttribute("userJob", usersWithJob);
         model.addAttribute("form", formRepo.findById((long) id).get());
 
-//        System.out.println(" ############################## : "+formRepo.findById((long) id).get().getTarikhsodur());
 
-//        PersianDate persianDate = PersianDate.parse(formRepo.findById((long) id).get().getTarikhsodur());
+        PersianDateTime persianDate = PersianDateTime.parse(formRepo.findById((long) id).get().getTarikhsodur(),DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+        LocalDateTime gregDate = persianDate.toGregorian();
 
-//        LocalDate gregDate = persianDate.toGregorian();
-//        PersianDate persianDate6 = PersianDate.fromGregorian(gregDate);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        PersianDateTime persianDate6 = PersianDateTime.fromGregorian(gregDate.plusDays(13));
 
-//        System.out.println(" ############################## : " + gregDate.plusDays(13));
-//        PersianDate persianDate6 = PersianDate.fromGregorian(gregDate.plusDays(13));
-
-//        PersianDate persianDate1 = PersianDate.parse(gregDate.plusDays(13).toString());
-//        System.out.println(" ############################## 2 : "+persianDate6);
+        System.out.println(" ############################## 2 : "+persianDate6);
+        System.out.println(" ############################## 2 : "+dtf.format(persianDate6));
 
 //        Set<OfficeFormUserTajhizat> ss = formRepo.findById((long) id).get().getOfficeFormUserTajhizats();
         List<Tajhizat> tajhizat_ = new ArrayList<Tajhizat>();
@@ -372,7 +369,6 @@ public class OfficeController {
             OfficeFormUserTajhizat ff = iterator.next();
             if (tajhizat_.contains(ff.getTajhizat())) {
                 tajhizat_.remove(ff.getTajhizat());
-//                System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + ff.getTajhizat());
             }
         }
 
@@ -522,10 +518,11 @@ public class OfficeController {
 //            int myear = LocalDate.now().getYear();
 //            int mmonth = LocalDate.now().getMonthValue();
 //            int mday = LocalDate.now().getDayOfMonth();
-//
+
 //            jCal.gregorianToPersian(myear, mmonth, mday);
-            PersianDate today = PersianDate.now();
-            form.setTarikhsodur(today.toString());
+            PersianDateTime today = PersianDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            form.setTarikhsodur(dtf.format(today));
 
             form.setStatus(false);
 
