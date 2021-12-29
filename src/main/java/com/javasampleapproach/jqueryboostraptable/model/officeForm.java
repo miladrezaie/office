@@ -1,6 +1,8 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.lang.Nullable;
 
 
@@ -68,8 +72,6 @@ public class officeForm implements Serializable {
     @NotNull(message = "وارد کردن مکان برنامه الزامی است")
     private Location location;
 
-
-
 //    @JsonIgnore
     @ManyToMany( fetch=FetchType.LAZY)
     private List<User> users;
@@ -123,6 +125,9 @@ public class officeForm implements Serializable {
     private String tasviremza6;
 
     @Column(columnDefinition = "LONGBLOB")
+    private String hamahangiemaza;
+
+    @Column(columnDefinition = "LONGBLOB")
     private String sedaemza;
 
     @Column(columnDefinition = "LONGBLOB")
@@ -171,5 +176,13 @@ public class officeForm implements Serializable {
     @JoinColumn(name = "program_id", referencedColumnName = "id")
     @NotNull(message = "وارد کردن نام برنامه الزامی است")
     private Program program ;
+
+//    @CreatedDate
+//    @Column(name = "created_at", nullable = false, updatable = false)
+//    private Date createdAt;
+//
+//    @LastModifiedDate
+//    @Column(name = "updated_at")
+//    private LocalDateTime updatedAt;
 
 }

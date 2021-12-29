@@ -16,6 +16,7 @@
     <link rel="stylesheet" th:href="@{/admin/css/font-awesome.min.css}"/>
     <!-- Ionicons -->
     <link rel="stylesheet" th:href="@{/admin/css/ionicons.min.css}"/>
+
     <link rel="stylesheet" th:href="@{/admin/css/bootstrap-select.min.css}"/>
 
     <link rel="stylesheet" th:href="@{/admin/css/adminlte.min.css}"/>
@@ -29,6 +30,7 @@
     <link rel="stylesheet" th:href="@{/admin/css/datepicker3.css}">
     <!-- Daterange picker -->
     <link rel="stylesheet" th:href="@{/admin/css/daterangepicker-bs3.css}">
+
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" th:href="@{/admin/css/bootstrap3-wysihtml5.min.css}">
     <!-- Google Font: Source Sans Pro -->
@@ -36,9 +38,11 @@
     <!-- bootstrap rtl -->
     <link rel="stylesheet" th:href="@{/admin/css/bootstrap-rtl.min.css}">
     <!-- template rtl version -->
+
     <link rel="stylesheet" th:href="@{/admin/css/custom-style.css}">
 
     <link rel="stylesheet" th:href="@{/admin/css/persian-datepicker.min.css}">
+
     <style>
         .loader {
             position: fixed;
@@ -78,7 +82,7 @@
 
 
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" style="font-size: 14px;">
 <div class="loader hidden">
 <!--    <span class="loader"><span class="loader-inner"></span></span>-->
     <img th:src="@{/admin/img/loading2.gif}" alt="صبر کنید .." />
@@ -130,7 +134,7 @@
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 
                     <div class="info">
-                        <a href="#" class="d-block"><span sec:authorize="isAuthenticated()">خوش آمدید <span sec:authentication="name"></span></span></a>
+                        <a href="#" class="d-block"><span sec:authorize="isAuthenticated()">خوش آمدید <span class="persianumber" sec:authentication="name"></span></span></a>
                     </div>
                 </div>
 
@@ -168,7 +172,9 @@
                                 <li class="nav-item">
                                     <a th:href="@{/office}" class="nav-link">
                                         <i class="fa fa-plus-square nav-icon"></i>
-                                        <p>در حال انجام</p>
+                                        <p>در حال انجام
+                                            <span class="badge badge-info right">۲</span>
+                                        </p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -176,14 +182,14 @@
                                         <i class="fa fa-plus-square nav-icon"></i>
                                         <p>
                                             تکمیل شده
-                                            <span class="badge badge-info right">۲</span>
+
                                         </p>
                                     </a>
                                 </li>
 
                             </ul>
                         </li>
-                        <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE','OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                        <th:block sec:authorize="hasAuthority('OP_PROGRAMS_OFFICE')">
                             <li class="nav-item">
                                 <a th:href="@{/admin/programs}" class="nav-link">
                                     <i class="nav-icon fa fa-tasks"></i>
@@ -193,7 +199,7 @@
                                 </a>
                             </li>
                         </th:block>
-                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                        <th:block sec:authorize="hasAuthority('OP_ACCESS_TAJHIZATS')">
                             <li class="nav-item">
                                 <a th:href="@{/tajhizats}" class="nav-link">
                                     <i class="nav-icon fa fa-th"></i>
@@ -203,7 +209,7 @@
                                 </a>
                             </li>
                         </th:block>
-                        <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                        <th:block sec:authorize="hasAuthority('OP_LOCATIONS_OFFICE')">
                             <li class="nav-item">
                                 <a th:href="@{/admin/locations}" class="nav-link">
                                     <i class="nav-icon fa fa-map-marker"></i>
@@ -213,7 +219,7 @@
                                 </a>
                             </li>
                         </th:block>
-                        <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                        <th:block sec:authorize="hasAuthority('OP_CATEGORY_OFFICE')">
                             <li class="nav-item">
                                 <a th:href="@{/admin/categories}" class="nav-link">
                                     <i class="nav-icon fa fa-list-alt"></i>
@@ -223,7 +229,7 @@
                                 </a>
                             </li>
                         </th:block>
-                        <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                        <th:block sec:authorize="hasAuthority('OP_ACCESS_JOBS')">
                             <li class="nav-item">
                                 <a th:href="@{/admin/jobs}" class="nav-link">
                                     <i class="nav-icon fa fa-th"></i>
@@ -233,7 +239,7 @@
                                 </a>
                             </li>
                         </th:block>
-                        <th:block sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                        <th:block sec:authorize="hasAuthority('OP_ACCESS_BRANDS')">
                             <li class="nav-item">
                                 <a th:href="@{/admin/brands}" class="nav-link">
                                     <i class="nav-icon fa fa-angellist"></i>
@@ -244,7 +250,7 @@
                             </li>
                         </th:block>
 
-                        <th:block sec:authorize="hasAuthority('OP_HAML_NAGHL')">
+                        <th:block sec:authorize="hasAuthority('OP_CAR_OFFICE')">
                             <li class="nav-item">
                                 <a th:href="@{/admin/cars}" class="nav-link">
                                     <i class="nav-icon fa fa-car"></i>
@@ -255,7 +261,7 @@
                             </li>
                         </th:block>
 
-                        <th:block sec:authorize="hasAuthority('OP_ACCESS_ADMIN_PANEL')">
+                        <th:block sec:authorize="hasAuthority('OP_ACCESS_ROLES')">
                             <li class="nav-header">کاربران</li>
                             <li class="nav-item">
                                 <a th:href="@{/admin/roles}" class="nav-link">
@@ -372,9 +378,11 @@
 
         $(document).ready(function() {
             // $('.select2').select2();
-            $('.selectpicker').selectpicker()
+            $('.selectpicker').selectpicker();
+
         });
     })
+
 </script>
 </body>
 

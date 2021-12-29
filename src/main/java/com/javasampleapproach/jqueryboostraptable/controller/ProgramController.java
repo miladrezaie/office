@@ -41,12 +41,8 @@ public class ProgramController {
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
 //
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        User user = userService.findByUsername(auth.getName());
-//
-//        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
+
         model.addAttribute("rozhaehafte", RozHafteh.values());
-        System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrr  :  "+RozHafteh.values());
         model.addAttribute("programs", programRepository.findAll(new PageRequest(page,10)));
         model.addAttribute("currentPage", page);
 
@@ -63,6 +59,9 @@ public class ProgramController {
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/admin/programs";
             }
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findByUsername(auth.getName());
+            program.setUser(user);
             programService.saveProgram(program);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
@@ -93,7 +92,7 @@ public class ProgramController {
     @GetMapping("/admin/programs/find/{id}")
     @ResponseBody
     public Optional<Program> fiOptionalProgram(@PathVariable long id){
-        System.out.println("***************** + "+ id);
+//        System.out.println("***************** + "+ id);
         return programService.findByIdProgram(id);
     }
 }

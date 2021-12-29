@@ -62,7 +62,7 @@
 
 body {
     font-family: 'Vazir', sans-serif !important;
-    /*font-size: 14px;*/
+    font-size: 14px !important;
 }
 .office-hot-pink{
     background-color: #FFAEBC;

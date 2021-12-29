@@ -129,8 +129,8 @@ public class WebController {
 
     @PostMapping("/saveeUser")
     public String saveue(@ModelAttribute @Valid User user, BindingResult bindingResult, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEE");
-        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEE 2 : "+user);
+//        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEE");
+//        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEE 2 : "+user);
 
         try {
             if (bindingResult.hasErrors()) {
@@ -160,17 +160,17 @@ public class WebController {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "لطفا مجددا تلاش نمایید.");
 //            model.addAttribute("message", "لطفا مجددا تلاش نمایید");
-            System.out.println("************" + e);
+//            System.out.println("************" + e);
             return "redirect:/members";
         }
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
     public ModelAndView login() {
-        System.out.println("************************* login method start");
+//        System.out.println("************************* login method start");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admin/auth/login");
-        System.out.println("************************* login method end");
+//        System.out.println("************************* login method end");
 
         return modelAndView;
     }
@@ -245,7 +245,7 @@ public class WebController {
 
         try {
             if (bindingResult.hasErrors()) {
-                System.out.println("********************** + "+bindingResult.getAllErrors());
+//                System.out.println("********************** + "+bindingResult.getAllErrors());
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/admin/profile";
@@ -254,16 +254,16 @@ public class WebController {
 //                bindingResult.rejectValue("personalId", "error.user",
 //                        "هم اکنون کاربری با این شماره کارمندی موجود است");
 //            }
-                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user);
-                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getFName());
-                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getLname());
-                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getPass());
+//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user);
+//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getFName());
+//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getLname());
+//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getPass());
 
                 userE.setFName(user.getFName());
                 userE.setLname(user.getLname());
                 userE.setPass(user.getPass());
 
-                System.out.println("create user form else");
+//                System.out.println("create user form else");
 
                 userService.save(userE);
             }

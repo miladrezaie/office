@@ -1,11 +1,13 @@
 package com.javasampleapproach.jqueryboostraptable.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -57,4 +59,8 @@ public class Program {
     @JsonIgnore
     private Set<officeForm> office_form;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonManagedReference
+    private User user;
 }

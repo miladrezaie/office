@@ -24,6 +24,7 @@
                         <th>شماره</th>
                         <th>نام</th>
                         <th>زمان</th>
+                        <th>توسط</th>
                         <th>تاریخ شروع</th>
                         <th>تاریخ پایان</th>
                         <th>روز پخش</th>
@@ -34,16 +35,17 @@
                     <tr th:each="program,state : ${programs}">
                         <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${program.getName()}">...</td>
-                        <td th:text="${program.getSaat_zabt() +' - ' +program.getSaat_zabt_end()}">...</td>
-                        <td th:text="${program.getDate_begin()}">...</td>
-                        <td th:text="${program.getDate_end()}">...</td>
+                        <td class="persianumber" th:text="${program.getSaat_zabt() +' - ' +program.getSaat_zabt_end()}">...</td>
+                        <td  th:text="${program.getUser().getLname()}">...</td>
+                        <td class="persianumber" th:text="${program.getDate_begin()}">...</td>
+                        <td class="persianumber" th:text="${program.getDate_end()}">...</td>
                         <td >
                             <span th:each="dd : ${program.getRozhafteh()}" class="badge bg-info" th:text="${dd.getDisplayName() +' '}"></span></td>
-                        <td>
-                            <td>
-                        <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
 
-                        <a th:href="@{/admin/programs/find/{id}(id=${program.getId()})}"
+                            <td>
+                                <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+
+                                <a th:href="@{/admin/programs/find/{id}(id=${program.getId()})}"
                                    class="editPrograms"
                                    id="EditPrograms">
                                     <span class="badge bg-warning">ویرایش</span>

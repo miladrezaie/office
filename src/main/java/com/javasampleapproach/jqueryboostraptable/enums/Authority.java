@@ -26,7 +26,19 @@ public enum Authority implements GrantedAuthority {
     OP_MODEIR_VAHED_DARKHST_KONANDEH("مدیر واحد درخواست کننده تولید"),
     OP_RANANDEH("راننده"),
     OP_user("کاربر عادی"),
-    OP_UP_LINK("ارتباطات زمینی و ماهواره ای");
+    OP_UP_LINK("ارتباطات زمینی و ماهواره ای"),
+    OP_ADD_AVAMEL_TO_OFFICE("افزودن عوامل به آفیش"),
+    OP_HAZF_AVAMEL_FROM_OFFICE("حذف عوامل از آفیش"),
+    OP_ADD_TAJHIZ_TO_USER_IN_OFFICE("افزودن تجهیز به کاربر"),
+    OP_HAZF_TAJHIZ_FROM_USER_IN_OFFICE("گرفتن تجهیز از کاربر"),
+    OP_LAGHV_OFFICE("لغو کردن آفیش"),
+    OP_ADD_TAJHIZ_TO_OFFICE("افزودن تجهیز به آفیش"),
+    OP_AFZODAN_OFFICE("افزودن آفیش"),
+    OP_LOCATIONS_OFFICE("قسمت مکان ها"),
+    OP_PROGRAMS_OFFICE("قسمت برنامه ها"),
+    OP_CATEGORY_OFFICE("قسمت دسته بندی ها"),
+    OP_CAR_OFFICE("قسمت وسایل نقلیه ها")
+    ;
 
 
 

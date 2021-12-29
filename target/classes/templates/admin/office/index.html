@@ -14,7 +14,7 @@
             <div class="card-header">
                 <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
 
-                <th:block sec:authorize="hasAnyAuthority('OP_TAHIEKONANDEH','OP_HAMAHANGIE')">
+                <th:block sec:authorize="hasAuthority('OP_AFZODAN_OFFICE')">
                     <button type="button" class="btn btn-info fnBtn float-right" id="newoffice"><i class="fa fa-plus"></i>جدید</button>
                 </th:block>
                 <div class="card-tools">
@@ -37,6 +37,7 @@
                         <th>محل آفیش</th>
                         <th>نوع آفیش</th>
                         <th>تکمیل آفیش</th>
+                        <th>تاریخ ثبت</th>
                         <th>تنظیمات</th>
                     </tr>
                     <tr th:each="form , state : ${officeforms}">
@@ -46,8 +47,21 @@
                         <td th:utext="${form.location.getName()}"></td>
                         <td th:utext="${form.getType().getDisplayName()}"></td>
                         <td th:if="${form.getStatus() ==false}"><span class="badge badge-warning">در روند تکمیل</span></td>
-                        <td th:if="${form.getUserCancelOfficeDescriptions().isEmpty()==false}"><span class="badge badge-danger" >لغو شده</span></td>
-                        <td th:if="${form.getStatus() ==true && form.getUserCancelOfficeDescriptions().isEmpty()==true}"><span class="badge badge-success" >تکمیل شده</span></td>
+                        <td th:if="${form.getUserCancelOfficeDescriptions().isEmpty()==false}">
+                            <a th:attr="data-target='#modal-warning'+${state.count }"
+                               href="#myModal" data-toggle="modal" class="MainNavText" id="laghvDescOffice">
+                                <span class="badge bg-danger">لغو شده</span>
+                            </a>
+
+                        </td>
+                        <td th:if="${form.getStatus() ==true && form.getUserCancelOfficeDescriptions().isEmpty()==true}">
+                            <a th:attr="data-target='#modal-warningg'+${state.count }"
+                               href="#myModal" data-toggle="modal" class="MainNavText" id="takmilDescOffice">
+                                <span class="badge badge-success" >تکمیل شده</span>
+                            </a>
+                        </td>
+                        <td class="persianumber" th:utext="${form.getTarikhsodur()}"></td>
+
                         <td>
                             <a th:href="@{form/(id=${form.id})}" class="mdelBtn" id="DeleteUser"><span class="badge bg-info">نمایش</span></a>
                             <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
@@ -76,6 +90,112 @@
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                                         <a th:href="@{/admin/officeform/delete/{id}(id=${form.id})}"
                                            class="btn btn-danger">حذف</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" th:id="modal-warning+${state.count}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"
+                                            th:utext="${form.program.getName()}"></h5>
+                                        <button style="display: contents;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" th:each="ssss : ${form.getUserCancelOfficeDescriptions()}" >
+                                        <p th:text="${ssss.getDescription()}"></p>
+                                        <br>
+                                        <br>
+                                        <p th:text="${ssss.getUser().getFullname() + ' ( ' + ssss.getUser().getJob().getName()+' ) '}"> </p>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">بستن</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" th:id="modal-warningg+${state.count}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"
+                                            th:utext="${form.program.getName()}"></h5>
+                                        <button style="display: contents;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body"  >
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h4 class="text-center">
+                                                    [[${form.getType().getDisplayName()}]]
+                                                </h4>
+                                                <br>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <!-- info row -->
+                                        <div class="row invoice-info">
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <small style="font-size: 15px;"><strong>نام برنامه &nbsp;:</strong>&nbsp;
+                                                        [[${form.getProgram().getName()}]] &nbsp;</small>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <small style="font-size: 15px;"><strong>تاریخ شروع :</strong>&nbsp; [[${form.getDate_begin()}]]
+                                                        &nbsp;</small><br>
+                                                    <small style="font-size: 15px;"><strong>تاریخ اتمام :</strong>&nbsp; [[${form.getDate_end()}]]
+                                                        &nbsp;</small>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <div class="row invoice-info">
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong>مکان آفیش :</strong><br>
+                                                    [[${form.location.getName()}]]<br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col ">
+                                                <address>
+                                                    <strong>ساعت آفیش :</strong><br>
+                                                    [[${form.saat_zabt}]] - [[${form.saat_zabt_end}]]<br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+
+                                        <br>
+                                        <br>
+                                        <p >آفیش مورد نظر با موفقیت تکمیل شد . </p>
+
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal">بستن</button>
                                     </div>
                                 </div>
                             </div>

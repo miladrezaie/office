@@ -13,6 +13,7 @@
         <div class="card">
             <div class="card-header">
                 <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+
                 <button type="button" class="btn btn-info float-right newJobs" id="newJobs">
                     <i class="fa fa-plus"></i>جدید
                 </button>
@@ -25,11 +26,13 @@
                     <tr>
                         <th>شماره</th>
                         <th>نام</th>
+                        <th>واحد</th>
                         <th>تنظیمات</th>
                     </tr>
                     <tr th:each="job,state : ${jobs}">
                         <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${job.getName()}">...</td>
+                        <td ><span class="badge bg-secondary" th:text="${job.getCategory().getName()}"></span></td>
                         <td>
                             <a th:href="@{/admin/jobs/find/{id}(id=${job.getId()})}"
                                class="editJobs"

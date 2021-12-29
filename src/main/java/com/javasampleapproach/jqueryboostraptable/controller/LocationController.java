@@ -69,11 +69,11 @@ public class LocationController {
         try {
             locationService.deleteLocation(id);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            redirectAttributes.addFlashAttribute("message", "وسیله نقلیه مورنظر با موفقیت حذف گردید.");
+            redirectAttributes.addFlashAttribute("message", "مکان موردنظر با موفقیت حذف گردید.");
             return "redirect:/admin/locations";
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            redirectAttributes.addFlashAttribute("message", "وسیله نقلیه به آفیش خاص مرتبط است.");
+            redirectAttributes.addFlashAttribute("message", "مکان به آفیش خاص مرتبط است.");
             return "redirect:/admin/locations";
         }
     }

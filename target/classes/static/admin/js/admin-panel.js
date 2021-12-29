@@ -244,7 +244,7 @@ $(document).ready(function () {
 
                 $('.jobModal #id').val(job.id);
                 $('.jobModal #name').val(job.name);
-                $('.jobModal #category').selectpicker("val",job.category.id);
+                $('.jobModal #category').selectpicker("val", job.category.id);
             })
             $('.jobModal #saveeditbutton').prop("value", "ویرایش");
             $('.jobModal #jobFrom').modal('show');
@@ -254,13 +254,12 @@ $(document).ready(function () {
                 $(".error").removeClass("error");
                 $('.jobModal #saveeditbutton').prop("value", "افزودن");
                 $('.jobModal #name').val('');
-                $('.jobModal #category').selectpicker('val','');
+                $('.jobModal #category').selectpicker('val', '');
                 $('.jobModal #id').val('');
                 $('.jobModal #jobFrom').modal('show');
             });
         }
     });
-
 
 
     $('#program_modal').on('shown.bs.modal', function () {
@@ -496,10 +495,8 @@ $(document).ready(function () {
                 $('.userModal #Lname').val(user.lname);
                 $('.userModal #job').selectpicker('val', user.job.id);
                 $('.userModal #roles').selectpicker('val', user.roles[0].id);
-                // $('.userModal #category').selectpicker('val', user.category.id);
-                // $('.userModal #image_emza').attr('src', "data:img/jpg;base64," + user.);
 
-            })
+            });
             $('.userModal #saveeditbutton').prop("value", "ویرایش");
             $('.userModal #userFrom').modal('show');
         } else if (text == 'newUsers') {
@@ -521,40 +518,27 @@ $(document).ready(function () {
     });
 
 
-
     //office js
     $('.ch').on('change', function (event) {
         event.preventDefault();
-        console.log("event : " +$(this).val());
-
         var value = $('#job_form').val();
-        console.log("salam" + value);
 
-        // console.log("salam" + event.ip);
         $.getJSON('/findbyjob/' + value, function (data) {
-
-            console.log("****************** data :" + data);
-            console.log("****************** data :" + data.ip);
-            console.log("milad shorooooooooooooooooooooooooooooooo");
             var gencheckboxes = "";
             for (var i = 0; i < data.length; i++) {
-                console.log(data[i].fullname);
                 gencheckboxes = gencheckboxes + '<input type="checkbox" name="users" value="' + data[i].id + '">' + data[i].fullname + '<br></input>';
             }
+            gencheckboxes += '<input type="submit" class="btn btn-primary" value="افزودن"/>';
             var dwrap = document.getElementById('wrapperfortestnames');
             dwrap.innerHTML = gencheckboxes;
         });
 
-        $.getJSON('http://localhost:8085/findbyjob/' + value, function (data) {
-
-            console.log("****************** data :" + data);
-            console.log("****************** data :" + data.ip);
-            console.log("milad shorooooooooooooooooooooooooooooooo");
+        $.getJSON('http://localhost:8086/findbyjob/' + value, function (user) {
             var gencheckboxes = "";
-            for (var i = 0; i < data.length; i++) {
-                console.log(data[i].fullname);
-                gencheckboxes = gencheckboxes + '<input type="checkbox" name="users" value="' + data[i].id + '">' + data[i].fullname + '<br></input>';
+            for (var i = 0; i < user.length; i++) {
+                gencheckboxes = gencheckboxes + '<input type="checkbox" name="users" value="' + user[i].id + '">' + user[i].fullname + '<br></input>';
             }
+            gencheckboxes += '<input type="submit" class="btn btn-primary" value="افزودن"/>';
             var dwrap = document.getElementById('wrapperfortestnames');
             dwrap.innerHTML = gencheckboxes;
         });
@@ -566,27 +550,27 @@ $(document).ready(function () {
         $.getJSON('/findbycategory/' + value, function (data) {
             var gencheckboxes = "";
             for (var i = 0; i < data.length; i++) {
-                gencheckboxes = gencheckboxes + '<ul class="mr-4"><li>'+data[i].name+'<ul className="mr-4">';
+                gencheckboxes = gencheckboxes + '<ul class="mr-4"><li>' + data[i].name + '<ul className="mr-4">';
                 for (let j = 0; j < data[i].users.length; j++) {
-                    gencheckboxes +='<li><input type="checkbox" name="users" value="' + data[i].users[j].id + '">' + data[i].users[j].personalId + " - "+data[i].users[j].fullname + '<br></input></li>';
+                    gencheckboxes += '<li><input type="checkbox" name="users" value="' + data[i].users[j].id + '">' + data[i].users[j].personalId + " - " + data[i].users[j].fullname + '<br></input></li>';
                 }
-                gencheckboxes+='</ul></li></ul>'
+                gencheckboxes += '</ul></li></ul>';
             }
-            gencheckboxes+='<input type="submit" class="btn btn-primary" value="save"/>';
+            gencheckboxes += '<input type="submit" class="btn btn-primary" value="save"/>';
             var dwrap = document.getElementById('wrapperfortestnames');
             dwrap.innerHTML = gencheckboxes;
         });
 
-        $.getJSON('http://localhost:8085/findbycategory/' + value, function (data) {
+        $.getJSON('http://localhost:8086/findbycategory/' + value, function (data) {
             var gencheckboxes = "";
             for (var i = 0; i < data.length; i++) {
-                gencheckboxes = gencheckboxes + '<ul class="mr-4"><li>'+data[i].name+'<ul className="mr-4">';
+                gencheckboxes = gencheckboxes + '<ul class="mr-4"><li>' + data[i].name + '<ul className="mr-4">';
                 for (let j = 0; j < data[i].users.length; j++) {
-                    gencheckboxes +='<li><input type="checkbox" name="users" value="' + data[i].users[j].id + '">' + data[i].users[j].personalId + " - "+data[i].users[j].fullname + '<br></input></li>';
+                    gencheckboxes += '<li><input type="checkbox" name="users" value="' + data[i].users[j].id + '">' + data[i].users[j].personalId + " - " + data[i].users[j].fullname + '<br></input></li>';
                 }
-                gencheckboxes+='</ul></li></ul>';
+                gencheckboxes += '</ul></li></ul>';
             }
-            gencheckboxes+='<input type="submit" class="btn btn-primary" value="save"/>';
+            gencheckboxes += '<input type="submit" class="btn btn-primary" value="save"/>';
             var dwrap = document.getElementById('wrapperfortestnames');
             dwrap.innerHTML = gencheckboxes;
         });
@@ -628,17 +612,17 @@ $(document).ready(function () {
         var href = $(this).attr('href');
         var text = $(this).attr('id');
 
-         if (text == 'OpenForm') {
+        if (text == 'OpenForm') {
             $('.omyForm #fid').val(href);
             $('.omyForm #oexampleModal').modal();
-        }  else if (text == 'newoffice') {
-             $('.fmyForm #saveeditbutton').prop("value", "ثبت");
+        } else if (text == 'newoffice') {
+            $('.fmyForm #saveeditbutton').prop("value", "ثبت");
             $('.fmyForm #fexampleModal').modal();
 
-        } else if (text =='editOffice'){
-             $('.fmyForm #saveeditbutton').prop("value", "تغییر");
-             $('.fmyForm #fexampleModal').modal();
-         }
+        } else if (text == 'editOffice') {
+            $('.fmyForm #saveeditbutton').prop("value", "تغییر");
+            $('.fmyForm #fexampleModal').modal();
+        }
     });
     $('.table_office .newOffices,.table_office .editOffices,.table_office .addTajhizToOfficeAndUser,.table_office .laghvOffice').on('click', function (event) {
         event.preventDefault();
@@ -653,14 +637,14 @@ $(document).ready(function () {
             $.get(href, function (office) {
                 console.log(office.id);
                 console.log();
-                var list =[];
-                for (var k =0 ; k<office.tajhizatss.length ; k++){
+                var list = [];
+                for (var k = 0; k < office.tajhizatss.length; k++) {
                     console.log(office.tajhizatss[k].id);
-                    list[k]=office.tajhizatss[k].id;
+                    list[k] = office.tajhizatss[k].id;
                 }
                 console.log(list);
                 $('.officeModal #id').val(office.id);
-                $('.officeModal #tajhizatss').selectpicker('val',list );
+                $('.officeModal #tajhizatss').selectpicker('val', list);
             });
             $('.officeModal #saveeditbutton').prop("value", "ویرایش");
             $('.officeModal #officeFrom').modal('show');
@@ -676,8 +660,7 @@ $(document).ready(function () {
                 $('.officeModal #tajhizats').selectpicker('val', '');
                 $('.officeModal #officeFrom').modal('show');
             });
-        }
-        else if (text == 'addTajhizToOfficeAndUser') {
+        } else if (text == 'addTajhizToOfficeAndUser') {
             console.log("addTajhizToOfficeAndUser");
             $("label.error").hide();
             $(".error").removeClass("error");
@@ -687,8 +670,8 @@ $(document).ready(function () {
                 // console.log(office.users.userDepartmentRoleLinks);
                 $('.officeModal #users').val('');
                 $('.officeModal #id').val(office.id);
-                var list =[];
-                for (var k =0 ; k<office.userDepartmentRoleLinks.length ; k++) {
+                var list = [];
+                for (var k = 0; k < office.userDepartmentRoleLinks.length; k++) {
                     console.log(office.userDepartmentRoleLinks[k].id);
                     list[k] = office.userDepartmentRoleLinks[k].id;
                     for (var j = 0; j < office.userDepartmentRoleLinks.length; j++) {
@@ -696,11 +679,10 @@ $(document).ready(function () {
                         console.log("TTTTTTT");
                     }
                 }
-                $('.officeModal #tajhizatsss').selectpicker('val',list );
+                $('.officeModal #tajhizatsss').selectpicker('val', list);
                 $('.officeModal #officeFrom_').modal('show');
             });
-        }
-        else if (text == 'laghvOffice') {
+        } else if (text == 'laghvOffice') {
             console.log("laghvOffice");
             $("label.error").hide();
             $(".error").removeClass("error");
@@ -720,10 +702,12 @@ $(document).ready(function () {
         observer: true,
         format: 'YYYY/MM/DD',
         autoClose: true,
-        disableBeforeToday:false,
+        endDate:"today",
+        disableBeforeToday: false,
     });
     $(".office-date-time").persianDatepicker({
         observer: true,
+
         format: 'HH:mm',
         altField: '.observer-example-alt',
         onlyTimePicker: true,
@@ -739,6 +723,7 @@ $(document).ready(function () {
         format: 'HH:mm',
         altField: '.observer-example-alt',
         onlyTimePicker: true,
+        endDate:"today",
         autoClose: true,
     });
 });

@@ -92,6 +92,18 @@ public class User implements Serializable, UserDetails {
 ////    @JsonBackReference
 //    private Set<Tajhizat> tajhiz;
 
+    @OneToMany(mappedBy = "user")
+    @JsonBackReference
+    private Set<Program> programs ;
+
+    public Set<Program> getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(Set<Program> programs) {
+        this.programs = programs;
+    }
+
     @ManyToOne
     @Nullable
     @JoinColumn(name = "job_id")

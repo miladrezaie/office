@@ -70,11 +70,11 @@ public class CategoryController {
         try {
             categoryService.deleteCategory(id);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            redirectAttributes.addFlashAttribute("message", "برند مورنظر با موفقیت حذف گردید.");
+            redirectAttributes.addFlashAttribute("message", "دسته بندی مورنظر با موفقیت حذف گردید.");
             return "redirect:/admin/categories";
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            redirectAttributes.addFlashAttribute("message", "برند به تجهیز خاص مرتبط است.");
+            redirectAttributes.addFlashAttribute("message", "دسته بندی به تجهیز خاص مرتبط است.");
             return "redirect:/admin/categories";
         }
     }
