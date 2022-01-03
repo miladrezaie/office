@@ -11,20 +11,26 @@
 <div class="row" layout:fragment="main_content">
     <div class="col-12">
         <div class="card">
+
             <div class="card-header">
                 <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
-
-                <th:block sec:authorize="hasAuthority('OP_AFZODAN_OFFICE')">
-                    <button type="button" class="btn btn-info fnBtn float-right" id="newoffice"><i class="fa fa-plus"></i>جدید</button>
-                </th:block>
-                <div class="card-tools">
-                    <div class="input-group input-group-sm" style="width: 150px;">
-<!--                        <input type="text" name="table_search" class="form-control float-right" placeholder="جستجو">-->
-<!--                        <div class="input-group-append">-->
-<!--                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>-->
-<!--                        </div>-->
-                    </div>
+                <div class="row mb-3">
+                    <form th:action="@{/find/date-between}" method="post" class="form-inline">
+                        <span class="badge">از تاریخ</span>
+                        <input type="text" name="startDate" readonly class="office-date ml-4">
+                        <span class="badge">تا تاریخ</span>
+                        <input type="text" name="endDate" readonly class="office-date  ml-4">
+                        <input type="submit" class="btn btn-outline-secondary btn-sm  ml-4" value="جستجو"/>
+                    </form>
                 </div>
+                <div class="row">
+                    <th:block sec:authorize="hasAuthority('OP_AFZODAN_OFFICE')">
+                        <button type="button" class="btn btn-info fnBtn float-right" id="newoffice"><i
+                                class="fa fa-plus"></i>جدید
+                        </button>
+                    </th:block>
+                </div>
+
             </div>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
@@ -42,11 +48,12 @@
                     </tr>
                     <tr th:each="form , state : ${officeforms}">
                         <td class="persianumber" th:utext="${state.count}"></td>
-                        <td th:utext="${form.program.getName()}"> </td>
+                        <td th:utext="${form.program.getName()}"></td>
                         <td th:utext="${form.getUsers().get(0).getFullname()}"></td>
                         <td th:utext="${form.location.getName()}"></td>
                         <td th:utext="${form.getType().getDisplayName()}"></td>
-                        <td th:if="${form.getStatus() ==false}"><span class="badge badge-warning">در روند تکمیل</span></td>
+                        <td th:if="${form.getStatus() ==false}"><span class="badge badge-warning">در روند تکمیل</span>
+                        </td>
                         <td th:if="${form.getUserCancelOfficeDescriptions().isEmpty()==false}">
                             <a th:attr="data-target='#modal-warning'+${state.count }"
                                href="#myModal" data-toggle="modal" class="MainNavText" id="laghvDescOffice">
@@ -57,15 +64,17 @@
                         <td th:if="${form.getStatus() ==true && form.getUserCancelOfficeDescriptions().isEmpty()==true}">
                             <a th:attr="data-target='#modal-warningg'+${state.count }"
                                href="#myModal" data-toggle="modal" class="MainNavText" id="takmilDescOffice">
-                                <span class="badge badge-success" >تکمیل شده</span>
+                                <span class="badge badge-success">تکمیل شده</span>
                             </a>
                         </td>
                         <td class="persianumber" th:utext="${form.getTarikhsodur()}"></td>
 
                         <td>
-                            <a th:href="@{form/(id=${form.id})}" class="mdelBtn" id="DeleteUser"><span class="badge bg-info">نمایش</span></a>
+                            <a th:href="@{form/(id=${form.id})}" class="mdelBtn" id="DeleteUser"><span
+                                    class="badge bg-info">نمایش</span></a>
                             <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
-                                <a th:attr="data-target='#modal-warning'+${form.getId() }" href="#myModal" data-toggle="modal" class="MainNavText" id="MainNavHelp">
+                                <a th:attr="data-target='#modal-warning'+${form.getId() }" href="#myModal"
+                                   data-toggle="modal" class="MainNavText" id="MainNavHelp">
                                     <span class="badge bg-danger">حذف</span>
                                 </a>
                             </th:block>
@@ -77,7 +86,8 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel"
                                             th:utext="${form.getTahayekonande()}"></h5>
-                                        <button style="display: contents;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <button style="display: contents;" type="button" class="close"
+                                                data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -87,7 +97,8 @@
                                         </p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن
+                                        </button>
                                         <a th:href="@{/admin/officeform/delete/{id}(id=${form.id})}"
                                            class="btn btn-danger">حذف</a>
                                     </div>
@@ -101,15 +112,16 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel"
                                             th:utext="${form.program.getName()}"></h5>
-                                        <button style="display: contents;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <button style="display: contents;" type="button" class="close"
+                                                data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body" th:each="ssss : ${form.getUserCancelOfficeDescriptions()}" >
+                                    <div class="modal-body" th:each="ssss : ${form.getUserCancelOfficeDescriptions()}">
                                         <p th:text="${ssss.getDescription()}"></p>
                                         <br>
                                         <br>
-                                        <p th:text="${ssss.getUser().getFullname() + ' ( ' + ssss.getUser().getJob().getName()+' ) '}"> </p>
+                                        <p th:text="${ssss.getUser().getFullname() + ' ( ' + ssss.getUser().getJob().getName()+' ) '}"></p>
 
                                     </div>
                                     <div class="modal-footer">
@@ -125,11 +137,12 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel"
                                             th:utext="${form.program.getName()}"></h5>
-                                        <button style="display: contents;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <button style="display: contents;" type="button" class="close"
+                                                data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body"  >
+                                    <div class="modal-body">
                                         <div class="row">
                                             <div class="col-12">
                                                 <h4 class="text-center">
@@ -156,9 +169,11 @@
                                             <!-- /.col -->
                                             <div class="col-sm-4 invoice-col">
                                                 <address>
-                                                    <small style="font-size: 15px;"><strong>تاریخ شروع :</strong>&nbsp; [[${form.getDate_begin()}]]
+                                                    <small style="font-size: 15px;"><strong>تاریخ شروع :</strong>&nbsp;
+                                                        [[${form.getDate_begin()}]]
                                                         &nbsp;</small><br>
-                                                    <small style="font-size: 15px;"><strong>تاریخ اتمام :</strong>&nbsp; [[${form.getDate_end()}]]
+                                                    <small style="font-size: 15px;"><strong>تاریخ اتمام :</strong>&nbsp;
+                                                        [[${form.getDate_end()}]]
                                                         &nbsp;</small>
                                                 </address>
                                             </div>
@@ -189,8 +204,7 @@
 
                                         <br>
                                         <br>
-                                        <p >آفیش مورد نظر با موفقیت تکمیل شد . </p>
-
+                                        <p>آفیش مورد نظر با موفقیت تکمیل شد . </p>
 
 
                                     </div>
@@ -206,18 +220,18 @@
             </div>
             <!-- /.card-body -->
 
-            <div class="card-footer clearfix" >
+            <div class="card-footer clearfix">
                 <div class="pagination-div">
                     <span th:if="${page.hasPrevious()}">
                         <a th:href="@{/officeTrue(page=${page.number-1},size=${page.size})}" th:if="${page.size>=1}">قبلی</a>
                     </span>
-                                    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
-                                        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
-                                        <span th:unless="${page.number == i}">
+                    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+                        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+                        <span th:unless="${page.number == i}">
                              <a th:href="@{/officeTrue(page=${i},size=${page.size})}">[[${i}+1]]</a>
                         </span>
-                                    </th:block>
-                                    <span th:if="${page.hasNext()}">
+                    </th:block>
+                    <span th:if="${page.hasNext()}">
                         <a th:href="@{/officeTrue(page=${page.number+1},size=${page.size})}">بعدی</a>
                     </span>
                 </div>
@@ -236,7 +250,8 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">آفیش</h5>
-                            <button style="display: contents;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button style="display: contents;" type="button" class="close" data-dismiss="modal"
+                                    aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -260,20 +275,22 @@
                             <div class="form-inline form-group">
                                 <div class="input-group input-group-sm">
                                     <label for="date_begin" class="form-control-label">از تاریخ :</label>
-                                    <input type="text" id="date_begin" name="date_begin"
+                                    <input type="text" id="date_begin" name="date_begin" readonly
                                            class="pwt-datepicker-input-element office-date">
                                     <label for="date_end" class="form-control-label">تا تاریخ : </label>
-                                    <input type="text" id="date_end" name="date_end"
+                                    <input type="text" id="date_end" name="date_end" readonly
                                            class="pwt-datepicker-input-element office-date">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="saat_zabt" class="form-control-label">ساعت شروع ضبط:</label>
-                                <input type="text" id="saat_zabt" name="saat_zabt" class="office-date-time" value=""/> مانند : 12:10
+                                <input type="text" id="saat_zabt" name="saat_zabt" class="office-date-time" readonly
+                                       value=""/> مانند : 12:10
                                 <br>
                                 <label for="saat_zabt_end" class="form-control-label">ساعت پایان ضبط:</label>
-                                <input type="text" id="saat_zabt_end" name="saat_zabt_end" class="office-date-time" value=""/> مانند : 13:10
+                                <input type="text" id="saat_zabt_end" name="saat_zabt_end" class="office-date-time"
+                                       readonly value=""/> مانند : 13:10
                             </div>
 
                             <div class="form-group">

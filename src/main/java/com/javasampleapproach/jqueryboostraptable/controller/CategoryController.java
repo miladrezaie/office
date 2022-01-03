@@ -1,11 +1,16 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
+import com.javasampleapproach.jqueryboostraptable.Service.CategoryService;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.CategoryServiceImp;
+import com.javasampleapproach.jqueryboostraptable.model.Category;
 import com.javasampleapproach.jqueryboostraptable.model.Category;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,25 +25,19 @@ import java.util.Optional;
 @Controller
 public class CategoryController {
 
-    private final CategoryServiceImp categoryService;
+    private final CategoryService categoryService;
 
-    private final UserService userService;
-
-    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CategoryController(CategoryServiceImp categoryService, UserService userService, CategoryRepository categoryRepository) {
+    public CategoryController(CategoryServiceImp categoryService) {
         this.categoryService = categoryService;
-        this.userService = userService;
-        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping(value = "/admin/categories")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
-    public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-
-        model.addAttribute("categories", categoryRepository.findAll(new PageRequest(page, 10)));
-        model.addAttribute("currentPage", page);
+    public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Category> categories = categoryService.getAllCategories(pageable);
+        model.addAttribute("page", categories);
 
         return "admin/categories/index";
     }

@@ -32,7 +32,7 @@
                             <th>تنظیمات</th>
                         </th:block>
                     </tr>
-                    <tr th:each="program,state : ${programs}">
+                    <tr th:each="program,state : ${page.getContent()}">
                         <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${program.getName()}">...</td>
                         <td class="persianumber" th:text="${program.getSaat_zabt() +' - ' +program.getSaat_zabt_end()}">...</td>
@@ -93,11 +93,20 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <ul class="pagination pagination-sm m-0 float-right" th:if="${programs.totalPages>=2}">
-                    <li class="page-item"><a class="page-link" href="#">«</a></li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0,programs.totalPages-1)}"><a class="page-link" th:href="@{/admin/programs/(page=${i})}" th:text="${i+1}" th:classappend="${currentPage}==${i}?'active':''">۱</a></li>
-                    <li class="page-item"><a class="page-link" href="#">»</a></li>
-                </ul>
+                <div class="pagination-div">
+                    <span th:if="${page.hasPrevious()}">
+                        <a th:href="@{/admin/programs(page=${page.number-1},size=${page.size})}" th:if="${page.size>=1}">قبلی</a>
+                    </span>
+                    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+                        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+                        <span th:unless="${page.number == i}">
+                             <a th:href="@{/admin/programs(page=${i},size=${page.size})}">[[${i}+1]]</a>
+                        </span>
+                    </th:block>
+                    <span th:if="${page.hasNext()}">
+                        <a th:href="@{/admin/programs(page=${page.number+1},size=${page.size})}">بعدی</a>
+                    </span>
+                </div>
             </div>
         </div>
         <div class="programModal" id="program_modal">
@@ -126,10 +135,10 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="saat_zabt" class="form-control-label">از ساعت :</label><i class="fa fa-calendar"></i>
-                                    <input class="program-date-time" type="text" id="saat_zabt" name="saat_zabt" value=""/>
+                                    <input class="program-date-time" type="text" readonly id="saat_zabt" name="saat_zabt" value=""/>
                                     <span>مانند : 10:00</span><br>
                                     <label for="saat_zabt_end" class="form-control-label">تا ساعت :</label><i class="fa fa-calendar"></i>
-                                    <input class="program-date-time" type="text" id="saat_zabt_end" name="saat_zabt_end" value=""/>
+                                    <input class="program-date-time" type="text" readonly id="saat_zabt_end" name="saat_zabt_end" value=""/>
                                     <span>مانند : 10:00</span><br>
                                 </div>
                                 <div class="form-group">
@@ -144,10 +153,10 @@
                                 <div class="form-inline form-group">
                                     <div class="input-group input-group-sm">
                                         <label for="date_begin" class="form-control-label">از تاریخ :</label>
-                                        <input type="text" id="date_begin" name="date_begin"
+                                        <input type="text" id="date_begin" readonly name="date_begin"
                                                class="form-control pwt-datepicker-input-element program-date">
                                         <label for="date_end" class="form-control-label">تا تاریخ : </label>
-                                        <input type="text" id="date_end" name="date_end"
+                                        <input type="text" id="date_end" readonly name="date_end"
                                                class="form-control pwt-datepicker-input-element program-date">
                                     </div>
                                 </div>

@@ -1,67 +1,57 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
-import com.javasampleapproach.jqueryboostraptable.Service.Impl.RoleServiceImp;
+
+import com.javasampleapproach.jqueryboostraptable.Service.RoleService;
 import com.javasampleapproach.jqueryboostraptable.enums.Authority;
 import com.javasampleapproach.jqueryboostraptable.model.Role;
-import com.javasampleapproach.jqueryboostraptable.model.User;
-import com.javasampleapproach.jqueryboostraptable.repository.RoleRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
+
 import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
 public class RoleController {
 
-    private final RoleServiceImp roleService;
+    private final RoleService roleService;
 
-    private final UserService userService;
-
-    private final RoleRepository roleRepository;
-
-    private Authority authority;
 
     @Autowired
-    public RoleController(RoleServiceImp roleService, UserService userService, RoleRepository roleRepository) {
+    public RoleController(RoleService roleService) {
         this.roleService = roleService;
-        this.userService = userService;
-        this.roleRepository = roleRepository;
     }
 
 
     @GetMapping(value = "/admin/roles")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_ROLES')")
-    public String index(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-
-        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        User user = userService.findByUsername(auth.getName());
+//
+//        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         model.addAttribute("authorities", Authority.values());
-        model.addAttribute("roles", roleRepository.findAll(new PageRequest(page,10)));
-        model.addAttribute("currentPage", page);
+        Page<Role> roles = roleService.getAllRoles(pageable);
+        model.addAttribute("page", roles);
+
         return "admin/roles/index";
     }
 
     @PostMapping(value = "/admin/roles/create")
-    public String create(@ModelAttribute @Valid Role role , BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String create(@ModelAttribute @Valid Role role, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
-            if (bindingResult.hasErrors()){
+            if (bindingResult.hasErrors()) {
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY : "+bindingResult.getAllErrors());
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY : " + bindingResult.getAllErrors());
 //                for (Object object : bindingResult.getAllErrors()) {
 //                    redirectAttributes.addFlashAttribute("message", object+"\n");
 //
@@ -111,7 +101,6 @@ public class RoleController {
     @GetMapping("/admin/roles/find/{id}")
     @ResponseBody
     public Optional<Role> fiOptionalRole(@PathVariable long id) {
-        System.out.println("***************** + " + id);
         return roleService.findByIdRole(id);
     }
 }

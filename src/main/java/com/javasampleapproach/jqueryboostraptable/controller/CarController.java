@@ -1,11 +1,16 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
+import com.javasampleapproach.jqueryboostraptable.Service.CarService;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.CarServiceImp;
+import com.javasampleapproach.jqueryboostraptable.model.Brand;
 import com.javasampleapproach.jqueryboostraptable.model.Car;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -21,28 +26,20 @@ import java.util.Optional;
 @Controller
 public class CarController {
 
-    private final CarServiceImp carService;
+    private final CarService carService;
 
-    private final UserService userService;
-
-    private final CarRepository carRepository;
 
     @Autowired
-    public CarController(CarServiceImp carService, UserService userService, CarRepository carRepository) {
+    public CarController(CarServiceImp carService ) {
         this.carService = carService;
-        this.userService = userService;
-        this.carRepository = carRepository;
     }
 
     @GetMapping(value = "/admin/cars")
     @Transactional
-    public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        User user = userService.findByUsername(auth.getName());
-//        model.addAttribute("userName", "خوش آمدید " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
-////        model.addAttribute("cars",carService.getAllCars());
-        model.addAttribute("cars",carRepository.findAll(new PageRequest(page,10)));
-        model.addAttribute("currentPage", page);
+    public String index(Model model,  @PageableDefault(size = 10) Pageable pageable) {
+        Page<Car> cars = carService.getAllCars(pageable);
+        model.addAttribute("page", cars);
+
         return "admin/cars/index";
     }
 
@@ -82,7 +79,6 @@ public class CarController {
     @GetMapping("/admin/cars/find/{id}")
     @ResponseBody
     public Optional<Car> fiOptionalCar(@PathVariable long id){
-        System.out.println("***************** + "+ id);
         return carService.findByIdCar(id);
     }
 }

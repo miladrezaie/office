@@ -11,9 +11,12 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.javasampleapproach.jqueryboostraptable.Service.CategoryService;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.CategoryServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.RoleServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.JobService;
+import com.javasampleapproach.jqueryboostraptable.Service.RoleService;
 import com.javasampleapproach.jqueryboostraptable.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +57,13 @@ public class WebController {
     private UserService userService;
 
     @Autowired
-    private JobServiceImp jobServiceImp;
+    private JobService jobService;
 
     @Autowired
-    private RoleServiceImp roleServiceImp;
+    private RoleService roleService;
 
     @Autowired
-    private CategoryServiceImp categoryServiceImp;
+    private CategoryService categoryService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -92,9 +95,9 @@ public class WebController {
         //data have devices information
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
-        List<Job> jobs = jobServiceImp.getAllJobs();
-        List<Role> roles = roleServiceImp.getAllRoles();
-        List<Category> categories = categoryServiceImp.getAllCategories();
+        List<Job> jobs = jobService.findAll();
+        List<Role> roles = roleService.findAll();
+        List<Category> categories = categoryService.findAll();
         model.addAttribute("userName", "Welcome " + user.getFName() + " " + user.getLname() + " (" + user.getPersonalId() + ")");
         if (keyword != null) {
             model.addAttribute("users", userRepo.search(keyword));
@@ -107,13 +110,6 @@ public class WebController {
         }
         return "admin/users/index";
     }
-
-    @GetMapping("/Scanner")
-    public String qrScan() {
-        return "scanner";
-    }
-
-
 
     @PostMapping("/Esave")
     public String Esave(employee e) {
@@ -134,7 +130,7 @@ public class WebController {
 
         try {
             if (bindingResult.hasErrors()) {
-                System.out.println("ERRRRRRRRRRRRRRRRRRR: "+bindingResult.getAllErrors());
+                System.out.println("ERRRRRRRRRRRRRRRRRRR: " + bindingResult.getAllErrors());
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/members";
@@ -186,13 +182,14 @@ public class WebController {
     public String profile(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
-        model.addAttribute("user",  user);
+//        System.out.println("GGGGGGGGGGGGGGGGGG :  "+bCryptPasswordEncoder);
+        model.addAttribute("user", user);
         return "admin/auth/user-profile";
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model, User user) {
-        List<Job> jobs = jobServiceImp.getAllJobs();
+        List<Job> jobs = jobService.findAll();
         model.addAttribute("jobs", jobs);
         model.addAttribute("user", user);
         return "/registration";
@@ -226,7 +223,7 @@ public class WebController {
 
     @GetMapping("/deleteUser/{id}")
 //    @PreAuthorize("#userRepo.name != authentication.name")
-    public String deleteUser(@PathVariable Integer id,RedirectAttributes redirectAttributes) {
+    public String deleteUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             userRepo.deleteById(id);
         } catch (Exception e) {
@@ -240,8 +237,9 @@ public class WebController {
     }
 
     @PostMapping("/admin/profile/user")
-    public String editProfile(@ModelAttribute @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String editProfile(@ModelAttribute @Valid User user, @RequestParam("oldPass") String oldPass, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         User userE = userRepo.findByPersonalId(user.getPersonalId());
+        System.out.println("old password :  " + oldPass);
 
         try {
             if (bindingResult.hasErrors()) {
@@ -249,27 +247,21 @@ public class WebController {
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/admin/profile";
-            } else {
-//            if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
-//                bindingResult.rejectValue("personalId", "error.user",
-//                        "هم اکنون کاربری با این شماره کارمندی موجود است");
-//            }
-//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user);
-//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getFName());
-//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getLname());
-//                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYyyy : "+user.getPass());
-
+            } else if (bCryptPasswordEncoder.matches(oldPass ,userE.getPass())) {
                 userE.setFName(user.getFName());
                 userE.setLname(user.getLname());
+
                 userE.setPass(user.getPass());
-
-//                System.out.println("create user form else");
-
                 userService.save(userE);
+
+                redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+                redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
+                return "redirect:/admin/profile";
+
+            } else {
+                throw new Exception();
             }
-            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
-            return "redirect:/admin/profile";
+
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
@@ -417,7 +409,6 @@ public class WebController {
     public Optional<employee> findOneEmployee(Integer id) {
         return employeeRepo.findById(id);
     }
-
 
 
 }

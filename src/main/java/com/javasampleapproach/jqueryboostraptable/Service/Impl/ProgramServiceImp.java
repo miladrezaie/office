@@ -5,6 +5,8 @@ import com.javasampleapproach.jqueryboostraptable.model.Location;
 import com.javasampleapproach.jqueryboostraptable.model.Program;
 import com.javasampleapproach.jqueryboostraptable.repository.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +21,14 @@ public class ProgramServiceImp implements ProgramService {
         this.programRepository = programRepository;
     }
 
-    public List<Program> getAllPrograms() {
+
+    @Override
+    public Page<Program> getAllPrograms(Pageable page) {
+        return programRepository.findAll(page);
+    }
+
+    @Override
+    public List<Program> findAll() {
         return programRepository.findAll();
     }
 
@@ -34,7 +43,6 @@ public class ProgramServiceImp implements ProgramService {
     public Program getProgram(Long id) {
         return programRepository.findById(id).get();
     }
-
 
     public Optional<Program> findByIdProgram(Long id) {
         return programRepository.findById(id);

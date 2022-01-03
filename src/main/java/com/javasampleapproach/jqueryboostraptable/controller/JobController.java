@@ -1,11 +1,17 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
+import com.javasampleapproach.jqueryboostraptable.Service.CategoryService;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.CategoryServiceImp;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.JobServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.JobService;
+import com.javasampleapproach.jqueryboostraptable.model.Category;
 import com.javasampleapproach.jqueryboostraptable.model.Job;
 import com.javasampleapproach.jqueryboostraptable.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,27 +24,21 @@ import java.util.Optional;
 @Controller
 public class JobController {
 
-    private final JobServiceImp jobService;
-    private final CategoryServiceImp categoryServiceImp;
-
-    private final UserService userService;
-
-    private final JobRepository jobRepository;
+    private final JobService jobService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public JobController(JobServiceImp jobService, CategoryServiceImp categoryServiceImp, UserService userService, JobRepository jobRepository) {
+    public JobController(JobService jobService, CategoryService categoryService) {
         this.jobService = jobService;
-        this.categoryServiceImp = categoryServiceImp;
-        this.userService = userService;
-        this.jobRepository = jobRepository;
+        this.categoryService = categoryService;
     }
 
     @GetMapping(value = "/admin/jobs")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-    public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-        model.addAttribute("jobs", jobRepository.findAll(new PageRequest(page,10)));
-        model.addAttribute("currentPage", page);
-        model.addAttribute("categories",categoryServiceImp.getAllCategories());
+    public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Job> jobs = jobService.getAllJobs(pageable);
+        model.addAttribute("page", jobs);
+        model.addAttribute("categories", categoryService.findAll());
         return "admin/jobs/index";
     }
 
@@ -80,8 +80,7 @@ public class JobController {
 
     @GetMapping("/admin/jobs/find/{id}")
     @ResponseBody
-    public Optional<Job> fiOptionalJob(@PathVariable long id){
-        System.out.println("***************** + "+ id);
+    public Optional<Job> fiOptionalJob(@PathVariable long id) {
         return jobService.findByIdJob(id);
     }
 }

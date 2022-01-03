@@ -29,13 +29,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             if (user == null) {
                 throw new UsernameNotFoundException(personalId);
             }
-            System.out.println("************loadUserByUsername : start " + user.getPersonalId());
+//            System.out.println("************loadUserByUsername : start " + user.getPersonalId());
             return new org.springframework.security.core.userdetails.User(user.getPersonalId(), user.getPass(),
                     user.getAuthorities());
         } catch (UserNotFoundException e) {
             throw new UsernameNotFoundException(personalId);
         }
-
-
     }
 }

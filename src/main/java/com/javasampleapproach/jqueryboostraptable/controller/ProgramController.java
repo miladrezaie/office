@@ -2,12 +2,17 @@ package com.javasampleapproach.jqueryboostraptable.controller;
 
 
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.ProgramServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.ProgramService;
 import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
+import com.javasampleapproach.jqueryboostraptable.model.Job;
 import com.javasampleapproach.jqueryboostraptable.model.Program;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -24,27 +29,21 @@ import java.util.Optional;
 @Controller
 public class ProgramController {
 
-    private final ProgramServiceImp programService;
-
+    private final ProgramService programService;
     private final UserService userService;
 
-    private final ProgramRepository programRepository;
-
     @Autowired
-    public ProgramController(ProgramServiceImp programService, UserService userService, ProgramRepository programRepository) {
+    public ProgramController(ProgramService programService, UserService userService) {
         this.programService = programService;
         this.userService = userService;
-        this.programRepository = programRepository;
     }
 
     @GetMapping(value = "/admin/programs")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
-    public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-//
-
+    public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Program> programs = programService.getAllPrograms(pageable);
+        model.addAttribute("page", programs);
         model.addAttribute("rozhaehafte", RozHafteh.values());
-        model.addAttribute("programs", programRepository.findAll(new PageRequest(page,10)));
-        model.addAttribute("currentPage", page);
 
         return "admin/programs/index";
     }
@@ -54,7 +53,7 @@ public class ProgramController {
 //    @Transactional
     public String create(@ModelAttribute @Valid Program program, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
-            if (bindingResult.hasErrors()){
+            if (bindingResult.hasErrors()) {
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/admin/programs";
@@ -91,7 +90,7 @@ public class ProgramController {
 
     @GetMapping("/admin/programs/find/{id}")
     @ResponseBody
-    public Optional<Program> fiOptionalProgram(@PathVariable long id){
+    public Optional<Program> fiOptionalProgram(@PathVariable long id) {
 //        System.out.println("***************** + "+ id);
         return programService.findByIdProgram(id);
     }

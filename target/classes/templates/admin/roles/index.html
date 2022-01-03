@@ -26,7 +26,7 @@
                         <th>توضیحات</th>
                         <th>تنظیمات</th>
                     </tr>
-                    <tr th:each="role,state : ${roles}">
+                    <tr th:each="role,state : ${page.getContent()}">
                         <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${role.getName()}">...</td>
                         <td th:text="${role.getDescription()}">...</td>
@@ -76,13 +76,24 @@
 
             </div>
             <!-- /.card-body -->
+
             <div class="card-footer clearfix">
-                <ul class="pagination pagination-sm m-0 float-right" th:if="${roles.totalPages>=2}">
-                    <li class="page-item"><a class="page-link" href="#">«</a></li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0,roles.totalPages-1)}"><a class="page-link" th:href="@{/admin/roles/(page=${i})}" th:text="${i+1}" th:classappend="${currentPage}==${i}?'active':''">۱</a></li>
-                    <li class="page-item"><a class="page-link" href="#">»</a></li>
-                </ul>
+                <div class="pagination-div">
+                    <span th:if="${page.hasPrevious()}">
+                        <a th:href="@{/admin/roles(page=${page.number-1},size=${page.size})}" th:if="${page.size>=1}">قبلی</a>
+                    </span>
+                    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+                        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+                        <span th:unless="${page.number == i}">
+                             <a th:href="@{/admin/roles(page=${i},size=${page.size})}">[[${i}+1]]</a>
+                        </span>
+                    </th:block>
+                    <span th:if="${page.hasNext()}">
+                        <a th:href="@{/admin/roles(page=${page.number+1},size=${page.size})}">بعدی</a>
+                    </span>
+                </div>
             </div>
+
         </div>
         <div class="roleModal" id="role_modal">
             <form th:action="@{/admin/roles/create}" method="post" name="roleForm" id="roleForm">

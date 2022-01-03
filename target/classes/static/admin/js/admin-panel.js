@@ -704,19 +704,34 @@ $(document).ready(function () {
         autoClose: true,
         endDate:"today",
         disableBeforeToday: false,
+        // initialValueType: 'gregorian'
+        calendar:{
+            persian: {
+                locale: 'en'
+            }
+        }
     });
     $(".office-date-time").persianDatepicker({
         observer: true,
-
         format: 'HH:mm',
         altField: '.observer-example-alt',
         onlyTimePicker: true,
         autoClose: true,
+        calendar:{
+            persian: {
+                locale: 'en'
+            }
+        }
     });
     $(".program-date").persianDatepicker({
         observer: true,
         format: 'YYYY/MM/DD',
         autoClose: true,
+        calendar:{
+            persian: {
+                locale: 'en'
+            }
+        }
     });
     $(".program-date-time").persianDatepicker({
         observer: true,
@@ -725,5 +740,10 @@ $(document).ready(function () {
         onlyTimePicker: true,
         endDate:"today",
         autoClose: true,
+        calendar:{
+            persian: {
+                locale: 'en'
+            }
+        }
     });
 });

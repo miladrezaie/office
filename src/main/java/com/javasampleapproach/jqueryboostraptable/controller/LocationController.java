@@ -1,12 +1,18 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.LocationServiceImp;
+import com.javasampleapproach.jqueryboostraptable.Service.LocationService;
+import com.javasampleapproach.jqueryboostraptable.model.Category;
 import com.javasampleapproach.jqueryboostraptable.model.Location;
 import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.LocationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -24,24 +30,17 @@ import java.util.Optional;
 @Controller
 public class LocationController {
 
-    private final LocationServiceImp locationService;
+    private final LocationService locationService;
 
-    private final UserService userService;
-
-    private final LocationRepository locationRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger(LocationController.class);
-
-    public LocationController(LocationServiceImp locationService, UserService userService, LocationRepository locationRepository) {
+    @Autowired
+    public LocationController(LocationServiceImp locationService) {
         this.locationService = locationService;
-        this.userService = userService;
-        this.locationRepository = locationRepository;
     }
 
     @GetMapping( value = "/admin/locations")
-    public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-        model.addAttribute("locations", locationRepository.findAll(new PageRequest(page,10)));
-        model.addAttribute("currentPage", page);
+    public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Location> locations = locationService.getAllLocations(pageable);
+        model.addAttribute("page", locations);
         return "admin/locations/index";
     }
 
