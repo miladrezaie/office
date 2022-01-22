@@ -85,8 +85,8 @@
 </head>
 <body class="hold-transition sidebar-mini" style="font-size: 14px;">
 <div class="loader hidden">
-<!--    <span class="loader"><span class="loader-inner"></span></span>-->
-    <img th:src="@{/admin/img/loading2.gif}" alt="صبر کنید .." />
+    <!--    <span class="loader"><span class="loader-inner"></span></span>-->
+    <img th:src="@{/admin/img/loading2.gif}" alt="صبر کنید .."/>
 </div>
 <div class="wrapper">
     <!-- Navbar -->
@@ -97,7 +97,7 @@
                 <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link">خانه</a>
+                <a href="#" class="nav-link" th:text="${currentUserIp}">آی پی :</a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="#" class="nav-link">تماس</a>
@@ -109,7 +109,7 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <form th:action="@{/logout}" method="get">
-                    <button class="btn btn-danger btn-sm" name="registration" type="Submit" >
+                    <button class="btn btn-danger btn-sm" name="registration" type="Submit">
                         <span class="">خروج</span>
                     </button>
                 </form>
@@ -135,7 +135,9 @@
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 
                     <div class="info">
-                        <a href="#" class="d-block"><span sec:authorize="isAuthenticated()">خوش آمدید <span class="persianumber" sec:authentication="name"></span></span></a>
+                        <!--                        <a href="#" class="d-block"><span sec:authorize="isAuthenticated()">خوش آمدید <span class="persianumber" sec:authentication="name"></span>-<span sec:authentication="principal.authorities"></span></span></a>-->
+                        <a href="#" class="d-block"><span sec:authorize="isAuthenticated()"><span
+                                th:text="${currentUser}"></span></span></a>
                     </div>
                 </div>
 
@@ -256,7 +258,7 @@
                                 <a th:href="@{/admin/cars}" class="nav-link">
                                     <i class="nav-icon fa fa-car"></i>
                                     <p>
-                                        وسایل نقیه  سازمان
+                                        وسایل نقیه سازمان
                                     </p>
                                 </a>
                             </li>
@@ -304,7 +306,7 @@
         </div>
         <!-- /.sidebar -->
     </aside>
-<!--    <th:block th:include="/fragment/sidebar"></th:block>-->
+    <!--    <th:block th:include="/fragment/sidebar"></th:block>-->
 
     <!-- Content Wrapper. Contains page content -->
 
@@ -368,7 +370,7 @@
 
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $('.persianumber').persiaNumber();
     });
     window.addEventListener("load", function () {
@@ -379,7 +381,7 @@
 <script>
     $(function () {
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             // $('.select2').select2();
             $('.selectpicker').selectpicker();
 

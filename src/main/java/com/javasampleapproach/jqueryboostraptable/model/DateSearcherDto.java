@@ -14,10 +14,12 @@ public class DateSearcherDto {
 
 //    @Date(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "yyyy/MM/dd")
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
     private Date startDate;
 
 //    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "yyyy/MM/dd")
 
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
     private Date endDate;
 }

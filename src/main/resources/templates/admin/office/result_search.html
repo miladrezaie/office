@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>اتوماسیون آفیش - تکمیل شده</title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+    <div class="col-12">
+        <div class="card">
+
+            <div class="card-header">
+                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+                <div class="row mb-3">
+                    <form th:action="@{/find/date-between}" method="get" class="form-inline">
+                        <span class="badge">از تاریخ</span>
+                        <input type="text" name="startDate" readonly class="office-date ml-4">
+                        <span class="badge">تا تاریخ</span>
+                        <input type="text" name="endDate" readonly class="office-date  ml-4">
+                        <input type="submit" class="btn btn-outline-secondary btn-sm  ml-4" value="جستجو"/>
+                    </form>
+                </div>
+
+            </div>
+            <!-- /.card-header -->
+            نتایج جستجو
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover ">
+                    <tbody>
+                    <tr>
+                        <th>شماره</th>
+                        <th>نام برنامه</th>
+                        <th>نام تهیه کننده</th>
+                        <th>محل آفیش</th>
+                        <th>نوع آفیش</th>
+                        <th>تکمیل آفیش</th>
+                        <th>تاریخ ثبت</th>
+                        <th>تنظیمات</th>
+                    </tr>
+                    <tr th:each="form , state : ${officeforms}">
+                        <td class="persianumber" th:utext="${form.getId()}"></td>
+                        <td th:utext="${form.program.getName()}"></td>
+                        <td th:utext="${form.getUsers().get(0).getFullname()}"></td>
+                        <td th:utext="${form.location.getName()}"></td>
+                        <td th:utext="${form.getType().getDisplayName()}"></td>
+                        <td th:if="${form.getUserCancelOfficeDescriptions().isEmpty()==false}">
+                            <a th:attr="data-target='#modal-warning'+${state.count }"
+                               href="#myModal" data-toggle="modal" class="MainNavText" id="laghvDescOffice">
+                                <span class="badge bg-danger">لغو شده</span>
+                            </a>
+                        </td>
+                        <td th:if="${form.getStatus() ==true && form.getUserCancelOfficeDescriptions().isEmpty()==true}">
+                            <a th:attr="data-target='#modal-warningg'+${state.count }"
+                               href="#myModal" data-toggle="modal" class="MainNavText" id="takmilDescOffice">
+                                <span class="badge badge-success">تکمیل شده</span>
+                            </a>
+                        </td>
+                        <td class="persianumber" th:utext="${form.getTarikhsodur()}"></td>
+
+                        <td>
+                            <a th:href="@{/form/(id=${form.id})}" class="mdelBtn" id="DeleteUser"><span
+                                    class="badge bg-info">نمایش</span></a>
+                            <th:block sec:authorize="hasAuthority('OP_DELETE_OFFICE')">
+                                <a th:attr="data-target='#modal-warning'+${form.getId() }" href="#myModal"
+                                   data-toggle="modal" class="MainNavText" id="MainNavHelp">
+                                    <span class="badge bg-danger">حذف</span>
+                                </a>
+                            </th:block>
+                        </td>
+                        <div class="modal fade" th:id="modal-warning+${form.getId()}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"
+                                            th:utext="${form.getTahayekonande()}"></h5>
+                                        <button style="display: contents;" type="button" class="close"
+                                                data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="alert alert-danger">
+                                            آیا شما مطمین هستید که میخواهید این آفیش را پاک کنید ؟
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن
+                                        </button>
+                                        <a th:href="@{/admin/officeform/delete/{id}(id=${form.id})}"
+                                           class="btn btn-danger">حذف</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" th:id="modal-warning+${state.count}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="exampleModalLabel"
+                                            th:utext="${form.program.getName()}"></h6>
+                                        <button style="display: contents;" type="button" class="close"
+                                                data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" th:each="ssss : ${form.getUserCancelOfficeDescriptions()}">
+                                        <p th:text="${ssss.getDescription()}"></p>
+                                        <br>
+                                        <br>
+                                        <p th:text="${ssss.getUser().getFullname() + ' ( ' + ssss.getUser().getJob().getName()+' ) '}"></p>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">بستن</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" th:id="modal-warningg+${state.count}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="exampleModalLabel"
+                                            th:utext="${form.program.getName()}"></h6>
+                                        <button style="display: contents;" type="button" class="close"
+                                                data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h5 class="text-center">
+                                                    [[${form.getType().getDisplayName()}]]
+                                                </h5>
+                                                <br>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <!-- info row -->
+                                        <div class="row invoice-info">
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small style="font-size: 13px;"><strong>نام برنامه &nbsp;:</strong>&nbsp;
+                                                        [[${form.getProgram().getName()}]] &nbsp;</small>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <!-- /.col -->
+                                            <div class="col-sm-6 invoice-col">
+                                                <address class="persianumber">
+                                                    <small style="font-size: 13px;"><strong>تاریخ شروع :</strong>&nbsp;
+                                                        [[${form.getDate_begin()}]]
+                                                        &nbsp;</small><br>
+                                                    <small style="font-size: 13px;"><strong>تاریخ اتمام :</strong>&nbsp;
+                                                        [[${form.getDate_end()}]]
+                                                        &nbsp;</small>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <div class="row invoice-info">
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <strong>مکان آفیش :</strong><br>
+                                                    [[${form.location.getName()}]]<br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+
+                                            <!-- /.col -->
+                                            <div class="col-sm-6 invoice-col ">
+                                                <address class="persianumber">
+                                                    <strong>ساعت آفیش :</strong><br>
+                                                    [[${form.saat_zabt}]] - [[${form.saat_zabt_end}]]<br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+
+                                        <br>
+                                        <br>
+                                        <p style="color: green;">آفیش مورد نظر با موفقیت تکمیل شد . </p>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">بستن</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer clearfix">
+                <div class="pagination-div">
+                    <span th:if="${page.hasPrevious()}">
+                        <a th:href="@{/find/date-between(startDate=${dateSearcherDtoStart},endDate=${dateSearcherDtoEnd},page=${page.number-1},size=${page.size})}" th:if="${page.size>=1}">قبلی</a>
+                    </span>
+                    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+                        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+                        <span th:unless="${page.number == i}">
+                             <a th:href="@{/find/date-between(startDate=${dateSearcherDtoStart},endDate=${dateSearcherDtoEnd},page=${i},size=${page.size})}">[[${i}+1]]</a>
+                        </span>
+                    </th:block>
+                    <span th:if="${page.hasNext()}">
+                        <a th:href="@{/find/date-between(startDate=${dateSearcherDtoStart},endDate=${dateSearcherDtoEnd},page=${page.number+1},size=${page.size})}">بعدی</a>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+        <!-- /.card -->
+    </div>
+
+
+</div>
+
+</body>
+</html>

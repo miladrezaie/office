@@ -3,7 +3,7 @@ package com.javasampleapproach.jqueryboostraptable.enums;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Authority implements GrantedAuthority {
-    OP_ACCESS_ADMIN_PANEL("دسترسی به ادمین پنل"),
+    OP_ACCESS_ADMIN_PANEL("ادمین سایت"),
     OP_NEW_USER("اضافه کردن کاربر جدید"),
     OP_EDIT_USER("ویرایش کاربر چدید"),
     OP_ACCESS_TAJHIZATS("دسترسی به تجهیزات"),
@@ -37,7 +37,19 @@ public enum Authority implements GrantedAuthority {
     OP_LOCATIONS_OFFICE("قسمت مکان ها"),
     OP_PROGRAMS_OFFICE("قسمت برنامه ها"),
     OP_CATEGORY_OFFICE("قسمت دسته بندی ها"),
-    OP_CAR_OFFICE("قسمت وسایل نقلیه ها")
+    OP_CAR_OFFICE("قسمت وسایل نقلیه ها"),
+    OP_SHOW_ALL_PROGRAM("قسمت آفیش زدن - انتخاب تمام برنامه ها"),
+    OP_DELETE_AND_UPDATE_PROGRAM("حذف و ویرایش برنامه ها"),
+    OP_DELETE_OFFICE("حذف آفیش"),
+    OP_SINGLE_OFFICE_HAMLONAGHL_PART("قسمت آفیش تکی - بخش مربوط به حمل ونقل"),
+    OP_SINGLE_OFFICE_HERASAT_PART("قسمت آفیش تکی - بخش مربوط به حراست"),
+    OP_PRINT_OFFICE("پرینت آفیش"),
+    OP_PRINT_PDF_OFFICE("خروجی پی دی اف"),
+    OP_FIND_BY_JOBS_OFFICE("پیدا کردن آفیش با استفاده از عنوان شغلی"),
+    OP_FIND_BY_CATEGORY_OFFICE("پیدا کردن آفیش با استفاده از دسته بندی"),
+    OP_FIND_BY_ID_OFFICE("پیدا کردن آفیش با استفاده از آی دی"),
+    OP_LOCATIONS_DELETE_OFFICE("حذف مکان"),
+    OP_LOCATIONS_UPDATE_OFFICE("ویرایش مکان"),
     ;
 
 

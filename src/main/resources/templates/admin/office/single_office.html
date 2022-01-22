@@ -48,6 +48,9 @@
                                      class="img-fluid "
                                      style="direction: ltr;">
 
+                                <span th:if="${form.getTahayekonandeSeen() != null}"
+                                      class="badge bg-gray-light persianumber" th:text="${form.getTahayekonandeSeen()}"></span>
+
                                 <th:block th:if="${form.getTahayeemza() == null}"
                                           sec:authorize="hasAuthority('OP_TAHIEKONANDEH')">
                                     <form th:action="@{/saveEmza}" method="post">
@@ -123,9 +126,9 @@
             <!-- title row -->
             <div class="row">
                 <div class="col-12">
-                    <h4 class="text-center">
+                    <h5 class="text-center">
                         [[${form.getType().getDisplayName()}]]
-                    </h4>
+                    </h5>
                     <br>
                 </div>
                 <!-- /.col -->
@@ -153,9 +156,9 @@
                 <!-- /.col -->
                 <div class="col-sm-4 invoice-col">
                     <address>
-                        <small style="font-size: 15px;"><strong>تاریخ شروع :</strong>&nbsp; [[${form.getDate_begin()}]]
+                        <small class="persianumber" style="font-size: 15px; display: flex"><strong>تاریخ شروع :</strong>&nbsp; [[${form.getDate_begin()}]]
                             &nbsp;</small><br>
-                        <small style="font-size: 15px;"><strong>تاریخ اتمام :</strong>&nbsp; [[${form.getDate_end()}]]
+                        <small class="persianumber" style="font-size: 15px; display: flex"><strong>تاریخ اتمام :</strong>&nbsp; [[${form.getDate_end()}]]
                             &nbsp;</small>
                     </address>
                 </div>
@@ -176,8 +179,8 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-4 invoice-col ">
-                    <address>
-                        <strong>ساعت آفیش :</strong><br>
+                    <address class="persianumber">
+                        <strong >ساعت آفیش :</strong><br>
                         [[${form.saat_zabt}]] - [[${form.saat_zabt_end}]]<br>
                     </address>
                 </div>
@@ -412,6 +415,10 @@
                                      th:src="*{'data:emza/jpg;base64,'+{form.getMdarkhastemza()}}"
                                      class="img-fluid "
                                      style="direction: ltr;">
+
+                                <span th:if="${form.getMdarkhastSeen() != null}"
+                                      class="badge bg-gray-light persianumber" th:text="${form.getMdarkhastSeen()}"></span>
+
                                 <th:block th:if="${form.getMdarkhastemza() == null && form.getStatus() ==false}"
                                           sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
                                     <form th:action="@{/saveEmza}" method="post">
@@ -432,6 +439,10 @@
                                      th:src="*{'data:emza/jpg;base64,'+{form.getPoshemza()}}"
                                      class="img-fluid "
                                      style="direction: ltr;">
+
+                                <span th:if="${form.getPosheSeen() != null}"
+                                      class="badge bg-gray-light persianumber" th:text="${form.getPosheSeen()}"></span>
+
                                 <th:block th:if="${form.getPoshemza() == null && form.getStatus() ==false}"
                                           sec:authorize="hasAuthority('OP_MODIR_POSHTIBANIT')">
                                     <form th:action="@{/saveEmza}" method="post">
@@ -451,6 +462,8 @@
                                      th:src="*{'data:emza/jpg;base64,'+{form.getUplinkemza()}}"
                                      class="img-fluid "
                                      style="direction: ltr;">
+                                <span th:if="${form.getUplinkSeen() != null}"
+                                      class="badge bg-gray-light persianumber" th:text="${form.getUplinkSeen()}"></span>
                                 <th:block th:if="${form.getUplinkemza() == null && form.getStatus() ==false}"
                                           sec:authorize="hasAuthority('OP_UP_LINK')">
                                     <form th:action="@{/saveEmza}" method="post">
@@ -471,6 +484,8 @@
                                      th:src="*{'data:emza/jpg;base64,'+{form.getTasisatemza()}}"
                                      class="img-fluid "
                                      style="direction: ltr;">
+                                <span th:if="${form.getTasisatSeen() != null}"
+                                      class="badge bg-gray-light persianumber" th:text="${form.getTasisatSeen()}"></span>
                                 <th:block th:if="${form.getTasisatemza() == null && form.getStatus() ==false}"
                                           sec:authorize="hasAuthority('OP_TASISAT')">
                                     <form th:action="@{/saveEmza}" method="post">
@@ -523,18 +538,26 @@
             <!-- /.row -->
 
             <!-- this row will not appear when printing -->
-            <div class="row no-print">
-                <div class="col-12">
-                    <!--                    <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"-->
-                    <!--                       style="margin-right: 5px;">-->
-                    <!--                        <i class="fa fa-download"></i>pdf-->
-                    <!--                    </a>-->
-                    <a th:href="@{/office-print/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"
-                       style="margin-right: 5px;">
-                        <i class="fa fa-download"></i>پرینت
-                    </a>
+            <th:block sec:authorize="hasAuthority('OP_PRINT_OFFICE')">
+                <div class="row no-print">
+                    <div class="col-12">
+                        <!--                    <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"-->
+                        <!--                       style="margin-right: 5px;">-->
+                        <!--                        <i class="fa fa-download"></i>pdf-->
+                        <!--                    </a>-->
+                        <a target="_blank" th:href="@{/office-print/{id}(id=${form.id})}" class="btn btn-sm btn-primary float-left ml-2"
+                           style="margin-right: 5px;">
+                            <i class="fa fa-download"></i>پرینت
+                        </a>
+<!--                        <a target="_blank" th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-sm btn-primary float-left ml-2"-->
+<!--                           style="margin-right: 5px;">-->
+<!--                            <i class="fa fa-download"></i>pdf-->
+<!--                        </a>-->
+                    </div>
                 </div>
-            </div>
+            </th:block>
+
+
 
         </div>
         <div th:if="${form.getStatus() ==false}" class="officeModal" id="office_modal">
@@ -582,11 +605,17 @@
         </div>
         <!-- /.invoice -->
     </div>
-    <th:block sec:authorize="hasAnyAuthority('OP_HAML_NAGHL','OP_HERASAT')">
+    <th:block sec:authorize="hasAuthority('OP_SINGLE_OFFICE_HAMLONAGHL_PART')">
         <div class="col-12" th:if="${(form.getType()==enumField) || (form.getType() == sayar)}">
             <div class="card">
                 <div class="card-header d-flex p-0">
-                    <h3 class="card-title p-3">حمل و نقل</h3>
+                    <h3 class="card-title p-3">
+                        حمل و نقل
+                        <small>
+                            <span th:if="${form.getHamlonaghlSeen() != null}"
+                                  class="badge bg-gray-light persianumber" th:text="${form.getHamlonaghlSeen()}"></span>
+                        </small>
+                    </h3>
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
@@ -647,11 +676,18 @@
         </div>
         <!-- /.col -->
     </th:block>
-    <th:block sec:authorize="hasAuthority('OP_HERASAT')">
+    <th:block sec:authorize="hasAuthority('OP_SINGLE_OFFICE_HERASAT_PART')">
         <div class="col-12" th:if="${form.getType()==enumField || form.getType() == sayar}">
             <div class="card">
                 <div class="card-header d-flex p-0">
-                    <h3 class="card-title p-3">حراست</h3>
+                    <h3 class="card-title p-3">
+                        حراست
+                        <small>
+                            <span th:if="${form.getKhherasatSeen() != null}"
+                                  class="badge bg-gray-light persianumber" th:text="${form.getKhherasatSeen()}"></span>
+                        </small>
+                    </h3>
+
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
@@ -662,6 +698,7 @@
                                         <br>خروج اشیا فوق از مرکز تایید می شود
                                         <span dir="ltr" th:text="${form.getSaatkhoroj()}"
                                               class="persianumber badge bg-info">تایید شد</span>
+
                                         <br>
                                         <img th:if="${form.getKhherasatemza()} != null" width="85px"
                                              th:src="*{'data:emza/jpg;base64,'+{form.getKhherasatemza()}}"
@@ -683,6 +720,8 @@
                                     <td><br>ورود اشیا فوق در ساعت به مرکز تایید میشود
                                         <span dir="ltr" th:text="${form.getSaatvorod()}"
                                               class="persianumber badge bg-info">تایید شد</span>
+                                        <span th:if="${form.getVherasatSeen() != null}"
+                                              class="badge bg-gray-light persianumber" th:text="${form.getVherasatSeen()}"></span>
                                         <br>
 
                                         <img th:if="${form.getVherasatemza()} != null" width="85px"

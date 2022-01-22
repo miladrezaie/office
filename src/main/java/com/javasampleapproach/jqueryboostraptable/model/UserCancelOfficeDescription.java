@@ -37,6 +37,9 @@ public class UserCancelOfficeDescription {
     @NotNull(message = "لطفا دلیل لغو آفیش را ذکر نمایید")
     private String description;
 
+    @Column(columnDefinition = "nvarchar(50)")
+    private String created_at;
+
     public UserCancelOfficeDescription(User user, officeForm officeForms,String description) {
         this.id = new UserCancelOfficeDescriptionId(user.getId(), officeForms.getId());
         this.user = user;

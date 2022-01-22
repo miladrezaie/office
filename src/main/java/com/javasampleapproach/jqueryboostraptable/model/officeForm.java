@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javasampleapproach.jqueryboostraptable.enums.OfficeForm;
@@ -17,6 +18,7 @@ import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 
 
@@ -54,6 +56,9 @@ public class officeForm implements Serializable {
     @NotNull(message = "وارد کردن نام تهیه کننده الزامی است")
     private String tahayekonande;
 
+    @Column(columnDefinition = "nvarchar(50)")
+    private String tahayekonandeSeen;
+
 //    @OneToMany(mappedBy="officeForm",fetch = FetchType.EAGER,orphanRemoval = false)
 //    @JsonBackReference
 //    @ManyToMany( fetch=FetchType.LAZY)
@@ -62,6 +67,7 @@ public class officeForm implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
 //    @Nullable
     @JoinColumn(name = "car_id",nullable = true)
+    @JsonManagedReference
     private Car car;
 
     //az no sima or zabtie
@@ -131,26 +137,47 @@ public class officeForm implements Serializable {
     @Column(columnDefinition = "LONGBLOB")
     private String hamahangiemaza;
 
+    @Column(columnDefinition = "nvarchar(50)")
+    private String hamahangiSeen;
+
     @Column(columnDefinition = "LONGBLOB")
     private String sedaemza;
 
     @Column(columnDefinition = "LONGBLOB")
     private String mdarkhastemza;
 
+    @Column(columnDefinition = "nvarchar(50)")
+    private String mdarkhastSeen;
+
     @Column(columnDefinition = "LONGBLOB")
     private String poshemza;
+
+    @Column(columnDefinition = "nvarchar(50)")
+    private String posheSeen;
 
     @Column(columnDefinition = "LONGBLOB")
     private String hamlonaghlemza;
 
+    @Column(columnDefinition = "nvarchar(50)")
+    private String hamlonaghlSeen;
+
     @Column(columnDefinition = "LONGBLOB")
     private String anbaremza;
+
+    @Column(columnDefinition = "nvarchar(50)")
+    private String anbaremzaSeen;
 
     @Column(columnDefinition = "LONGBLOB")
     private String vherasatemza;
 
+    @Column(columnDefinition = "nvarchar(50)")
+    private String vherasatSeen;
+
     @Column(columnDefinition = "LONGBLOB")
     private String khherasatemza;
+
+    @Column(columnDefinition = "nvarchar(50)")
+    private String khherasatSeen;
 
     @Column(columnDefinition = "LONGBLOB")
     private String tahayeemza;
@@ -164,17 +191,27 @@ public class officeForm implements Serializable {
     @Column(columnDefinition = "LONGBLOB")
     private String tasisatemza;
 
+    @Column(columnDefinition = "nvarchar(50)")
+    private String tasisatSeen;
+
     @Column(columnDefinition = "LONGBLOB")
     private String uplinkemza;
 
     @Column(columnDefinition = "nvarchar(50)")
+    private String uplinkSeen;
+
+    @Column(columnDefinition = "nvarchar(50)")
     @NotNull(message = "وارد کردن روز شروع الزامی است")
     @Temporal(TemporalType.DATE)
+//    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date date_begin;
 
     @Column(columnDefinition = "nvarchar(50)")
     @NotNull(message = "وارد کردن روز خاتمه الزامی است")
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
     private Date date_end;
 
     @ManyToOne
@@ -186,7 +223,8 @@ public class officeForm implements Serializable {
 //    @CreatedDate
 //    @Column(name = "created_at", nullable = false, updatable = false)
 //    private Date createdAt;
-//
+
+
 //    @LastModifiedDate
 //    @Column(name = "updated_at")
 //    private LocalDateTime updatedAt;

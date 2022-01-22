@@ -34,7 +34,7 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <strong><i class="fa fa-map-marker mr-1"></i> شماره پرسنلی  </strong>
-                <p class="text-muted">[[${user.getPersonalId()}]]</p>
+                <p class="text-muted persianumber">[[${user.getPersonalId()}]]</p>
                 <hr>
                 <strong><i class="fa fa-book mr-1"></i>فعالیت </strong>
                 <p class="text-muted">
@@ -58,7 +58,7 @@
 
                     <div class="active tab-pane" id="settings" style="background-color: white; color: black;">
                         <form class="form-horizontal" method="post" th:action="@{/admin/profile/user}" enctype="multipart/form-data">
-                            <div class="form-group">
+                            <div class="form-group" hidden>
                                 <label for="personalId" class="col-sm-2 control-label">شماره پرسنلی </label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" name="personalId" readonly="readonly" th:value="${user.getPersonalId()}" id="personalId" placeholder="شماره پرسنلی">
@@ -77,17 +77,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="oldPass" class="form-control-label">رمز عبور قبلی :</label>
-                                <input type="password" class="form-control" th:name="oldPass" id="oldPass" name="oldPass" value=""/>
+                                <label for="oldPass" class="form-control-label" >رمز عبور قبلی :</label>
+                                <input type="password" required class="form-control" th:name="oldPass" id="oldPass" name="oldPass" value=""/>
                             </div>
 
                             <div class="form-group">
                                 <label for="pass" class="form-control-label">رمز عبور جدید:</label>
-                                <input type="password" class="form-control" th:name="pass" id="pass" name="pass" value=""/>
+                                <input type="password" required class="form-control" th:name="pass" id="pass" name="pass" value=""/>
                             </div>
                             <div class="form-group">
                                 <label for="pass_" class="form-control-label">تکرار رمز عبور جدید:</label>
-                                <input type="password" class="form-control" th:name="pass_" id="pass_" name="pass_" value=""/>
+                                <input type="password" required class="form-control" th:name="pass_" id="pass_" name="pass_" value=""/>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">

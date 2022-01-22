@@ -54,6 +54,7 @@ public class Car {
 
     @OneToMany(mappedBy = "car",fetch = FetchType.EAGER,orphanRemoval = false)
     @Nullable
+    @JsonBackReference
     private Set<officeForm> officeForm;
 //    private Set<User> users;
 //    @JsonIgnore

@@ -7,6 +7,7 @@ import com.javasampleapproach.jqueryboostraptable.model.User;
 import com.javasampleapproach.jqueryboostraptable.repository.TajhizatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,7 @@ public class TajhizatController {
     }
 
     @GetMapping("/tajhizats")
+    @PreAuthorize("hasAuthority('OP_ACCESS_TAJHIZATS')")
     public String viewTajhizat(Model model, @RequestParam(defaultValue = "0") int page) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
@@ -53,17 +55,20 @@ public class TajhizatController {
 
     @GetMapping("/findOneTajhiz")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_ACCESS_TAJHIZATS')")
     public Optional<Tajhizat> findOneTajhiz(long id) {
         return tRepo.findById(id);
     }
 
     @GetMapping("/admin/tajhizats/find/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_ACCESS_TAJHIZATS')")
     public Optional<Tajhizat> fiOptionalTajhizat(@PathVariable long id) {
         return tRepo.findById(id);
     }
 
     @GetMapping("/admin/tajhizats/delete/{id}")
+    @PreAuthorize("hasAuthority('OP_ACCESS_TAJHIZATS')")
     public String deleteTajhiz(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             tRepo.deleteById(id);
@@ -78,6 +83,7 @@ public class TajhizatController {
     }
 
     @PostMapping("/admin/tajhizats/create")
+    @PreAuthorize("hasAuthority('OP_ACCESS_TAJHIZATS')")
     public String Esave(@RequestParam MultipartFile file, @ModelAttribute @Valid Tajhizat t, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -87,11 +93,9 @@ public class TajhizatController {
             try {
                 t.setImg(Base64.getEncoder().encodeToString(file.getBytes()));
             } catch (IOException er) {
-//                System.out.println("file ");
                 er.printStackTrace();
             }
             if (bindingResult.hasErrors()) {
-//                System.out.println("############################ : " + bindingResult.getAllErrors());
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/tajhizats";

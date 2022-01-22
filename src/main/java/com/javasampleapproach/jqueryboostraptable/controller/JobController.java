@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,7 +35,7 @@ public class JobController {
     }
 
     @GetMapping(value = "/admin/jobs")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
         Page<Job> jobs = jobService.getAllJobs(pageable);
         model.addAttribute("page", jobs);
@@ -43,7 +44,7 @@ public class JobController {
     }
 
     @PostMapping(value = "/admin/jobs/create")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String create(@ModelAttribute @Valid Job job, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
             if (bindingResult.hasErrors()) {
@@ -53,7 +54,7 @@ public class JobController {
             }
             jobService.saveJob(job);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
             return "redirect:/admin/jobs";
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
@@ -64,7 +65,7 @@ public class JobController {
 
 
     @GetMapping(value = "/admin/jobs/delete/{id}")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             jobService.deleteJob(id);
@@ -80,6 +81,7 @@ public class JobController {
 
     @GetMapping("/admin/jobs/find/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_ACCESS_JOBS')")
     public Optional<Job> fiOptionalJob(@PathVariable long id) {
         return jobService.findByIdJob(id);
     }

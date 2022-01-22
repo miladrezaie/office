@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ public class CategoryController {
     }
 
     @GetMapping(value = "/admin/categories")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    @PreAuthorize("hasAuthority('OP_CATEGORY_OFFICE')")
     public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
         Page<Category> categories = categoryService.getAllCategories(pageable);
         model.addAttribute("page", categories);
@@ -43,7 +44,7 @@ public class CategoryController {
     }
 
     @PostMapping(value = "/admin/categories/create")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    @PreAuthorize("hasAuthority('OP_CATEGORY_OFFICE')")
     public String create(@ModelAttribute @Valid Category category, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
             if (bindingResult.hasErrors()) {
@@ -53,7 +54,7 @@ public class CategoryController {
             }
             categoryService.saveCategory(category);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
             return "redirect:/admin/categories";
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
@@ -64,7 +65,7 @@ public class CategoryController {
 
 
     @GetMapping(value = "/admin/categories/delete/{id}")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    @PreAuthorize("hasAuthority('OP_CATEGORY_OFFICE')")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             categoryService.deleteCategory(id);
@@ -80,8 +81,8 @@ public class CategoryController {
 
     @GetMapping("/admin/categories/find/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_CATEGORY_OFFICE')")
     public Optional<Category> fiOptionalCategory(@PathVariable long id) {
-        System.out.println("***************** + " + id);
         return categoryService.findByIdCategory(id);
     }
 }

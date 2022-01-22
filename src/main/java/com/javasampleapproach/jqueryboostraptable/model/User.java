@@ -53,7 +53,7 @@ public class User implements Serializable, UserDetails {
 
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
     @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد", min = 8, max = 10)
-    @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)",unique = true)
+    @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)", unique = true)
     private String personalId;
 
     @Column(name = "NAME", columnDefinition = "nvarchar(20)")
@@ -85,16 +85,12 @@ public class User implements Serializable, UserDetails {
     private String fullname;
 
     @JsonIgnore
-    @ManyToMany(fetch=FetchType.LAZY,mappedBy = "users",cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users", cascade = CascadeType.DETACH)
     private List<officeForm> officeforms;
-
-//    @OneToMany(mappedBy="user")
-////    @JsonBackReference
-//    private Set<Tajhizat> tajhiz;
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference
-    private Set<Program> programs ;
+    private Set<Program> programs;
 
     public Set<Program> getPrograms() {
         return programs;
@@ -127,8 +123,6 @@ public class User implements Serializable, UserDetails {
     public void setOfficeFormUserTajhizats(@Nullable Set<OfficeFormUserTajhizat> officeFormUserTajhizats) {
         this.officeFormUserTajhizats = officeFormUserTajhizats;
     }
-
-
 
     public List<officeForm> getOfficeforms() {
         return officeforms;

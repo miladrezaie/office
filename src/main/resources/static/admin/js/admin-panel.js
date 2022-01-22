@@ -703,7 +703,7 @@ $(document).ready(function () {
         format: 'YYYY/MM/DD',
         autoClose: true,
         endDate:"today",
-        disableBeforeToday: false,
+        // disableBeforeToday: false,
         // initialValueType: 'gregorian'
         calendar:{
             persian: {

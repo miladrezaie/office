@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,14 +22,13 @@ public class BrandController {
 
     private final BrandService brandService;
 
-
     @Autowired
     public BrandController(BrandService brandService) {
         this.brandService = brandService;
     }
 
     @GetMapping(value = "/admin/brands")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
         Page<Brand> brands = brandService.getAllBrands(pageable);
         model.addAttribute("page", brands);
@@ -37,7 +37,7 @@ public class BrandController {
     }
 
     @PostMapping(value = "/admin/brands/create")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String create(@ModelAttribute @Valid Brand brand, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
             if (bindingResult.hasErrors()) {
@@ -47,7 +47,7 @@ public class BrandController {
             }
             brandService.saveBrand(brand);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
             return "redirect:/admin/brands";
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
@@ -56,9 +56,8 @@ public class BrandController {
         }
     }
 
-
     @GetMapping(value = "/admin/brands/delete/{id}")
-//    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             brandService.deleteBrand(id);
@@ -72,9 +71,9 @@ public class BrandController {
         }
     }
 
-
     @GetMapping("/admin/brands/find/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_ACCESS_BRANDS')")
     public Optional<Brand> fiOptionalBrand(@PathVariable long id) {
         return brandService.findByIdBrand(id);
     }

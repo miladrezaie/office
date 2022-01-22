@@ -30,15 +30,20 @@
                         <td class="persianumber" th:text="${state.count}">...</td>
                         <td th:text="${location.getName()}">...</td>
                         <td>
-                            <a th:href="@{/admin/locations/find/{id}(id=${location.getId()})}"
-                               class="editLocations"
-                               id="EditLocations">
-                                <span class="badge bg-warning">ویرایش</span>
-                            </a>
-                            <a href="#" data-toggle="modal"
-                               th:attr="data-target='#modal-warning'+${location.getId() }">
-                                <span class="badge bg-danger">حذف</span>
-                            </a>
+                            <th:block sec:authorize="hasAuthority('OP_LOCATIONS_UPDATE_OFFICE')" >
+                                <a th:href="@{/admin/locations/find/{id}(id=${location.getId()})}"
+                                   class="editLocations"
+                                   id="EditLocations">
+                                    <span class="badge bg-warning">ویرایش</span>
+                                </a>
+                            </th:block>
+                            <th:block sec:authorize="hasAuthority('OP_LOCATIONS_DELETE_OFFICE')">
+                                <a href="#" data-toggle="modal"
+                                   th:attr="data-target='#modal-warning'+${location.getId() }">
+                                    <span class="badge bg-danger">حذف</span>
+                                </a>
+                            </th:block>
+
                             <a href="#" data-toggle="modal" data-target="#modalRegister"></a>
                             <div class="modal fade" th:id="modal-warning+${location.getId()}" tabindex="-1" role="dialog"
                                  aria-labelledby="exampleModalLabel" aria-hidden="true">

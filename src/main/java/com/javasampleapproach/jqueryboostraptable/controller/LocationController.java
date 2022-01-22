@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,7 @@ public class LocationController {
     }
 
     @GetMapping( value = "/admin/locations")
+    @PreAuthorize("hasAuthority('OP_LOCATIONS_OFFICE')")
     public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
         Page<Location> locations = locationService.getAllLocations(pageable);
         model.addAttribute("page", locations);
@@ -45,6 +47,7 @@ public class LocationController {
     }
 
     @PostMapping(value = "/admin/locations/create")
+    @PreAuthorize("hasAuthority('OP_LOCATIONS_OFFICE')")
     public String create(@ModelAttribute @Valid Location location , BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         try {
             if (bindingResult.hasErrors()) {
@@ -54,7 +57,7 @@ public class LocationController {
             }
             locationService.saveLocation(location);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            redirectAttributes.addFlashAttribute("message", "عملیات با موفیت انجام گردید.");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
             return "redirect:/admin/locations";
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
@@ -64,6 +67,7 @@ public class LocationController {
     }
 
     @GetMapping(value = "/admin/locations/delete/{id}")
+    @PreAuthorize("hasAuthority('OP_LOCATIONS_DELETE_OFFICE')")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             locationService.deleteLocation(id);
@@ -79,8 +83,9 @@ public class LocationController {
 
     @GetMapping("/admin/locations/find/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_LOCATIONS_OFFICE')")
     public Optional<Location> fiOptionalLocation(@PathVariable long id){
-        System.out.println("***************** + "+ id);
+//        System.out.println("***************** + "+ id);
         return locationService.findByIdLocation(id);
     }
 }

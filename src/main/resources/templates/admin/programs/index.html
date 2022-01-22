@@ -28,7 +28,7 @@
                         <th>تاریخ شروع</th>
                         <th>تاریخ پایان</th>
                         <th>روز پخش</th>
-                        <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                        <th:block sec:authorize="hasAuthority('OP_DELETE_AND_UPDATE_PROGRAM')">
                             <th>تنظیمات</th>
                         </th:block>
                     </tr>
@@ -43,7 +43,7 @@
                             <span th:each="dd : ${program.getRozhafteh()}" class="badge bg-info" th:text="${dd.getDisplayName() +' '}"></span></td>
 
                             <td>
-                                <th:block sec:authorize="hasAuthority('OP_MODEIR_VAHED_DARKHST_KONANDEH')">
+                                <th:block sec:authorize="hasAuthority('OP_DELETE_AND_UPDATE_PROGRAM')">
 
                                 <a th:href="@{/admin/programs/find/{id}(id=${program.getId()})}"
                                    class="editPrograms"

@@ -39,9 +39,11 @@ public interface OfficeFormRepository extends JpaRepository<officeForm, Long> {
     @Query("update officeForm ear set ear.status = :status where ear.id = :id")
     int setStatusForOfficeForm(Boolean status, Long id);
 
+//    SELECT * FROM `office_form` a WHERE a.status =true AND a.date_begin BETWEEN :startDate AND :endDate order by a.id desc
+//    countQuery = "SELECT count(*) FROM `office_form` a.date_begin BETWEEN :startDate AND :endDate ",
 
-    @Query(value = "SELECT * FROM `office_form` a WHERE a.date_begin BETWEEN :startDate AND :endDate",
-            countQuery = "SELECT count(*) FROM `office_form` a.date_begin BETWEEN :startDate AND :endDate ",
+    @Query(value = "SELECT * FROM `office_form` a WHERE a.status =true AND a.date_begin BETWEEN :startDate AND :endDate order by a.id desc",
+            countQuery = "SELECT count(*) FROM `office_form` a where a.status =true AND a.date_begin BETWEEN :startDate AND :endDate",
             nativeQuery = true)
     Page<officeForm> getAllBetweenDates(@Param("startDate")  Date startDate,
                                         @Param("endDate")  Date endDate,

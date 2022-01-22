@@ -1,19 +1,20 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
 import com.github.mfathi91.time.PersianDate;
 import com.github.mfathi91.time.PersianDateTime;
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.text.DocumentException;
 import com.javasampleapproach.jqueryboostraptable.Service.*;
 import com.javasampleapproach.jqueryboostraptable.Service.Impl.*;
@@ -25,10 +26,13 @@ import com.javasampleapproach.jqueryboostraptable.repository.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,22 +40,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import org.springframework.util.StringUtils;
-
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Service
 @Controller
 public class OfficeController {
+
+    @Autowired
+    ServletContext servletContext;
+
+    private final TemplateEngine templateEngine;
+
     @Autowired
     private TajhizatRepository tRepo;
 
@@ -88,12 +98,17 @@ public class OfficeController {
     @Autowired
     private UserCancelOfficeDescriptionImp userCancelOfficeDescriptionImp;
 
+    public OfficeController(TemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
+    }
+
     @GetMapping("/result")
     public ResponseEntity<?> viewTajhizat() {
         return (ResponseEntity<?>) locationService.findAll();
     }
 
     @GetMapping(value = "/admin/officeform/delete/{id}")
+    @PreAuthorize("hasAuthority('OP_DELETE_OFFICE')")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             formRepo.deleteById(id);
@@ -109,75 +124,82 @@ public class OfficeController {
 
     @GetMapping("/office")
     public String viewoffice(Model model, @PageableDefault(size = 10) Pageable pageable) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         List<officeForm> office_form = new ArrayList<>();
 
         Page<officeForm> ll = formRepo.findByStatusIsFalse(pageable);
-
-        for (officeForm oo : ll.getContent()) {
-            if (oo.getType() == OfficeForm.OFFICE_FORM_ESTEDIO_SIMA) {
-                for (User userof : oo.getUsers()) {
-                    if (userof.getId() == user.getId()) {
+        if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")){
+            for (officeForm oo : ll.getContent()){
+                office_form.add(oo);
+            }
+        }else{
+            for (officeForm oo : ll.getContent()) {
+                if (oo.getType() == OfficeForm.OFFICE_FORM_ESTEDIO_SIMA) {
+                    for (User userof : oo.getUsers()) {
+                        if (userof.getId() == user.getId()) {
+                            office_form.add(oo);
+                        }
+                    }
+                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                        office_form.add(oo);
+                    } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
                         office_form.add(oo);
                     }
-                }
-                if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
-                    office_form.add(oo);
-                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
-                    office_form.add(oo);
-                }
-            } else if (oo.getType() == OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE) {
-                for (User userof : oo.getUsers()) {
-                    if (userof.getId() == user.getId()) {
+                } else if (oo.getType() == OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE) {
+                    for (User userof : oo.getUsers()) {
+                        if (userof.getId() == user.getId()) {
+                            office_form.add(oo);
+                        }
+                    }
+                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                        office_form.add(oo);
+                    } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                        office_form.add(oo);
+                    } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
+                        office_form.add(oo);
+                    } else if (oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
+                        office_form.add(oo);
+                    } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
+                        office_form.add(oo);
+                    } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
                         office_form.add(oo);
                     }
-                }
-                if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
-                    office_form.add(oo);
-                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
-                    office_form.add(oo);
-                } else if (oo.getPoshemza() != null && userHasAuthority("OP_ANBARDAR")) {
-                    office_form.add(oo);
-                } else if (oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
-                    office_form.add(oo);
-                } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
-                    office_form.add(oo);
-                } else if (oo.getPoshemza() != null && userHasAuthority("OP_SEDABARDAR")) {
-                    office_form.add(oo);
-                }
-            } else if (oo.getType() == OfficeForm.OFFICE_FORM_VAHED_SAIAR) {
-                for (User userof : oo.getUsers()) {
-                    if (userof.getId() == user.getId()) {
+                } else if (oo.getType() == OfficeForm.OFFICE_FORM_VAHED_SAIAR) {
+                    for (User userof : oo.getUsers()) {
+                        if (userof.getId() == user.getId()) {
+                            office_form.add(oo);
+                        }
+                    }
+                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                        office_form.add(oo);
+                    } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+                        office_form.add(oo);
+                    } else if (oo.getPoshemza() != null && userHasAuthority("OP_UP_LINK")) {
+                        office_form.add(oo);
+                    } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASISAT")) {
+                        office_form.add(oo);
+                    } else if (oo.getPoshemza() != null && userHasAuthority("OP_HAML_NAGHL")) {
+                        office_form.add(oo);
+                    } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
                         office_form.add(oo);
                     }
-                }
-                if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
-                    office_form.add(oo);
-                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
-                    office_form.add(oo);
-                } else if (oo.getPoshemza() != null && userHasAuthority("OP_UP_LINK")) {
-                    office_form.add(oo);
-                } else if (oo.getPoshemza() != null && userHasAuthority("OP_TASISAT")) {
-                    office_form.add(oo);
-                } else if (oo.getPoshemza() != null  && userHasAuthority("OP_HAML_NAGHL")) {
-                    office_form.add(oo);
-                } else if (oo.getHamlonaghlemza() != null && userHasAuthority("OP_HERASAT")) {
-                    office_form.add(oo);
-                }
-            } else if (oo.getType() == OfficeForm.OFFICE_FORM_ERTEBATAT) {
-                for (User userof : oo.getUsers()) {
-                    if (userof.getId() == user.getId()) {
+                } else if (oo.getType() == OfficeForm.OFFICE_FORM_ERTEBATAT) {
+                    for (User userof : oo.getUsers()) {
+                        if (userof.getId() == user.getId()) {
+                            office_form.add(oo);
+                        }
+                    }
+                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                        office_form.add(oo);
+                    } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_UP_LINK")) {
                         office_form.add(oo);
                     }
-                }
-                if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
-                    office_form.add(oo);
-                } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_UP_LINK")) {
-                    office_form.add(oo);
                 }
             }
         }
+
         model.addAttribute("officeforms", office_form);
         model.addAttribute("page", ll);
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
@@ -189,16 +211,15 @@ public class OfficeController {
         model.addAttribute("locations", locationService.findAll());
         model.addAttribute("tahie", user.getFullname());
         model.addAttribute("officeTypes", OfficeForm.values());
-
-        if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
-            model.addAttribute("programs", user.getPrograms());
-        } else {
+        model.addAttribute("programs", user.getPrograms());
+        if (userHasAuthority("OP_SHOW_ALL_PROGRAM")) {
             model.addAttribute("programs", programService.findAll());
         }
         return "admin/office/index";
     }
 
     @GetMapping("/office-print/{id}")
+    @PreAuthorize("hasAuthority('OP_PRINT_OFFICE')")
     public String printOffice(Model model, @PathVariable Long id) {
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
         model.addAttribute("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
@@ -210,40 +231,55 @@ public class OfficeController {
 
     @GetMapping("/officeTrue")
     public String viewofficeTrue(Model model, @PageableDefault(size = 10) Pageable pageable) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
+
         Page<officeForm> ll = formRepo.findByStatusIsTrue(pageable);
         model.addAttribute("officeforms", ll.getContent());
         model.addAttribute("page", ll);
-        model.addAttribute("user", user);
-        model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
-        model.addAttribute("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
-        model.addAttribute("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
-        model.addAttribute("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
-        model.addAttribute("tahie", user.getFullname());
-        model.addAttribute("officeTypes", OfficeForm.values());
-        model.addAttribute("rozhaehafte", RozHafteh.values());
-        model.addAttribute("locations", locationService.findAll());
-        model.addAttribute("programs", user.getPrograms());
-        if (userHasAuthority("OP_HAMAHANGIE") || userHasAuthority("OP_TAHIEKONANDEH")) {
-            model.addAttribute("programs", programService.findAll());
-        }
-        return "admin/office/index";
+        System.out.println("HHHHHHHHHHHHHHHHHHHHHHh : " + ll.getSize());
+
+        return "admin/office/index_true";
     }
 
     @GetMapping("/form")
     public String viewform(Model model, int id) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
 
+        officeForm office = formRepo.findById((long) id).get();
+
+        PersianDateTime today = PersianDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        if (office.getMdarkhastSeen() == null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+            office.setMdarkhastSeen(today.format(formatter));
+        } else if (office.getPosheSeen() == null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
+            office.setPosheSeen(today.format(formatter));
+        } else if (office.getAnbaremzaSeen() == null && userHasAuthority("OP_ANBARDAR")) {
+            office.setAnbaremzaSeen(today.format(formatter));
+        } else if (office.getTasisatSeen() == null && userHasAuthority("OP_TASISAT")) {
+            office.setTasisatSeen(today.format(formatter));
+        } else if (office.getHamlonaghlSeen() == null && userHasAuthority("OP_HAML_NAGHL")) {
+            office.setHamlonaghlSeen(today.format(formatter));
+        } else if (office.getUplinkSeen() == null && userHasAuthority("OP_UP_LINK")) {
+            office.setUplinkSeen(today.format(formatter));
+        } else if (office.getTahayekonandeSeen() == null && userHasAuthority("OP_TAHIEKONANDEH")) {
+            office.setTahayekonandeSeen(today.format(formatter));
+        } else if (office.getHamahangiSeen() == null && userHasAuthority("OP_HAMAHANGIE")) {
+            office.setHamahangiSeen(today.format(formatter));
+        } else if (office.getKhherasatSeen() == null && userHasAuthority("OP_HERASAT")) {
+            office.setKhherasatSeen(today.format(formatter));
+        }
+        formRepo.save(office);
+
         Set<User> usersWithJob = findU(user.getJob().getId());
         model.addAttribute("userJob", usersWithJob);
-        model.addAttribute("form", formRepo.findById((long) id).get());
+        model.addAttribute("form", office);
 
         List<Tajhizat> tajhizat_ = new ArrayList<Tajhizat>();
-        tajhizat_.addAll(formRepo.findById((long) id).get().getTajhizatss());
+        tajhizat_.addAll(office.getTajhizatss());
 
-        for (Iterator<OfficeFormUserTajhizat> iterator = formRepo.findById((long) id).get().getOfficeFormUserTajhizats().iterator(); iterator.hasNext(); ) {
+        for (Iterator<OfficeFormUserTajhizat> iterator = office.getOfficeFormUserTajhizats().iterator(); iterator.hasNext(); ) {
             OfficeFormUserTajhizat ff = iterator.next();
             if (tajhizat_.contains(ff.getTajhizat())) {
                 tajhizat_.remove(ff.getTajhizat());
@@ -266,15 +302,27 @@ public class OfficeController {
         return formRepo.count();
     }
 
-    @PostMapping("/find/date-between")
-    public String searchDao(Model model, @ModelAttribute DateSearcherDto searcherDto, BindingResult bindingResult, @PageableDefault(size = 10) Pageable pageable) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
-        Page<officeForm> officeForms = formRepo.getAllBetweenDates(searcherDto.getStartDate(), searcherDto.getEndDate(), pageable);
+    @GetMapping("/find/date-between")
+    public String searchDao(Model model, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @PageableDefault(size = 10) Pageable pageable) {
+
+
+//        DateFormat dateFormatStart = new SimpleDateFormat("yyyy-MM-dd");
+//        String startDate = dateFormatStart.format(dateSearcherDto.getStartDate());
+
+//        DateFormat dateFormatEnd = new SimpleDateFormat("yyyy-MM-dd");
+//        String endDate = dateFormatEnd.format(dateSearcherDto.getEndDate());
+
+
+//        Page<officeForm> officeForms = formRepo.getAllBetweenDates(dateSearcherDto.getStartDate(), dateSearcherDto.getEndDate(), pageable);
+
+        Page<officeForm> officeForms = formRepo.getAllBetweenDates(startDate, endDate, pageable);
         model.addAttribute("officeforms", officeForms.getContent());
-        model.addAttribute("user", user);
+        model.addAttribute("dateSearcherDtoStart", startDate);
+        model.addAttribute("dateSearcherDtoEnd", endDate);
         model.addAttribute("page", officeForms);
-        return "admin/office/index";
+//        System.out.println("HHHHHHHHHHHHHHHHHHHHHHh : " + officeForms.getSize());
+
+        return "admin/office/result_search";
     }
 
     @GetMapping("/panel")
@@ -350,9 +398,12 @@ public class OfficeController {
 
     @PostMapping("/saveForm")
     public String saveForm(@ModelAttribute @Valid officeForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-//        System.out.println("save form function");
+        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + form.getDate_begin());
+        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + form.getDate_end());
         try {
             if (bindingResult.hasErrors()) {
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYY : " + bindingResult.getAllErrors());
+
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/office";
@@ -364,8 +415,30 @@ public class OfficeController {
 //            int mday = LocalDate.now().getDayOfMonth();
 
 //            jCal.gregorianToPersian(myear, mmonth, mday);
+
+
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        PersianDate persianDate6 = PersianDate.fromGregorian(gregDate.plusDays(13));
+
+//        System.out.println(" ############################## 2 : "+persianDate6);
+//        System.out.println(" ############################## 2 : "+dtf.format(persianDate6));
+
+//        Set<OfficeFormUserTajhizat> ss = formRepo.findById((long) id).get().getOfficeFormUserTajhizats();
+
+//        LocalDate dateBefore30Days = LocalDate.now().minusDays(10);
+//        dateBefore30Days.minusDays(30);
+//        Calendar cal = Calendar.getInstance();
+//        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR : " + dateBefore30Days);
+//        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR : " + cal.getTime());
+//        PersianDate today = PersianDate.now();
+//        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR : " + today);
+//        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR : " + today.toGregorian());
+
             PersianDate today = PersianDate.now();
+            System.out.println("GGGGGGGGGGGGGGGG : " + today);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            System.out.println("GGGGGGGGGGGGGGGG : " + dtf);
+
             form.setTarikhsodur(dtf.format(today));
 
             form.setStatus(false);
@@ -382,11 +455,13 @@ public class OfficeController {
                 form.getUsers().add(u.get(0));
                 System.out.println("foorm add user else ");
             }
+
             formRepo.save(form);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
             return "redirect:/office";
         } catch (Exception exception) {
+            System.out.println("YYYYYYYYYYYYYYYYYYYYYYY : " + exception);
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
             return "redirect:/office";
@@ -518,6 +593,7 @@ public class OfficeController {
     }
 
     @PostMapping("/addForm")
+//    @PreAuthorize("hasAuthority('OP_ADD_TAJHIZ_TO_OFFICE')")
     public String addutoform(@ModelAttribute officeForm f, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 //        System.out.println("TTTTTDDDDDDDDDDDDDDDDDDDDDDD : " + f.getTajhizatss());
         officeForm form = formRepo.findById(f.getId()).get();
@@ -553,6 +629,7 @@ public class OfficeController {
     }
 
     @PostMapping("/addTajhizToUser")
+    @PreAuthorize("hasAuthority('OP_ADD_TAJHIZ_TO_USER_IN_OFFICE')")
     public String addTajhizToUserOfficeForm(@ModelAttribute officeForm f, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Long id_form = f.getId();
         try {
@@ -573,6 +650,7 @@ public class OfficeController {
     }
 
     @PostMapping("/laghv")
+    @PreAuthorize("hasAuthority('OP_LAGHV_OFFICE')")
     public String cancelOfficeForm(@ModelAttribute officeForm f, String description, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
@@ -581,11 +659,18 @@ public class OfficeController {
             officeForm office_form = formRepo.findById(f.getId()).get();
             office_form.setStatus(true);
             formRepo.save(office_form);
+
+            PersianDateTime today = PersianDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
             UserCancelOfficeDescription userCancelOfficeDescription = new UserCancelOfficeDescription();
             userCancelOfficeDescription.setUser(user);
             userCancelOfficeDescription.setOfficeForms(office_form);
             userCancelOfficeDescription.setDescription(description);
+            userCancelOfficeDescription.setCreated_at(today.format(formatter));
+
             userCancelOfficeDescriptionImp.saveUserCancelOfficeDescription(userCancelOfficeDescription);
+
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "آفیش مورد نظر لغو گردید .");
             return "redirect:/form/?id=" + id_form;
@@ -598,6 +683,7 @@ public class OfficeController {
     }
 
     @GetMapping(value = "/deleteTajhizToUser/{tajhiz_id}/{user_id}/{officeForms_id}")
+    @PreAuthorize("hasAuthority('OP_HAZF_TAJHIZ_FROM_USER_IN_OFFICE')")
     public String deletet(@PathVariable Long tajhiz_id, @PathVariable int user_id, @PathVariable Long officeForms_id, RedirectAttributes redirectAttributes) {
         Long id_form = officeForms_id;
         try {
@@ -616,12 +702,14 @@ public class OfficeController {
 
     @GetMapping("/admin/office/find/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_FIND_BY_ID_OFFICE')")
     public Optional<officeForm> fiOptionalLocation(@PathVariable long id) {
         return formRepo.findById(id);
     }
 
     @GetMapping("/findbyjob/{job}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_FIND_BY_JOBS_OFFICE')")
     public Set<User> findU(@PathVariable long job) {
         Job job1 = jobService.findById(job);
         return job1.getUsers();
@@ -629,24 +717,71 @@ public class OfficeController {
 
     @GetMapping("/findbycategory/{category}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('OP_FIND_BY_CATEGORY_OFFICE')")
     public Set<Job> findJob(@PathVariable long category) {
         Optional<Category> category1 = categoryService.findByIdCategory(category);
         return category1.get().getJobs();
     }
 
     @GetMapping("/office/exports/{id}")
-    public void exportToPdf(HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
-        response.setContentType("application/pdf");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
+//    @PreAuthorize("hasAuthority('OP_PRINT_PDF_OFFICE')")
+    public ResponseEntity<?> exportToPdf(HttpServletRequest request, HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
 
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=offices_" + currentDateTime + ".pdf";
-        response.setHeader(headerKey, headerValue);
+        /* Do Business Logic*/
 
-        Optional<officeForm> officeForms = formRepo.findById(id);
-        OfficePdfGenerator generator = new OfficePdfGenerator(officeForms.get());
-        generator.export(response);
+//            Order order = OrderHelper.getOrder();
+
+
+        /* Create HTML using Thymeleaf template Engine */
+
+        WebContext context = new WebContext(request, response, servletContext);
+        context.setVariable("form", formRepo.findById(id).get());
+        context.setVariable("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
+        context.setVariable("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
+        context.setVariable("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
+        context.setVariable("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
+
+        String orderHtml = templateEngine.process("admin/office/office-print", context);
+
+        /* Setup Source and target I/O streams */
+
+        ByteArrayOutputStream target = new ByteArrayOutputStream();
+
+        /*Setup converter properties. */
+        ConverterProperties converterProperties = new ConverterProperties();
+        converterProperties.setBaseUri("http://localhost:8086");
+
+        /* Call convert method */
+        HtmlConverter.convertToPdf(orderHtml, target, converterProperties);
+
+        /* extract output as bytes */
+        byte[] bytes = target.toByteArray();
+
+
+        /* Send the response as downloadable PDF */
+
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.APPLICATION_PDF)
+//                    .body(bytes);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=order.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(bytes);
+
+
+//        HtmlConverter.convertToPdf(new File("admin/office/pdf-input.html"),new File("demo-html.pdf"));
+        //        response.setContentType("application/pdf");
+//        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+//        String currentDateTime = dateFormatter.format(new Date());
+//
+//        String headerKey = "Content-Disposition";
+//        String headerValue = "attachment; filename=offices_" + currentDateTime + ".pdf";
+//        response.setHeader(headerKey, headerValue);
+//
+//        Optional<officeForm> officeForms = formRepo.findById(id);
+//        OfficePdfGenerator generator = new OfficePdfGenerator(officeForms.get());
+//        generator.export(response);
+
     }
 
 
