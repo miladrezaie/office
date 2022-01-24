@@ -94,32 +94,59 @@
             </div>
         </th:block>
         <th:block th:if="${form.getStatus()==false}">
-            <div class="bg-light table_office">
-                <h5><i class="fa fa-info"></i> تجهیزات :</h5>
-                <th:block sec:authorize="hasAuthority('OP_ADD_TAJHIZ_TO_OFFICE')">
-                    <a th:if="${form.getAnbaremza() == null && form.getType()==enumField}"
-                       th:href="@{/admin/office/find/{id}(id=${form.getId()})}"
-                       class="editOffices"
-                       id="EditOffices">
-                        <span class="badge bg-warning">افزودن تجهیزات</span>
-                    </a>
-                </th:block>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">تجهیزات</h4>
+                    <div class="table_office">
+                        <th:block sec:authorize="hasAuthority('OP_ADD_TAJHIZ_TO_OFFICE')">
+                            <a th:if="${form.getAnbaremza() == null && form.getType()==enumField}"
+                               th:href="@{/admin/office/find/{id}(id=${form.getId()})}"
+                               class="editOffices"
+                               id="EditOffices">
+                                <span class="badge bg-warning">افزودن تجهیزات</span>
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
 
-                <th:block th:if="${form.getAnbaremza() == null && form.getType()==enumField}"
-                          sec:authorize="hasAuthority('OP_ANBARDAR')">
-                    <form th:action="@{/saveEmza}" method="post">
-                        <input type="hidden" name="uid" th:value="${user.id}">
-                        <input type="hidden" name="fid" th:value="${form.id}">
-                        <input th:if="${form.getAnbaremza() == null}" type="submit"
-                               class="btn btn-warning"
-                               value="تایید">
-                    </form>
-                </th:block>
-                <th:block th:if="${form.getAnbaremza() != null}"
-                          sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
-                    <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
-                </th:block>
-            </div>
+                <div class="col-6">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <th>نام تجهیز</th>
+                                <th>شماره اموال</th>
+                            </tr>
+                            <tr th:each="tajhiz : ${form.getTajhizatss()}">
+                                <td th:text="${tajhiz.getName()}"></td>
+                                <td class="persianumber" th:text="${tajhiz.getAmvalid()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <th:block th:if="${form.getAnbaremza() == null && form.getType()==enumField}"
+                              sec:authorize="hasAuthority('OP_ANBARDAR')">
+                        <form th:action="@{/saveEmza}" method="post">
+                            <input type="hidden" name="uid" th:value="${user.id}">
+                            <input type="hidden" name="fid" th:value="${form.id}">
+                            <input th:if="${form.getAnbaremza() == null}" type="submit"
+                                   class="btn btn-success"
+                                   value=" تایید">
+                        </form>
+                        <p>( توجه کنید پس از تایید امکان افزودن تجهیزات به این آفیش وجود ندارد)</p>
+                    </th:block>
+
+                    <th:block th:if="${form.getAnbaremza() != null}"
+                              sec:authorize="hasAnyAuthority('OP_MODIR_POSHTIBANIT','OP_ANBARDAR')">
+                        <span class="badge bg-success">تجهیزات اضافه شدند و به امضای انباردار در آمد</span>
+                    </th:block>
+                </div>
+                </div>
+
+
         </th:block>
         <!-- Main content -->
         <div class="invoice p-3 mb-3" style="font-size: 15px;">
@@ -516,24 +543,7 @@
                        th:text="${form.getDescription()}">
                     </p>
                 </div>
-                <!--                <div class="col-6">-->
-                <!--                    <p class="lead">تجهیزات همراه</p>-->
 
-                <!--                    <div class="table-responsive">-->
-                <!--                        <table class="table">-->
-                <!--                            <tbody>-->
-                <!--                            <tr>-->
-                <!--                                <th>نام تجهیز</th>-->
-                <!--                                <th>شماره اموال</th>-->
-                <!--                            </tr>-->
-                <!--                            <tr th:each="tajhiz : ${form.getTajhizatss()}">-->
-                <!--                                <td th:text="${tajhiz.getName()}"></td>-->
-                <!--                                <td class="persianumber" th:text="${tajhiz.getAmvalid()}"></td>-->
-                <!--                            </tr>-->
-                <!--                            </tbody>-->
-                <!--                        </table>-->
-                <!--                    </div>-->
-                <!--                </div>-->
             </div>
             <!-- /.row -->
 

@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Service
 public class ProgramServiceImp implements ProgramService {
+
     private final ProgramRepository programRepository;
 
     @Autowired
@@ -21,10 +22,14 @@ public class ProgramServiceImp implements ProgramService {
         this.programRepository = programRepository;
     }
 
+    @Override
+    public Page<Program> getAllTruePrograms(Pageable page) {
+        return programRepository.findByStatusIsTrue(page);
+    }
 
     @Override
-    public Page<Program> getAllPrograms(Pageable page) {
-        return programRepository.findAll(page);
+    public Page<Program> getAllAwaitPrograms(Pageable page) {
+        return programRepository.findByStatusIsFalse(page);
     }
 
     @Override

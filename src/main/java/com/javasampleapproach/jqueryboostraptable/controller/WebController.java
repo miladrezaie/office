@@ -138,13 +138,13 @@ public class WebController {
         return "admin/auth/user-profile";
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public String registration(Model model, User user) {
-        List<Job> jobs = jobService.findAll();
-        model.addAttribute("jobs", jobs);
-        model.addAttribute("user", user);
-        return "/registration";
-    }
+//    @RequestMapping(value = "/registration", method = RequestMethod.GET)
+//    public String registration(Model model, User user) {
+//        List<Job> jobs = jobService.findAll();
+//        model.addAttribute("jobs", jobs);
+//        model.addAttribute("user", user);
+//        return "/registration";
+//    }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String createNewUser(@ModelAttribute @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -189,29 +189,37 @@ public class WebController {
 
     @PostMapping("/admin/profile/user")
     public String editProfile(@ModelAttribute @Valid User user, @RequestParam("oldPass") String oldPass, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            User userE = userRepo.findByPersonalId(user.getPersonalId());
+
+            System.out.println("Has Errors : "+bindingResult.getAllErrors());
+            redirectAttributes.addAttribute("user",userE);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", " خطایی رخ داده .");
+//                return "redirect:/admin/profile";
+            return "admin/auth/user-profile";
+//                return "admin/auth/user-profile";
+        }
+
         User userE = userRepo.findByPersonalId(user.getPersonalId());
 
         try {
-            if (bindingResult.hasErrors()) {
-                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
-                return "redirect:/admin/profile";
-            } else if (bCryptPasswordEncoder.matches(oldPass ,userE.getPass())) {
+             if (bCryptPasswordEncoder.matches(oldPass ,userE.getPass())) {
+
                 userE.setFName(user.getFName());
                 userE.setLname(user.getLname());
-
                 userE.setPass(user.getPass());
                 userService.save(userE);
 
                 redirectAttributes.addFlashAttribute("alertClass", "alert-success");
                 redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
                 return "redirect:/admin/profile";
-
-            } else {
-                throw new Exception();
             }
+            throw new Exception();
 
         } catch (Exception exception) {
+            System.out.println("Has Errors : "+exception);
+
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
             return "redirect:/admin/profile";

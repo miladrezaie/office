@@ -35,14 +35,27 @@ public class ProgramController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/admin/programs")
+    @GetMapping(value = "/admin/programs/trueindex")
     @PreAuthorize("hasAuthority('OP_PROGRAMS_OFFICE')")
-    public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
-        Page<Program> programs = programService.getAllPrograms(pageable);
+    public String indexTrue(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Program> programs = programService.getAllTruePrograms(pageable);
+//        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGgg 111: " + programs.getContent());
         model.addAttribute("page", programs);
         model.addAttribute("rozhaehafte", RozHafteh.values());
 
-        return "admin/programs/index";
+        return "admin/programs/indexTrue";
+    }
+
+    @GetMapping(value = "/admin/programs/await")
+    @PreAuthorize("hasAuthority('OP_PROGRAMS_OFFICE')")
+    public String indexAwait(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Program> programs = programService.getAllAwaitPrograms(pageable);
+//        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGgg  222: " + programs.getContent());
+
+        model.addAttribute("page", programs);
+        model.addAttribute("rozhaehafte", RozHafteh.values());
+
+        return "admin/programs/indexAwait";
     }
 
     @PostMapping(value = "/admin/programs/create")
@@ -53,19 +66,44 @@ public class ProgramController {
             if (bindingResult.hasErrors()) {
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
-                return "redirect:/admin/programs";
+                return "redirect:/admin/programs/await";
             }
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findByUsername(auth.getName());
             program.setUser(user);
+            program.setStatus(false);
             programService.saveProgram(program);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
-            return "redirect:/admin/programs";
+            return "redirect:/admin/programs/await";
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
-            return "redirect:/admin/programs";
+            return "redirect:/admin/programs/await";
+        }
+    }
+
+    @PostMapping(value = "/admin/programs/approved")
+    @PreAuthorize("hasAuthority('OP_PROGRAM_APPROVE')")
+    public String setStatusTrue(@ModelAttribute("id") Long id, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        try {
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
+                return "redirect:/admin/programs/trueindex";
+            }
+            Program program = programService.findByIdProgram(id).get();
+//            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            program.setStatus(true);
+            programService.saveProgram(program);
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
+            return "redirect:/admin/programs/trueindex";
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            return "redirect:/admin/programs/trueindex";
         }
     }
 
@@ -76,12 +114,12 @@ public class ProgramController {
             programService.deleteProgram(id);
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "برنامه مورنظر با موفقیت حذف گردید.");
-            return "redirect:/admin/programs";
+            return "redirect:/admin/programs/trueindex";
         } catch (Exception exception) {
 //            redirectAttributes.addFlashAttribute("message", "امکان وجود دادن برنامه به کاربر وجود دارد.");
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "برنامه به آفیش خاص مربوط است.");
-            return "redirect:/admin/programs";
+            return "redirect:/admin/programs/trueindex";
         }
     }
 

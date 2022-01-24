@@ -25,29 +25,29 @@
     <!-- template rtl version -->
     <link rel="stylesheet" th:href="@{/admin/css/custom-style.css}">
 </head>
-<body class="hold-transition ">
+<body class="hold-transition" >
 <div class="login-box">
     <div class="login-logo">
         <img th:src="@{/admin/img/Logo2.png}" alt="logo qazvin.irib.ir" class="mb-5" style="width: 15rem;">
         <br>
-        <h4>ورود به اتوماسیون آفیش</h4>
+        <h4 style="font-size: 20px; text-shadow: -1px -1px 3px #444, 0 0 2px #444;">اتوماسیون آفیش</h4>
     </div>
     <!-- /.login-logo -->
-    <div class="card">
-        <div class="card-body login-card-body">
-            <p class="login-box-msg">فرم زیر را تکمیل کنید و ورود بزنید</p>
+    <div class="card" style="background: rgb(241 241 255 / 30%);border: 1px;border-radius: 25px;">
+        <div class="card-body login-card-body" >
+            <p class="login-box-msg" style="color: #3d57b4;">فرم زیر را تکمیل کنید و ورود بزنید</p>
 
             <form th:action="@{/login}" method="post">
                 <div class="input-group mb-3">
-                    <input dir="rtl" type="text" id="personalId" name="personalId" placeholder="نام کاربری"
-                           class="form-control"/>
+                    <input dir="rtl" type="text" id="personalId" name="personalId" placeholder="شماره کارمندی"
+                           class="form-control" required/>
                     <div class="input-group-append">
                         <span class="fa fa-id-card input-group-text"></span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input dir="rtl" type="password" placeholder="رمز عبور"
-                           id="pass" name="pass" class="form-control"/>
+                    <input dir="rtl" type="password" placeholder="کلمه عبور"
+                           id="pass" name="pass" class="form-control" required/>
                     <div class="input-group-append">
                         <span class="fa fa-lock input-group-text"></span>
                     </div>
@@ -58,7 +58,7 @@
                 <div class="row mt-5">
                     <div class="col-12">
                         <div class="social-auth-links text-center mb-3">
-                            <button type="submit" class="btn btn-block btn-primary">ورود</button>
+                            <button type="submit" class="btn btn-block" style="background: none repeat scroll 0% 0% #16B82F; border-radius: 15px;">ورود</button>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
 
             <p class="mb-0" style="font-size: 12px;">
                 تمامی حقوق مربوط به صدا و سیمای قزوین می باشد.
-                <a th:href="@{/registration}" class="text-center">ثبت نام</a>
+<!--                <a th:href="@{/registration}" class="text-center">ثبت نام</a>-->
             </p>
         </div>
         <!-- /.login-card-body -->

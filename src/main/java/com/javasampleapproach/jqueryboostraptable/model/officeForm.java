@@ -40,9 +40,6 @@ public class officeForm implements Serializable {
     @Column(columnDefinition = "nvarchar(50)")
     private String tarikhsodur;
 
-//    @Column(columnDefinition = "nvarchar(50)")
-//    @Temporal(TemporalType.DATE)
-//    private Date tarikhsodur;
 
     @Column(columnDefinition = "nvarchar(50)")
     @NotNull(message = "وارد کردن ساعت شروع الزامی است")

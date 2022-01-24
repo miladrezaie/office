@@ -533,7 +533,7 @@ $(document).ready(function () {
             dwrap.innerHTML = gencheckboxes;
         });
 
-        $.getJSON('http://localhost:8086/findbyjob/' + value, function (user) {
+        $.getJSON('http://localhost:8087/findbyjob/' + value, function (user) {
             var gencheckboxes = "";
             for (var i = 0; i < user.length; i++) {
                 gencheckboxes = gencheckboxes + '<input type="checkbox" name="users" value="' + user[i].id + '">' + user[i].fullname + '<br></input>';
@@ -561,7 +561,7 @@ $(document).ready(function () {
             dwrap.innerHTML = gencheckboxes;
         });
 
-        $.getJSON('http://localhost:8086/findbycategory/' + value, function (data) {
+        $.getJSON('http://localhost:8087/findbycategory/' + value, function (data) {
             var gencheckboxes = "";
             for (var i = 0; i < data.length; i++) {
                 gencheckboxes = gencheckboxes + '<ul class="mr-4"><li>' + data[i].name + '<ul className="mr-4">';

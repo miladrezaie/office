@@ -93,6 +93,7 @@ public class User implements Serializable, UserDetails {
     private Set<Program> programs;
 
     public Set<Program> getPrograms() {
+
         return programs;
     }
 

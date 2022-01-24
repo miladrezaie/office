@@ -8,7 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProgramService {
-    Page<Program> getAllPrograms(Pageable page);
+
+    Page<Program> getAllTruePrograms(Pageable page);
+
+    Page<Program> getAllAwaitPrograms(Pageable page);
+
+//    Page<Program> getAllAwaitPrograms(Pageable page);
 
     List<Program> findAll();
 

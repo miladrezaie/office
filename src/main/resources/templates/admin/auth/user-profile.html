@@ -58,22 +58,27 @@
 
                     <div class="active tab-pane" id="settings" style="background-color: white; color: black;">
                         <form class="form-horizontal" method="post" th:action="@{/admin/profile/user}" enctype="multipart/form-data">
+
                             <div class="form-group" hidden>
                                 <label for="personalId" class="col-sm-2 control-label">شماره پرسنلی </label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="personalId" readonly="readonly" th:value="${user.getPersonalId()}" id="personalId" placeholder="شماره پرسنلی">
+                                    <input type="text" class="form-control" name="personalId" readonly="readonly" required th:value="${user.getPersonalId()}" id="personalId" placeholder="شماره پرسنلی">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="FName" class="col-sm-2 control-label">نام </label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="FName" th:value="${user.getFName()}" id="FName" placeholder="نام">
+                                    <input type="text" class="form-control" name="FName" th:value="${user.getFName()}" required id="FName" placeholder="نام">
+
+
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="Lname" class="col-sm-2 control-label">نام خانوادگی</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="Lname" th:value="${user.getLname()}" id="Lname" placeholder="نام خانوادگی">
+                                    <input type="text" class="form-control" name="Lname" th:value="${user.getLname()}" required id="Lname" placeholder="نام خانوادگی">
+
+
                                 </div>
                             </div>
                             <div class="form-group">
@@ -91,7 +96,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <button type="submit" class="btn btn-danger">اعمال تغییرات</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">به روز رسانی</button>
                                 </div>
                             </div>
                         </form>

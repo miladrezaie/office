@@ -1,12 +1,12 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
-import com.javasampleapproach.jqueryboostraptable.enums.Authority;
+
 import com.javasampleapproach.jqueryboostraptable.model.User;
-import com.javasampleapproach.jqueryboostraptable.repository.RoleRepository;
 import com.javasampleapproach.jqueryboostraptable.repository.UserRepository;
-import com.javasampleapproach.jqueryboostraptable.controller.UserService;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashSet;
-import java.util.List;
+
 
 @Service
 public class UserServiceImp implements UserService {
@@ -23,12 +23,15 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Override
     public void save(User user) {
         user.setPass(bCryptPasswordEncoder.encode(user.getPass()));
         user.setFullname(user.getFName() + " " + user.getLname());

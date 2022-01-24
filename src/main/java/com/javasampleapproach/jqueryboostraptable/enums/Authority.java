@@ -50,6 +50,7 @@ public enum Authority implements GrantedAuthority {
     OP_FIND_BY_ID_OFFICE("پیدا کردن آفیش با استفاده از آی دی"),
     OP_LOCATIONS_DELETE_OFFICE("حذف مکان"),
     OP_LOCATIONS_UPDATE_OFFICE("ویرایش مکان"),
+    OP_PROGRAM_APPROVE("تایید برنامه"),
     ;
 
 

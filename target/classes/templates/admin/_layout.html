@@ -110,7 +110,7 @@
             <li class="nav-item dropdown">
                 <form th:action="@{/logout}" method="get">
                     <button class="btn btn-danger btn-sm" name="registration" type="Submit">
-                        <span class="">خروج</span>
+                        <span class="badge ">خروج</span>
                     </button>
                 </form>
             </li>
@@ -185,7 +185,6 @@
                                         <i class="fa fa-plus-square nav-icon"></i>
                                         <p>
                                             تکمیل شده
-
                                         </p>
                                     </a>
                                 </li>
@@ -193,13 +192,32 @@
                             </ul>
                         </li>
                         <th:block sec:authorize="hasAuthority('OP_PROGRAMS_OFFICE')">
-                            <li class="nav-item">
-                                <a th:href="@{/admin/programs}" class="nav-link">
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
                                     <i class="nav-icon fa fa-tasks"></i>
                                     <p>
                                         برنامه ها
+                                        <i class="right fa fa-angle-left"></i>
                                     </p>
                                 </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a th:href="@{/admin/programs/await}" class="nav-link">
+                                            <i class="fa fa-plus-square nav-icon"></i>
+                                            <p>در انتظار تایید
+                                                <span class="badge badge-info right">۲</span>
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a th:href="@{/admin/programs/trueindex}" class="nav-link">
+                                            <i class="fa fa-plus-square nav-icon"></i>
+                                            <p>
+                                                تایید شده
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         </th:block>
                         <th:block sec:authorize="hasAuthority('OP_ACCESS_TAJHIZATS')">
@@ -322,7 +340,7 @@
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-left">
-                                <li class="breadcrumb-item"><a href="#">خانه</a></li>
+                                <li class="breadcrumb-item"><a href="/">خانه</a></li>
                                 <li class="breadcrumb-item ">داشبورد</li>
                             </ol>
                         </div><!-- /.col -->

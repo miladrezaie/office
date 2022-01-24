@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="admin/_layout">
+<head>
+    <title> برنامه ها - تایید شده </title>
+</head>
+<body>
+<div class="row" layout:fragment="main_content">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover tablemy">
+                    <tbody>
+                    <tr>
+                        <th>شماره</th>
+                        <th>نام</th>
+                        <th>زمان</th>
+                        <th>توسط</th>
+                        <th>تاریخ شروع</th>
+                        <th>تاریخ پایان</th>
+                        <th>روز پخش</th>
+                        <th:block sec:authorize="hasAuthority('OP_DELETE_AND_UPDATE_PROGRAM')">
+                            <th>تنظیمات</th>
+                        </th:block>
+                    </tr>
+                    <tr th:each="program,state : ${page.getContent()}">
+                        <td class="persianumber" th:text="${state.count}">...</td>
+                        <td th:text="${program.getName()}">...</td>
+                        <td class="persianumber" th:text="${program.getSaat_zabt() +' - ' +program.getSaat_zabt_end()}">
+                            ...
+                        </td>
+                        <td th:text="${program.getUser().getLname()}">...</td>
+                        <td class="persianumber" th:text="${program.getDate_begin()}">...</td>
+                        <td class="persianumber" th:text="${program.getDate_end()}">...</td>
+                        <td>
+                            <span th:each="dd : ${program.getRozhafteh()}" class="badge bg-info"
+                                  th:text="${dd.getDisplayName() +' '}"></span></td>
+                        <td>
+                            <th:block sec:authorize="hasAuthority('OP_DELETE_AND_UPDATE_PROGRAM')">
+                                <a th:href="@{/admin/programs/find/{id}(id=${program.getId()})}"
+                                   class="editPrograms"
+                                   id="EditPrograms">
+                                    <span class="badge bg-warning">ویرایش</span>
+                                </a>
+                                <a href="#" data-toggle="modal"
+                                   th:attr="data-target='#modal-warning'+${program.getId() }">
+                                    <span class="badge bg-danger">حذف</span>
+                                </a>
+                                <div class="modal fade" th:id="modal-warning+${program.getId()}" tabindex="-1"
+                                     role="dialog"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel"
+                                                    th:utext="${program.getName()}"></h5>
+                                                <button style="display: contents;" type="button" class="close"
+                                                        data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="alert alert-danger">
+                                                    آیا شما مطمین هستید که میخواهید این برنامه را پاک کنید ؟
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    خیر
+                                                </button>
+                                                <a th:href="@{/admin/programs/delete/{id}(id=${program.getId()})}"
+                                                   class="btn btn-danger"
+                                                   id="deletePrograms">بله،مطمینم</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <div class="pagination-div">
+                    <span th:if="${page.hasPrevious()}">
+                        <a th:href="@{/admin/programs/trueindex(page=${page.number-1},size=${page.size})}"
+                           th:if="${page.size>=1}">قبلی</a>
+                    </span>
+                    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+                        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+                        <span th:unless="${page.number == i}">
+                             <a th:href="@{/admin/programs/trueindex(page=${i},size=${page.size})}">[[${i}+1]]</a>
+                        </span>
+                    </th:block>
+                    <span th:if="${page.hasNext()}">
+                        <a th:href="@{/admin/programs/trueindex(page=${page.number+1},size=${page.size})}">بعدی</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+</body>
+</html>

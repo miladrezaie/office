@@ -30,7 +30,6 @@
 <!--                        </button>-->
 <!--                    </th:block>-->
 <!--                </div>-->
-
             </div>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
@@ -69,12 +68,12 @@
                         <td>
                             <a th:href="@{/form/(id=${form.id})}" class="mdelBtn" id="DeleteUser"><span
                                     class="badge bg-info">نمایش</span></a>
-                            <th:block sec:authorize="hasAuthority('OP_DELETE_OFFICE')">
-                                <a th:attr="data-target='#modal-warning'+${form.getId() }" href="#myModal"
-                                   data-toggle="modal" class="MainNavText" id="MainNavHelp">
-                                    <span class="badge bg-danger">حذف</span>
-                                </a>
-                            </th:block>
+<!--                            <th:block sec:authorize="hasAuthority('OP_DELETE_OFFICE')">-->
+<!--                                <a th:attr="data-target='#modal-warning'+${form.getId() }" href="#myModal"-->
+<!--                                   data-toggle="modal" class="MainNavText" id="MainNavHelp">-->
+<!--                                    <span class="badge bg-danger">حذف</span>-->
+<!--                                </a>-->
+<!--                            </th:block>-->
                         </td>
                         <div class="modal fade" th:id="modal-warning+${form.getId()}" tabindex="-1" role="dialog"
                              aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -118,7 +117,8 @@
                                         <p th:text="${ssss.getDescription()}"></p>
                                         <br>
                                         <br>
-                                        <p th:text="${ssss.getUser().getFullname() + ' ( ' + ssss.getUser().getJob().getName()+' ) '}"></p>
+                                        <p style="font-size: 12px;" th:text="${ssss.getUser().getFullname() + ' ( ' + ssss.getUser().getJob().getName()+' ) '}"></p>
+                                        <p class="persianumber" style="font-size: 11px; display: flex" th:text="${ssss.getCreated_at()}"></p>
 
                                     </div>
                                     <div class="modal-footer">
@@ -149,6 +149,7 @@
                                             </div>
                                             <!-- /.col -->
                                         </div>
+                                        <hr>
                                         <!-- info row -->
                                         <div class="row invoice-info">
                                             <div class="col-sm-6 invoice-col">
@@ -191,7 +192,126 @@
                                         </div>
 
                                         <br>
+                                        <hr>
+                                        ساعت ها مشاهده :
+                                        <hr>
+                                        <div class="row invoice-info">
+
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small ><strong>تهیه کننده یا هماهنگی &nbsp;:</strong>
+                                                        <span style="color: green; display: flex" th:if="${form.getTahayekonandeSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getTahayekonandeSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+                                                        <span style="color: green; display: flex" th:if="${form.getHamahangiSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getHamahangiSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+
+                                                    </small>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small><strong>مدیر واحد تولید &nbsp;:</strong>
+                                                        <span style="color: green; display: flex" th:if="${form.getMdarkhastSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getMdarkhastSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+
+                                                    </small>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small ><strong>مدیر پشتیبانی &nbsp;:</strong>
+                                                        <span style="color: green; display: flex" th:if="${form.getPosheSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getPosheSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </small>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small ><strong>انباردار &nbsp;:</strong>
+                                                        <span style="color: green; display: flex" th:if="${form.getAnbaremzaSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getAnbaremzaSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </small>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small ><strong>مدیر حمل ونقل &nbsp;:</strong>
+
+                                                        <span style="color: green; display: flex" th:if="${form.getHamlonaghlSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getHamlonaghlSeen()}">
+                                                            </span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+
+
+                                                    </small>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small ><strong>مدیر ارتباطات &nbsp;:</strong>
+                                                        <span style="color: green; display: flex" th:if="${form.getUplinkSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getUplinkSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </small>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small ><strong>مدیر تاسیسات &nbsp;:</strong>
+                                                        <span style="color: green; display: flex" th:if="${form.getTasisatSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getTasisatSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </small>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 invoice-col">
+                                                <address>
+                                                    <small ><strong>  حراست &nbsp;:</strong>
+                                                        <span style="color: green; display: flex" th:if="${form.getKhherasatSeen()!=null}">
+                                                            <span class="persianumber" th:text="${form.getKhherasatSeen()}"></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                            </svg>
+                                                        </span>
+
+                                                    </small>
+                                                </address>
+                                            </div>
+
+
+                                            <!-- /.col -->
+                                        </div>
                                         <br>
+                                        <hr>
                                         <p style="color: green;">آفیش مورد نظر با موفقیت تکمیل شد . </p>
 
                                     </div>

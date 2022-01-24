@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--  <title>پنل مدیریت | صورتحساب</title>-->
+      <title>چاپ آفیش</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap 4 -->
@@ -37,6 +38,7 @@
         }
     </style>
 </head>
+
 <body class="A5" onload="window.print();">
 <section class="sheet padding-10mm">
     <div class="wrapper">
@@ -123,22 +125,22 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr style="font-size: 13px;" th:each="userrr , state: ${form.getUsers()}">
+                            <tr style="font-size: 13px;" th:each="userrrs , state: ${form.getUsers()}">
                                 <td class="persianumber" th:text="${state.count}"></td>
-                                <td th:text="${userrr.getJob().getName()}"></td>
-                                <td th:text="${userrr.getFullname()}"></td>
+                                <td th:text="${userrrs.getJob().getName()}"></td>
+                                <td th:text="${userrrs.getFullname()}"></td>
                                 <td>
-                                    <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}">
+                                    <span th:each="pfficeForm : ${userrrs.getOfficeFormUserTajhizats()}">
 <!--                                        <span class="text-center badge bg-info"-->
 <!--                                              th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}"-->
 <!--                                              th:text="${pfficeForm.getTajhizat().getName()}">-->
 <!--                                        </span>-->
-                                        <span th:each="pfficeForm : ${userrr.getOfficeFormUserTajhizats()}">
                                             <span th:if="${pfficeForm.getOfficeForms().getId()==form.getId()}" class="badge bg-info">
+
                                                 <strong>[[${pfficeForm.getTajhizat().getName()}]]</strong><br>
+
                                                 <span class="persianumber">([[${pfficeForm.getTajhizat().getAmvalid()}]])</span>
                                             </span>
-                                        </span>
                                     </span>
 
                                 </td>
@@ -172,15 +174,15 @@
                                          class="img-fluid">
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <p class="text-right">توضیحات :</p>
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    <p class="text-right">توضیحات :</p>-->
 
-                                    <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;"
-                                       th:text="${form.getDescription()}">
-                                    </p>
-                                </td>
-                            </tr>
+<!--                                    <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;"-->
+<!--                                       th:text="${form.getDescription()}">-->
+<!--                                    </p>-->
+<!--                                </td>-->
+<!--                            </tr>-->
 
                             </tbody>
                         </table>

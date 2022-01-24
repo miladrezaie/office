@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -130,11 +131,11 @@ public class OfficeController {
         List<officeForm> office_form = new ArrayList<>();
 
         Page<officeForm> ll = formRepo.findByStatusIsFalse(pageable);
-        if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")){
-            for (officeForm oo : ll.getContent()){
+        if (userHasAuthority("OP_ACCESS_ADMIN_PANEL")) {
+            for (officeForm oo : ll.getContent()) {
                 office_form.add(oo);
             }
-        }else{
+        } else {
             for (officeForm oo : ll.getContent()) {
                 if (oo.getType() == OfficeForm.OFFICE_FORM_ESTEDIO_SIMA) {
                     for (User userof : oo.getUsers()) {
@@ -199,7 +200,13 @@ public class OfficeController {
                 }
             }
         }
+        List<Program> programss = new ArrayList<>();
 
+        for (Program programe : user.getPrograms()) {
+            if (programe.getStatus() == true) {
+                programss.add(programe);
+            }
+        }
         model.addAttribute("officeforms", office_form);
         model.addAttribute("page", ll);
         model.addAttribute("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
@@ -211,7 +218,8 @@ public class OfficeController {
         model.addAttribute("locations", locationService.findAll());
         model.addAttribute("tahie", user.getFullname());
         model.addAttribute("officeTypes", OfficeForm.values());
-        model.addAttribute("programs", user.getPrograms());
+
+        model.addAttribute("programs", programss);
         if (userHasAuthority("OP_SHOW_ALL_PROGRAM")) {
             model.addAttribute("programs", programService.findAll());
         }
@@ -225,6 +233,7 @@ public class OfficeController {
         model.addAttribute("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
         model.addAttribute("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
         model.addAttribute("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
+
         model.addAttribute("form", formRepo.findById((long) id).get());
         return "admin/office/office-print";
     }
@@ -235,7 +244,7 @@ public class OfficeController {
         Page<officeForm> ll = formRepo.findByStatusIsTrue(pageable);
         model.addAttribute("officeforms", ll.getContent());
         model.addAttribute("page", ll);
-        System.out.println("HHHHHHHHHHHHHHHHHHHHHHh : " + ll.getSize());
+//        System.out.println("HHHHHHHHHHHHHHHHHHHHHHh : " + ll.getSize());
 
         return "admin/office/index_true";
     }
@@ -398,8 +407,6 @@ public class OfficeController {
 
     @PostMapping("/saveForm")
     public String saveForm(@ModelAttribute @Valid officeForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + form.getDate_begin());
-        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU : " + form.getDate_end());
         try {
             if (bindingResult.hasErrors()) {
                 System.out.println("YYYYYYYYYYYYYYYYYYYYYYY : " + bindingResult.getAllErrors());
@@ -408,7 +415,7 @@ public class OfficeController {
                 redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
                 return "redirect:/office";
             }
-
+//        System.out.println("********************************* "+form.getProgram().getDate_end().compareTo(form.getDate_end())>0);
 //            Roozh jCal = new Roozh();
 //            int myear = LocalDate.now().getYear();
 //            int mmonth = LocalDate.now().getMonthValue();
@@ -434,10 +441,32 @@ public class OfficeController {
 //        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR : " + today);
 //        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR : " + today.toGregorian());
 
+
+
+            DateFormat dateFormatStart = new SimpleDateFormat("yyyy-MM-dd");
+
+
+            String end_Date = dateFormatStart.format(form.getProgram().getDate_end());
+            Calendar calendar_add = Calendar.getInstance();
+            calendar_add.setTime(dateFormatStart.parse(end_Date));
+            calendar_add.add(Calendar.DATE, 1);
+
+
+            String start_Date = dateFormatStart.format(form.getProgram().getDate_begin());
+            Calendar calendar_minus = Calendar.getInstance();
+            calendar_minus.setTime(dateFormatStart.parse(start_Date));
+            calendar_minus.add(Calendar.DATE, -1);
+
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& : " +form.getProgram().getDate_end());
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& add: " +dateFormatStart.format(calendar_add.getTime()));
+
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& : " +form.getProgram().getDate_begin());
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& mi: " +dateFormatStart.format(calendar_minus.getTime()));
+
+        if (form.getDate_begin().after(calendar_minus.getTime()) && form.getDate_end().before(calendar_add.getTime())){
             PersianDate today = PersianDate.now();
-            System.out.println("GGGGGGGGGGGGGGGG : " + today);
+
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-            System.out.println("GGGGGGGGGGGGGGGG : " + dtf);
 
             form.setTarikhsodur(dtf.format(today));
 
@@ -460,6 +489,14 @@ public class OfficeController {
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
             return "redirect:/office";
+        }else{
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            redirectAttributes.addFlashAttribute("message", " در وارد کردن تاریخ دقت کنید .");
+            return "redirect:/office";
+        }
+
+
+
         } catch (Exception exception) {
             System.out.println("YYYYYYYYYYYYYYYYYYYYYYY : " + exception);
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
@@ -623,7 +660,7 @@ public class OfficeController {
             redirectAttributes.addFlashAttribute("message", "تجهیزات مورد نظر با موفقیت در آفیش ثبت شد.");
         }
         formRepo.save(form);
-        System.out.println("form save ");
+//        System.out.println("form save ");
         return "redirect:/form/?id=" + id_form;
 
     }

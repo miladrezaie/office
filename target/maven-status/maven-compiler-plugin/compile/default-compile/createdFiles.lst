@@ -17,6 +17,7 @@ com\javasampleapproach\jqueryboostraptable\controller\BrandController.class
 com\javasampleapproach\jqueryboostraptable\controller\LocationController.class
 com\javasampleapproach\jqueryboostraptable\repository\CarRepository.class
 com\javasampleapproach\jqueryboostraptable\controller\WebController.class
+com\javasampleapproach\jqueryboostraptable\model\DateSearcherDto.class
 com\javasampleapproach\jqueryboostraptable\controller\SecurityConfiguration.class
 com\javasampleapproach\jqueryboostraptable\Service\Impl\CarServiceImp.class
 com\javasampleapproach\jqueryboostraptable\repository\BrandRepository.class
@@ -49,6 +50,7 @@ com\javasampleapproach\jqueryboostraptable\model\User.class
 com\javasampleapproach\jqueryboostraptable\controller\OfficeController.class
 com\javasampleapproach\jqueryboostraptable\model\time.class
 com\javasampleapproach\jqueryboostraptable\model\OfficeFormUserTajhizatId.class
+com\javasampleapproach\jqueryboostraptable\controller\TajhizatController.class
 com\javasampleapproach\jqueryboostraptable\Service\Impl\ProgramServiceImp.class
 com\javasampleapproach\jqueryboostraptable\controller\QRCodeController.class
 com\javasampleapproach\jqueryboostraptable\repository\RoleRepository.class
@@ -58,6 +60,7 @@ com\javasampleapproach\jqueryboostraptable\model\Location.class
 com\javasampleapproach\jqueryboostraptable\Service\ProgramService.class
 com\javasampleapproach\jqueryboostraptable\controller\QRCodeGenerator.class
 com\javasampleapproach\jqueryboostraptable\controller\UserDetailsServiceImpl.class
+com\javasampleapproach\jqueryboostraptable\controller\CurrentUserControllerAdvice.class
 com\javasampleapproach\jqueryboostraptable\repository\ProgramRepository.class
 com\javasampleapproach\jqueryboostraptable\Service\Impl\JobServiceImp.class
 com\javasampleapproach\jqueryboostraptable\model\Tajhizat.class
