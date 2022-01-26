@@ -17,7 +17,8 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
+                <div th:if="${message}" th:each="ss : ${message}" th:text="${ss}" th:class="${'alerting alert ' + alertClass}"/>
+                <div th:if="${message_s}" th:text="${message_s}" th:class="${'alerting alert ' + alertClass}"/>
                 <button type="button" class="btn btn-info float-right newUsers" id="newUsers">
                     <i class="fa fa-plus"></i>جدید
                 </button>

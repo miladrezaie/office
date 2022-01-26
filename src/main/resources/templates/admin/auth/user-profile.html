@@ -11,8 +11,8 @@
 <div class="row" layout:fragment="main_content">
 
     <div class="col-md-3">
-        <div th:if="${message}" th:text="${message}" th:class="${'alerting alert ' + alertClass}"/>
-
+        <div th:if="${message}" th:each="ss : ${message}" th:text="${ss}" th:class="${'alerting alert ' + alertClass}"/>
+        <div th:if="${message_s}" th:text="${message_s}" th:class="${'alerting alert ' + alertClass}"/>
         <!-- Profile Image -->
         <div class="card card-primary card-outline">
             <div class="card-body box-profile">

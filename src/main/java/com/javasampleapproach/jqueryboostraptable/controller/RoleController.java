@@ -31,7 +31,6 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-
     @GetMapping(value = "/admin/roles")
     @PreAuthorize("hasAuthority('OP_ACCESS_ROLES')")
     public String index(Model model, @PageableDefault(size = 10) Pageable pageable) {
@@ -78,7 +77,6 @@ public class RoleController {
             return "redirect:/admin/roles";
         }
     }
-
 
     @GetMapping(value = "/admin/roles/delete/{id}")
     @PreAuthorize("hasAuthority('OP_ACCESS_ROLES')")

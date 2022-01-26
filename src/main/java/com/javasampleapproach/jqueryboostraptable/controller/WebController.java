@@ -15,6 +15,10 @@ import com.javasampleapproach.jqueryboostraptable.Service.JobService;
 import com.javasampleapproach.jqueryboostraptable.Service.RoleService;
 import com.javasampleapproach.jqueryboostraptable.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -24,6 +28,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -56,6 +62,8 @@ public class WebController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("/members")
 //    @PreAuthorize("hasAuthority('OP_ACCESS_ROLES')")
@@ -88,13 +96,22 @@ public class WebController {
 
     @PostMapping("/saveeUser")
     public String saveue(@ModelAttribute @Valid User user, BindingResult bindingResult, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-
         try {
             if (bindingResult.hasErrors()) {
-                System.out.println("ERRRRRRRRRRRRRRRRRRR: " + bindingResult.getAllErrors());
-                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-                redirectAttributes.addFlashAttribute("message", " تمام فیلد ها را بادقت پر کنید .");
-                return "redirect:/members";
+                List<String> message = new ArrayList<>();
+                for (Object object : bindingResult.getAllErrors()) {
+                    if (object instanceof FieldError) {
+                        FieldError fieldError = (FieldError) object;
+
+                        message.add(messageSource.getMessage(fieldError, null));
+                        System.out.println(message);
+                    }
+
+                    redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                    redirectAttributes.addFlashAttribute("message", message);
+                    return "redirect:/members";
+                }
+
             } else {
                 if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
                     bindingResult.rejectValue("personalId", "error.user",
@@ -109,13 +126,14 @@ public class WebController {
                 userService.save(user);
 
                 redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-                redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
+                redirectAttributes.addFlashAttribute("message_s", "عملیات با موفقیت انجام گردید.");
                 return "redirect:/members";
             }
+            throw new Exception();
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            redirectAttributes.addFlashAttribute("message", "لطفا مجددا تلاش نمایید.");
+            redirectAttributes.addFlashAttribute("message_s", "لطفا مجددا تلاش نمایید.");
             return "redirect:/members";
         }
     }
@@ -188,40 +206,48 @@ public class WebController {
     }
 
     @PostMapping("/admin/profile/user")
-    public String editProfile(@ModelAttribute @Valid User user, @RequestParam("oldPass") String oldPass, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String editProfile(@ModelAttribute @Valid User user, BindingResult bindingResult, @RequestParam("oldPass") String oldPass, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            User userE = userRepo.findByPersonalId(user.getPersonalId());
+            List<String> message = new ArrayList<>();
+            for (Object object : bindingResult.getAllErrors()) {
+                if (object instanceof FieldError) {
+                    FieldError fieldError = (FieldError) object;
+                    message.add(messageSource.getMessage(fieldError, null));
+                    System.out.println(message);
+                }
+                redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                redirectAttributes.addFlashAttribute("message", message);
+                System.out.println("if condition " +message);
 
-            System.out.println("Has Errors : "+bindingResult.getAllErrors());
-            redirectAttributes.addAttribute("user",userE);
-            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            redirectAttributes.addFlashAttribute("message", " خطایی رخ داده .");
-//                return "redirect:/admin/profile";
-            return "admin/auth/user-profile";
-//                return "admin/auth/user-profile";
-        }
-
-        User userE = userRepo.findByPersonalId(user.getPersonalId());
-
-        try {
-             if (bCryptPasswordEncoder.matches(oldPass ,userE.getPass())) {
-
-                userE.setFName(user.getFName());
-                userE.setLname(user.getLname());
-                userE.setPass(user.getPass());
-                userService.save(userE);
-
-                redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-                redirectAttributes.addFlashAttribute("message", "عملیات با موفقیت انجام گردید.");
                 return "redirect:/admin/profile";
             }
+        }
+        System.out.println("sadasssssssddd");
+        try {
+            System.out.println("sadasssssssddd");
+
+            User userE = userRepo.findByPersonalId(user.getPersonalId());
+            System.out.println("sadasssssssddd");
+
+
+                System.out.println("else condition " );
+                if (bCryptPasswordEncoder.matches(oldPass, userE.getPass())) {
+                    System.out.println("else condition ");
+
+                    userE.setFName(user.getFName());
+                    userE.setLname(user.getLname());
+                    userE.setPass(user.getPass());
+                    userService.save(userE);
+                    redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+                    redirectAttributes.addFlashAttribute("message_s", "عملیات با موفقیت انجام گردید.");
+                    return "redirect:/admin/profile";
+                }
+
             throw new Exception();
-
         } catch (Exception exception) {
-            System.out.println("Has Errors : "+exception);
-
+            System.out.println("Has Errors : " + exception);
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            redirectAttributes.addFlashAttribute("message", "تمام فیلد ها را بادقت پر کنید");
+            redirectAttributes.addFlashAttribute("message_s", "تمام فیلد ها را بادقت پر کنید");
             return "redirect:/admin/profile";
 
         }
@@ -238,8 +264,6 @@ public class WebController {
     public List<User> findAllUser() {
         return userRepo.findAll();
     }
-
-
 
 
 }

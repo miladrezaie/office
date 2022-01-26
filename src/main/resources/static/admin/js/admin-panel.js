@@ -699,12 +699,10 @@ $(document).ready(function () {
     });
 
     $(".office-date").persianDatepicker({
+        minDate: new persianDate().unix(),
         observer: true,
         format: 'YYYY/MM/DD',
         autoClose: true,
-        endDate:"today",
-        // disableBeforeToday: false,
-        // initialValueType: 'gregorian'
         calendar:{
             persian: {
                 locale: 'en'
@@ -724,6 +722,7 @@ $(document).ready(function () {
         }
     });
     $(".program-date").persianDatepicker({
+        minDate: new persianDate().unix(),
         observer: true,
         format: 'YYYY/MM/DD',
         autoClose: true,

@@ -52,7 +52,7 @@ public class User implements Serializable, UserDetails {
     }
 
     @NotEmpty(message = "لطفا شماره پرسنلی را وارد کنید")
-    @Size(message = "شماره پرسنلی باید بین 8 تا 10 رقم باشد", min = 8, max = 10)
+    @Size(message = "شماره پرسنلی باید بین 6 تا 10 رقم باشد", min = 6, max = 10)
     @Column(name = "PERSONAL_ID", columnDefinition = "nvarchar(10)", unique = true)
     private String personalId;
 

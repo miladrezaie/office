@@ -1,8 +1,7 @@
 package com.javasampleapproach.jqueryboostraptable.controller;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +24,7 @@ import com.javasampleapproach.jqueryboostraptable.enums.RozHafteh;
 import com.javasampleapproach.jqueryboostraptable.model.*;
 import com.javasampleapproach.jqueryboostraptable.repository.*;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +46,11 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.context.WebContext;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 
 import javax.servlet.ServletContext;
@@ -62,6 +66,9 @@ public class OfficeController {
     ServletContext servletContext;
 
     private final TemplateEngine templateEngine;
+
+    @Autowired
+    private ExportPdfService exportPdfService;
 
     @Autowired
     private TajhizatRepository tRepo;
@@ -760,9 +767,9 @@ public class OfficeController {
         return category1.get().getJobs();
     }
 
-    @GetMapping("/office/exports/{id}")
-//    @PreAuthorize("hasAuthority('OP_PRINT_PDF_OFFICE')")
-    public ResponseEntity<?> exportToPdf(HttpServletRequest request, HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
+//    @GetMapping("/office/exports/{id}")
+////    @PreAuthorize("hasAuthority('OP_PRINT_PDF_OFFICE')")
+//    public ResponseEntity<?> exportToPdf(HttpServletRequest request, HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
 
         /* Do Business Logic*/
 
@@ -771,39 +778,39 @@ public class OfficeController {
 
         /* Create HTML using Thymeleaf template Engine */
 
-        WebContext context = new WebContext(request, response, servletContext);
-        context.setVariable("form", formRepo.findById(id).get());
-        context.setVariable("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
-        context.setVariable("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
-        context.setVariable("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
-        context.setVariable("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
-
-        String orderHtml = templateEngine.process("admin/office/office-print", context);
-
-        /* Setup Source and target I/O streams */
-
-        ByteArrayOutputStream target = new ByteArrayOutputStream();
-
-        /*Setup converter properties. */
-        ConverterProperties converterProperties = new ConverterProperties();
-        converterProperties.setBaseUri("http://localhost:8086");
-
-        /* Call convert method */
-        HtmlConverter.convertToPdf(orderHtml, target, converterProperties);
-
-        /* extract output as bytes */
-        byte[] bytes = target.toByteArray();
-
-
-        /* Send the response as downloadable PDF */
-
-//            return ResponseEntity.ok()
-//                    .contentType(MediaType.APPLICATION_PDF)
-//                    .body(bytes);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=order.pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(bytes);
+//        WebContext context = new WebContext(request, response, servletContext);
+//        context.setVariable("form", formRepo.findById(id).get());
+//        context.setVariable("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
+//        context.setVariable("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
+//        context.setVariable("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
+//        context.setVariable("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
+//
+//        String orderHtml = templateEngine.process("admin/office/office-print", context);
+//
+//        /* Setup Source and target I/O streams */
+//
+//        ByteArrayOutputStream target = new ByteArrayOutputStream();
+//
+//        /*Setup converter properties. */
+//        ConverterProperties converterProperties = new ConverterProperties();
+//        converterProperties.setBaseUri("http://localhost:8086");
+//
+//        /* Call convert method */
+//        HtmlConverter.convertToPdf(orderHtml, target, converterProperties);
+//
+//        /* extract output as bytes */
+//        byte[] bytes = target.toByteArray();
+//
+//
+//        /* Send the response as downloadable PDF */
+//
+////            return ResponseEntity.ok()
+////                    .contentType(MediaType.APPLICATION_PDF)
+////                    .body(bytes);
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=order.pdf")
+//                .contentType(MediaType.APPLICATION_PDF)
+//                .body(bytes);
 
 
 //        HtmlConverter.convertToPdf(new File("admin/office/pdf-input.html"),new File("demo-html.pdf"));
@@ -819,7 +826,46 @@ public class OfficeController {
 //        OfficePdfGenerator generator = new OfficePdfGenerator(officeForms.get());
 //        generator.export(response);
 
-    }
+//    }
 
+//    @GetMapping("/office/exports/{id}")
+//    private String parseThymeleafTemplate( @PathVariable long id) {
+//        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+//        templateResolver.setSuffix(".html");
+//        templateResolver.setTemplateMode(TemplateMode.HTML);
+//
+//        TemplateEngine templateEngine = new TemplateEngine();
+//        templateEngine.setTemplateResolver(templateResolver);
+//
+//        Context context = new Context();
+//        System.out.println("ddsdsdsd"+formRepo.findById(id).get());
+//        context.setVariable("form", formRepo.findById(id).get());
+//
+//
+//        return templateEngine.process("thymeleaf_template", context);
+//    }
+
+//    public void generatePdfFromHtml(String html) throws FileNotFoundException {
+//        String outputFolder = System.getProperty("user.home") + File.separator + "thymeleaf.pdf";
+//        OutputStream outputStream = new FileOutputStream(outputFolder);
+//
+//        ITextRenderer renderer = new ITextRenderer();
+//        renderer.setDocumentFromString(html);
+//        renderer.layout();
+//        renderer.createPDF(outputStream);
+//
+//        outputStream.close();
+//    }
+
+    @GetMapping("/office/exports/{id}")
+    public void downloadReceipt(HttpServletResponse response,@PathVariable long id) throws IOException {
+        Map<String, Object> data1 = new HashMap<>();
+        data1.put("form",formRepo.findById(id).get());
+        Map<String, Object> data = data1;
+        ByteArrayInputStream exportedData = exportPdfService.exportReceiptPdf("admin/office/office-print", data);
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=123456.pdf");
+        IOUtils.copy(exportedData, response.getOutputStream());
+    }
 
 }
