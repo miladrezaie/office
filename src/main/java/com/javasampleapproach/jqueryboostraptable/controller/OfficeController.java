@@ -150,7 +150,7 @@ public class OfficeController {
                             office_form.add(oo);
                         }
                     }
-                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
                         office_form.add(oo);
                     } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
                         office_form.add(oo);
@@ -161,7 +161,7 @@ public class OfficeController {
                             office_form.add(oo);
                         }
                     }
-                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
                         office_form.add(oo);
                     } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
                         office_form.add(oo);
@@ -180,7 +180,7 @@ public class OfficeController {
                             office_form.add(oo);
                         }
                     }
-                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
                         office_form.add(oo);
                     } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_MODIR_POSHTIBANIT")) {
                         office_form.add(oo);
@@ -199,7 +199,7 @@ public class OfficeController {
                             office_form.add(oo);
                         }
                     }
-                    if (oo.getTahayeemza() != null && userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
+                    if (userHasAuthority("OP_MODEIR_VAHED_DARKHST_KONANDEH")) {
                         office_form.add(oo);
                     } else if (oo.getMdarkhastemza() != null && userHasAuthority("OP_UP_LINK")) {
                         office_form.add(oo);
@@ -387,15 +387,19 @@ public class OfficeController {
             while (itr.hasNext()) {
                 if (office_form.getUsers().contains(itr.next())) {
                     for (User us : f.getUsers()) {
-//                        if (f.getTahayekonande().equals(us)){
-//                            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-//                            redirectAttributes.addFlashAttribute("message", "حذف کاربر تهیه کننده امکان پذیر نیست.");
-//                            return "redirect:/form/?id=" + id_form;
-//                        }
+                        if (us.getFullname().equals(office_form.getTahayekonande())){
+
+                            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+                            redirectAttributes.addFlashAttribute("message", "حذف کاربر تهیه کننده امکان پذیر نیست.");
+                            return "redirect:/form/?id=" + id_form;
+                        }
+                        System.out.println("user office" + us.getFName());
+                        for (Tajhizat tajhizat:office_form.getTajhizatss()){
+                            OfficeFormUserTajhizatId id = new OfficeFormUserTajhizatId(us.getId(), office_form.getId(), tajhizat.getId());
+                            officeFormUserTajhizatRepository.deleteOfficeFormUserTajhizatById(id);
+                        }
                         office_form.getUsers().remove(us);
-//                        OfficeFormUserTajhizatId id = new OfficeFormUserTajhizatId(us.getId(), office_form.getId(), office_form.);
-//                        officeFormUserTajhizatRepository.deleteOfficeFormUserTajhizatById(id);
-//                        office_form.getOfficeFormUserTajhizats().
+
                     }
                 }
             }
@@ -406,6 +410,7 @@ public class OfficeController {
             return "redirect:/form/?id=" + id_form;
 
         } catch (Exception exception) {
+
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
             redirectAttributes.addFlashAttribute("message", "خطایی در سرور به وجود آمده مجددا تلاش نمایید.");
             return "redirect:/form/?id=" + id_form;
@@ -767,105 +772,57 @@ public class OfficeController {
         return category1.get().getJobs();
     }
 
+    @GetMapping("/office/exports/{id}")
+//    @PreAuthorize("hasAuthority('OP_PRINT_PDF_OFFICE')")
+    public void exportToPdf(HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
+
+        response.setContentType("application/pdf");
+
+        PersianDateTime today = PersianDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=office_" + today.format(formatter) + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+
+        officeForm office_form = formRepo.findById(id).get();
+        OfficePdfGenerator generator = new OfficePdfGenerator(office_form);
+
+        generator.export(response);
+
+
+    }
 //    @GetMapping("/office/exports/{id}")
-////    @PreAuthorize("hasAuthority('OP_PRINT_PDF_OFFICE')")
-//    public ResponseEntity<?> exportToPdf(HttpServletRequest request, HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
-
-        /* Do Business Logic*/
-
-//            Order order = OrderHelper.getOrder();
-
-
-        /* Create HTML using Thymeleaf template Engine */
-
+//////    @PreAuthorize("hasAuthority('OP_PRINT_PDF_OFFICE')")
+//    public ResponseEntity<?> exportToPdf(HttpServletRequest request,HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
+//
+//        officeForm office_form = formRepo.findById(id).get();
 //        WebContext context = new WebContext(request, response, servletContext);
-//        context.setVariable("form", formRepo.findById(id).get());
-//        context.setVariable("enumField", OfficeForm.OFFICE_FORM_BARNAME_TOLIDIE_KHABARIE);
-//        context.setVariable("ertebatat", OfficeForm.OFFICE_FORM_ERTEBATAT);
-//        context.setVariable("sima", OfficeForm.OFFICE_FORM_ESTEDIO_SIMA);
-//        context.setVariable("sayar", OfficeForm.OFFICE_FORM_VAHED_SAIAR);
 //
+//        context.setVariable("form", office_form);
 //        String orderHtml = templateEngine.process("admin/office/office-print", context);
-//
-//        /* Setup Source and target I/O streams */
 //
 //        ByteArrayOutputStream target = new ByteArrayOutputStream();
 //
 //        /*Setup converter properties. */
 //        ConverterProperties converterProperties = new ConverterProperties();
-//        converterProperties.setBaseUri("http://localhost:8086");
+//        converterProperties.setBaseUri("http://localhost:8087");
 //
 //        /* Call convert method */
 //        HtmlConverter.convertToPdf(orderHtml, target, converterProperties);
 //
-//        /* extract output as bytes */
+//
 //        byte[] bytes = target.toByteArray();
 //
-//
 //        /* Send the response as downloadable PDF */
-//
-////            return ResponseEntity.ok()
-////                    .contentType(MediaType.APPLICATION_PDF)
-////                    .body(bytes);
 //        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=order.pdf")
 //                .contentType(MediaType.APPLICATION_PDF)
 //                .body(bytes);
-
-
-//        HtmlConverter.convertToPdf(new File("admin/office/pdf-input.html"),new File("demo-html.pdf"));
-        //        response.setContentType("application/pdf");
-//        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-//        String currentDateTime = dateFormatter.format(new Date());
-//
-//        String headerKey = "Content-Disposition";
-//        String headerValue = "attachment; filename=offices_" + currentDateTime + ".pdf";
-//        response.setHeader(headerKey, headerValue);
-//
-//        Optional<officeForm> officeForms = formRepo.findById(id);
-//        OfficePdfGenerator generator = new OfficePdfGenerator(officeForms.get());
-//        generator.export(response);
-
 //    }
 
-//    @GetMapping("/office/exports/{id}")
-//    private String parseThymeleafTemplate( @PathVariable long id) {
-//        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-//        templateResolver.setSuffix(".html");
-//        templateResolver.setTemplateMode(TemplateMode.HTML);
-//
-//        TemplateEngine templateEngine = new TemplateEngine();
-//        templateEngine.setTemplateResolver(templateResolver);
-//
-//        Context context = new Context();
-//        System.out.println("ddsdsdsd"+formRepo.findById(id).get());
-//        context.setVariable("form", formRepo.findById(id).get());
-//
-//
-//        return templateEngine.process("thymeleaf_template", context);
-//    }
 
-//    public void generatePdfFromHtml(String html) throws FileNotFoundException {
-//        String outputFolder = System.getProperty("user.home") + File.separator + "thymeleaf.pdf";
-//        OutputStream outputStream = new FileOutputStream(outputFolder);
-//
-//        ITextRenderer renderer = new ITextRenderer();
-//        renderer.setDocumentFromString(html);
-//        renderer.layout();
-//        renderer.createPDF(outputStream);
-//
-//        outputStream.close();
-//    }
 
-    @GetMapping("/office/exports/{id}")
-    public void downloadReceipt(HttpServletResponse response,@PathVariable long id) throws IOException {
-        Map<String, Object> data1 = new HashMap<>();
-        data1.put("form",formRepo.findById(id).get());
-        Map<String, Object> data = data1;
-        ByteArrayInputStream exportedData = exportPdfService.exportReceiptPdf("admin/office/office-print", data);
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=123456.pdf");
-        IOUtils.copy(exportedData, response.getOutputStream());
-    }
 
 }

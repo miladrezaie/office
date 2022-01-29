@@ -337,12 +337,13 @@
                             <td th:text="${userrr.getFullname()}"></td>
                             <td>
                                 <!--                                th:if="${form.getPoshemza() == null}"-->
-                                <th:block th:if="${form.getStatus()==false}"
+                                <th:block th:if="${form.getPoshemza() ==null && form.getStatus()==false}"
                                           sec:authorize="hasAuthority('OP_HAZF_AVAMEL_FROM_OFFICE')">
                                     <form th:action="@{/admin/officeform/delete-user}" method="post">
                                         <input type="hidden" name="id" id="form_id" th:value="${form.id}">
                                         <input type="hidden" name="users" id="users" th:value="${userrr.id}">
-                                        <input type="submit" class="btn btn-sm btn-danger" value="حذف"/>
+<!--                                        <input type="submit" class="btn btn-sm btn-danger" value="حذف"/>-->
+                                        <button class="badge badge-danger" type="submit">حذف</button>
                                     </form>
                                 </th:block>
                                 <th:block th:if="${form.getAnbaremza() == null && form.getStatus() ==false }">
@@ -551,10 +552,10 @@
             <th:block sec:authorize="hasAuthority('OP_PRINT_OFFICE')">
                 <div class="row no-print">
                     <div class="col-12">
-                        <!--                    <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"-->
-                        <!--                       style="margin-right: 5px;">-->
-                        <!--                        <i class="fa fa-download"></i>pdf-->
-                        <!--                    </a>-->
+                        <a th:href="@{/office/exports/{id}(id=${form.id})}" class="btn btn-primary float-left ml-2"
+                           style="margin-right: 5px;">
+                            <i class="fa fa-download"></i>pdf
+                        </a>
                         <a target="_blank" th:href="@{/office-print/{id}(id=${form.id})}" class="btn btn-sm btn-primary float-left ml-2"
                            style="margin-right: 5px;">
                             <i class="fa fa-download"></i>پرینت

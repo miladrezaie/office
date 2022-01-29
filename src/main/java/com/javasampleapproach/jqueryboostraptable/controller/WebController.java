@@ -102,16 +102,13 @@ public class WebController {
                 for (Object object : bindingResult.getAllErrors()) {
                     if (object instanceof FieldError) {
                         FieldError fieldError = (FieldError) object;
-
                         message.add(messageSource.getMessage(fieldError, null));
                         System.out.println(message);
                     }
-
                     redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                     redirectAttributes.addFlashAttribute("message", message);
                     return "redirect:/members";
                 }
-
             } else {
                 if (userRepo.findByPersonalId(user.getPersonalId()) != null) {
                     bindingResult.rejectValue("personalId", "error.user",
@@ -124,7 +121,6 @@ public class WebController {
                     user.setEmza(us.getEmza());
                 }
                 userService.save(user);
-
                 redirectAttributes.addFlashAttribute("alertClass", "alert-success");
                 redirectAttributes.addFlashAttribute("message_s", "عملیات با موفقیت انجام گردید.");
                 return "redirect:/members";
@@ -217,7 +213,7 @@ public class WebController {
                 }
                 redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
                 redirectAttributes.addFlashAttribute("message", message);
-                System.out.println("if condition " +message);
+                System.out.println("if condition " + message);
 
                 return "redirect:/admin/profile";
             }
@@ -230,18 +226,18 @@ public class WebController {
             System.out.println("sadasssssssddd");
 
 
-                System.out.println("else condition " );
-                if (bCryptPasswordEncoder.matches(oldPass, userE.getPass())) {
-                    System.out.println("else condition ");
+            System.out.println("else condition ");
+            if (bCryptPasswordEncoder.matches(oldPass, userE.getPass())) {
+                System.out.println("else condition ");
 
-                    userE.setFName(user.getFName());
-                    userE.setLname(user.getLname());
-                    userE.setPass(user.getPass());
-                    userService.save(userE);
-                    redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-                    redirectAttributes.addFlashAttribute("message_s", "عملیات با موفقیت انجام گردید.");
-                    return "redirect:/admin/profile";
-                }
+                userE.setFName(user.getFName());
+                userE.setLname(user.getLname());
+                userE.setPass(user.getPass());
+                userService.save(userE);
+                redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+                redirectAttributes.addFlashAttribute("message_s", "عملیات با موفقیت انجام گردید.");
+                return "redirect:/admin/profile";
+            }
 
             throw new Exception();
         } catch (Exception exception) {

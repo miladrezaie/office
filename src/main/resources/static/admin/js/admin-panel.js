@@ -302,7 +302,11 @@ $(document).ready(function () {
                 $('.programModal #saat_zabt_end').val(program.saat_zabt_end);
                 $('.programModal #rozhafteh').selectpicker('val', program.rozhafteh);
                 $('.programModal #date_begin').val(program.date_begin);
+                // $('.programModal #date_begin').persianDatepicker('val',program.date_begin);
+                // console.log("sho : "+program.date_begin);
+                // console.log("sho : "+program.date_end);
                 $('.programModal #date_end').val(program.date_end);
+                // $('.programModal #date_end').persianDatepicker('val' ,program.date_end);
             })
             $('.programModal #saveeditbutton').prop("value", "ویرایش");
             $('.programModal #programFrom').modal('show');
@@ -646,7 +650,7 @@ $(document).ready(function () {
                 $('.officeModal #id').val(office.id);
                 $('.officeModal #tajhizatss').selectpicker('val', list);
             });
-            $('.officeModal #saveeditbutton').prop("value", "ویرایش");
+            $('.officeModal #saveeditbutton').prop("value", "افزودن");
             $('.officeModal #officeFrom').modal('show');
         } else if (text == 'newOffices') {
             console.log("new office");
